@@ -8460,9 +8460,13 @@
       </tags>
   </entry>
   <entry>
-    <title>Django+Vue+ElementUi 环境搭建</title>
+    <title>Django+Vue+ElementUi 环境搭建 day1</title>
     <url>/posts/a9a258d8.html</url>
     <content><![CDATA[<h1 id="Day1"><a href="#Day1" class="headerlink" title="Day1"></a>Day1</h1><h2 id="📌前言"><a href="#📌前言" class="headerlink" title="📌前言"></a>📌前言</h2><p>毕业设计的设想是做一个渗透测试系统，包含信息收集模块和漏洞扫描模块和插件模块，这都是老生常谈，有很多的类似系统，我的最终设想是做成一个 Web 版的 Goby。</p>
+<p>这个系统将彻底杀死 web 渗透，他会将繁琐的手工测试取代，测试的内容涵盖所有可能存在的漏洞点，未来的测试人员只需要输入目标即可自动化完成渗透测试。</p>
+<p>我觉得要将安全从业人员从繁琐的的手工测试中解脱出来是十分伟大而意义深远的事情。</p>
+<p>着眼未来，将人力资源浪费在重复枯燥的渗透测试中是十分可惜的。</p>
+<p>所以我决定做这件事，道阻且长，但我不会放弃。</p>
 <p>我想使用 Django + Vue 开发成一个前后端分离的系统，顺带学习一下 Vue。</p>
 <p>重复造轮子不可取，但我只是想把毕业设计做了的同时学习一下安全工具的开发，对于我来说，这是一件艰巨且充满挑战的任务。</p>
 <p>每次完成任务都记录一下，方便下次开发的顺利进行。</p>
@@ -8755,8 +8759,8 @@
 <h4 id="Socks代理："><a href="#Socks代理：" class="headerlink" title="Socks代理："></a><strong>Socks代理：</strong></h4><p>Ssh -qTfnN -D port remotehost</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">参数详解：</span><br><span class="line">-C 允许压缩数据</span><br><span class="line">-q 安静模式</span><br><span class="line">-T 不占用shell</span><br><span class="line">-f 后台运行，并推荐加上-n 参数</span><br><span class="line">-N 不执行远程命令</span><br><span class="line">-g 允许远端主机连接本地转发的端口</span><br><span class="line">-n 把stdin 重定向到/dev/null(防止从stdin读取数据)</span><br><span class="line">-L 本地转口转发</span><br><span class="line">-R 远程端口转发</span><br><span class="line">-D 动态转发，即socks代理</span><br><span class="line">-p 指定ssh连接端口</span><br></pre></td></tr></table></figure>
 
-<h4 id="本地转发："><a href="#本地转发：" class="headerlink" title="本地转发："></a><strong>本地转发：</strong></h4><p>远程管理服务器上的mysql，mysql不能直接root用户远程登陆。这时候就可以通过本地转发，通过ssh将服务器的3306端口转发到本地1234端口实现以root用户远程登陆mysql。Ssh -CfNg -L &lt;本机ip&gt;:&lt;本机端口&gt;:&lt;目标B ip&gt;:&lt;目标B端口&gt; 用户名@跳板端口ssh -CfNg -L 1234:127.0.0.1:3306 <a href="mailto:&#x72;&#111;&#111;&#x74;&#64;&#49;&#56;&#53;&#46;&#88;&#x58;&#x2e;&#x58;&#x58;&#46;&#49;&#57;">&#x72;&#111;&#111;&#x74;&#64;&#49;&#56;&#53;&#46;&#88;&#x58;&#x2e;&#x58;&#x58;&#46;&#49;&#57;</a></p>
-<h4 id="远程转发："><a href="#远程转发：" class="headerlink" title="远程转发："></a><strong>远程转发：</strong></h4><p>内网的服务器，外网不能直接访问，使用远程转发，将内网的服务器端口转发到外网端口。这时候访问外网的端口，就可以直接访问到了内网的端口。Ssh -CfNg -R &lt;本地端口&gt;:&lt;目标B ip&gt;:&lt;目标B 端口&gt; 用户名@本地IPssh -CfNg -R 81:127.0.0.1:80 <a href="mailto:&#x72;&#x6f;&#x6f;&#x74;&#64;&#x31;&#57;&#50;&#46;&#x31;&#x36;&#x38;&#46;&#x31;&#x2e;&#50;">&#x72;&#x6f;&#x6f;&#x74;&#64;&#x31;&#57;&#50;&#46;&#x31;&#x36;&#x38;&#46;&#x31;&#x2e;&#50;</a>现在只需要在192.168.1.2这个主机上访问127.0.0.1的81端口就是访问内网服务器的80端口</p>
+<h4 id="本地转发："><a href="#本地转发：" class="headerlink" title="本地转发："></a><strong>本地转发：</strong></h4><p>远程管理服务器上的mysql，mysql不能直接root用户远程登陆。这时候就可以通过本地转发，通过ssh将服务器的3306端口转发到本地1234端口实现以root用户远程登陆mysql。Ssh -CfNg -L &lt;本机ip&gt;:&lt;本机端口&gt;:&lt;目标B ip&gt;:&lt;目标B端口&gt; 用户名@跳板端口ssh -CfNg -L 1234:127.0.0.1:3306 <a href="mailto:&#x72;&#x6f;&#111;&#x74;&#x40;&#49;&#x38;&#53;&#46;&#88;&#x58;&#x2e;&#88;&#88;&#x2e;&#49;&#x39;">&#x72;&#x6f;&#111;&#x74;&#x40;&#49;&#x38;&#53;&#46;&#88;&#x58;&#x2e;&#88;&#88;&#x2e;&#49;&#x39;</a></p>
+<h4 id="远程转发："><a href="#远程转发：" class="headerlink" title="远程转发："></a><strong>远程转发：</strong></h4><p>内网的服务器，外网不能直接访问，使用远程转发，将内网的服务器端口转发到外网端口。这时候访问外网的端口，就可以直接访问到了内网的端口。Ssh -CfNg -R &lt;本地端口&gt;:&lt;目标B ip&gt;:&lt;目标B 端口&gt; 用户名@本地IPssh -CfNg -R 81:127.0.0.1:80 <a href="mailto:&#x72;&#111;&#x6f;&#116;&#x40;&#49;&#x39;&#50;&#46;&#x31;&#x36;&#x38;&#46;&#49;&#x2e;&#x32;">&#x72;&#111;&#x6f;&#116;&#x40;&#49;&#x39;&#50;&#46;&#x31;&#x36;&#x38;&#46;&#49;&#x2e;&#x32;</a>现在只需要在192.168.1.2这个主机上访问127.0.0.1的81端口就是访问内网服务器的80端口</p>
 <h2 id="06-工具特征总结"><a href="#06-工具特征总结" class="headerlink" title="06 工具特征总结"></a>06 工具特征总结</h2><h3 id="Ew："><a href="#Ew：" class="headerlink" title="Ew："></a><strong>Ew：</strong></h3><p>如果利用ew进行全局代理，配合加密得shell，通过流量回溯极难发现，通过服务器本地日志查看，进程查看，网络排查 容易发现痕迹，且ew会被部分查杀软件查杀</p>
 <h3 id="reGeorg：-1"><a href="#reGeorg：-1" class="headerlink" title="reGeorg："></a><strong>reGeorg：</strong></h3><p>利用reGeorg方式来进行内网全局代理之后有明显的流量特征，但是流量中的行为不方便分析，流量行为主要是以流量隧道来进行攻击，我们能直观看见的是目的ip和目的端口，所以可以根据端口全球数量和频率可以大概分析攻击者行为，脚本会被部分查杀软件检查</p>
 <h3 id="nps：-1"><a href="#nps：-1" class="headerlink" title="nps："></a><strong>nps：</strong></h3><p>轻量级的内网穿透工具，完全采用GO语言实现，服务端界面漂亮简洁。支持tcp、udp流量转发，支持内网http代理、内网socks5代理，同时支持snappy压缩、站点保护、加密传输、多路复用、header修改等。支持web图形化管理，集成多用户模式。但是他有一个致命缺点就是在socks5代理下会长连接一直不放开导致结果不准确。</p>
@@ -9261,6 +9265,376 @@
       </categories>
       <tags>
         <tag>社会工程学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>各项功能的实现方案和设想 day3</title>
+    <url>/posts/194da69d.html</url>
+    <content><![CDATA[<h1 id="day3"><a href="#day3" class="headerlink" title="day3"></a>day3</h1><h2 id="日志模块"><a href="#日志模块" class="headerlink" title="日志模块"></a>日志模块</h2><p>logger 模块</p>
+<h2 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h2><p>端口解决的方案：</p>
+<p><a href="https://mp.weixin.qq.com/s/6G6lO-dOA4LV637mPMzBQA">https://mp.weixin.qq.com/s/6G6lO-dOA4LV637mPMzBQA</a></p>
+<h2 id="代理扫描"><a href="#代理扫描" class="headerlink" title="代理扫描"></a>代理扫描</h2><p>代理的搜集：<a href="https://mp.weixin.qq.com/s/cmfc_whg9AZMuWsb0uqy-Q">https://mp.weixin.qq.com/s/cmfc_whg9AZMuWsb0uqy-Q</a></p>
+<p>代理的收集和切换：<a href="https://mp.weixin.qq.com/s/xDWXvknsL9lqCNo3N5CQ1g">https://mp.weixin.qq.com/s/xDWXvknsL9lqCNo3N5CQ1g</a></p>
+<h2 id="漏洞扫描"><a href="#漏洞扫描" class="headerlink" title="漏洞扫描"></a>漏洞扫描</h2><h2 id="插件开发"><a href="#插件开发" class="headerlink" title="插件开发"></a>插件开发</h2><p>密码生成：<a href="https://github.com/ort4u/PwdBUD">https://github.com/ort4u/PwdBUD</a></p>
+<p>密码爆破：webcrack</p>
+<h2 id="辅助模块"><a href="#辅助模块" class="headerlink" title="辅助模块"></a>辅助模块</h2>]]></content>
+      <categories>
+        <category>编程随想</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/posts/0.html</url>
+    <content><![CDATA[<h1 id="day2"><a href="#day2" class="headerlink" title="day2"></a>day2</h1><h2 id="📌前言"><a href="#📌前言" class="headerlink" title="📌前言"></a>📌前言</h2><p>设计一个好的数据库是至关重要的。PentestWeb 如果想要优秀的拓展性、可用性、健壮性，就要从数据库开始，打好一个良好的基础。</p>
+<p>我会用大部分且漫长的时间去完善这个数据库。</p>
+<h2 id="💡数据库设计"><a href="#💡数据库设计" class="headerlink" title="💡数据库设计"></a>💡数据库设计</h2><h3 id="1-扫描任务表"><a href="#1-扫描任务表" class="headerlink" title="1.扫描任务表"></a>1.扫描任务表</h3><p>输入目标，可能是单个目标，也可能是多个目标，如果是多个目标，就要把它的每个url&#x2F;host根据 &#x2F;n 分开，使用任务名称 name 作为主键，每次要进行的扫描会生成一个任务。</p>
+<p><strong>Task</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字段类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name</td>
+<td>CharField,50,</td>
+<td>主键，任务名称</td>
+</tr>
+<tr>
+<td>note</td>
+<td>CharField,500,blank</td>
+<td>任务说明</td>
+</tr>
+<tr>
+<td>targets</td>
+<td>TextField,</td>
+<td>输入的目标</td>
+</tr>
+<tr>
+<td>ports</td>
+<td>TextField，</td>
+<td>输入的端口</td>
+</tr>
+<tr>
+<td>is_icp</td>
+<td>BooleanField，default&#x3D;false</td>
+<td>是否查询icp备案</td>
+</tr>
+<tr>
+<td>is_proxy</td>
+<td>BooleanField，default&#x3D;false</td>
+<td>是否开启代理进行扫描，</td>
+</tr>
+<tr>
+<td>is_vul</td>
+<td>BooleanField，default&#x3D;false</td>
+<td>是否进行漏洞扫描</td>
+</tr>
+<tr>
+<td>is_awvs</td>
+<td>BooleanField，default&#x3D;false</td>
+<td>是否进行awvs扫描</td>
+</tr>
+<tr>
+<td>is_plug</td>
+<td>BooleanField，default&#x3D;false</td>
+<td>是否启用插件</td>
+</tr>
+<tr>
+<td>plug_name</td>
+<td>CharField,ForeignKey,500,blank</td>
+<td>外键，启用的插件，关联插件表</td>
+</tr>
+<tr>
+<td>status</td>
+<td>CharField,choices</td>
+<td>扫描任务状态，等待中，进行中，已完成</td>
+</tr>
+<tr>
+<td>created_time</td>
+<td>DateTimeField</td>
+<td>创建时间</td>
+</tr>
+</tbody></table>
+<h3 id="2-扫描结果表"><a href="#2-扫描结果表" class="headerlink" title="2.扫描结果表"></a>2.扫描结果表</h3><p>扫描结果表是扫描任务表的进一步处理化，加入开放的端口，删除未开放的端口，添加有效的url&#x2F;host、备案信息，后台url，指纹识别结果，target格式为：protocol:&#x2F;&#x2F;hostname[:port]&#x2F;path，</p>
+<p><strong>Result</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字段类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>primary_key,AutoField,int,11</td>
+<td>主键，自动生成</td>
+</tr>
+<tr>
+<td>name</td>
+<td>CharField,ForeignKey,50,</td>
+<td>外键，扫描任务的名称，关联扫描任务表</td>
+</tr>
+<tr>
+<td>target</td>
+<td>ForeignKey,CharField,500</td>
+<td>有效资源</td>
+</tr>
+<tr>
+<td>critical_vul_count</td>
+<td>PositiveIntegerField</td>
+<td>严重的漏洞数量</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>icp</td>
+<td>TextField，</td>
+<td>所有icp备案查询信息</td>
+</tr>
+</tbody></table>
+<h3 id="3-target详情表"><a href="#3-target详情表" class="headerlink" title="3.target详情表"></a>3.target详情表</h3><p><strong>Target</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字段类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>target</td>
+<td>primary_key,CharField,500</td>
+<td>主键</td>
+</tr>
+<tr>
+<td>ip</td>
+<td>CharField,50</td>
+<td>ip地址</td>
+</tr>
+<tr>
+<td>is_cdn</td>
+<td>BooleanField，default&#x3D;false</td>
+<td>是否使用cdn</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>CharField,50</td>
+<td>target使用的协议</td>
+</tr>
+<tr>
+<td>hostname</td>
+<td>CharField,50</td>
+<td>target的主机名称</td>
+</tr>
+<tr>
+<td>port</td>
+<td>PositiveIntegerField</td>
+<td>target的端口</td>
+</tr>
+<tr>
+<td>status</td>
+<td>CharField,</td>
+<td>状态码，200，404 等等</td>
+</tr>
+<tr>
+<td>js_info</td>
+<td>TextField</td>
+<td>js文件泄露的信息</td>
+</tr>
+<tr>
+<td>back_url</td>
+<td>CharField,blank&#x3D;true</td>
+<td>目标是否存在后台url</td>
+</tr>
+<tr>
+<td>is_webpack</td>
+<td>BooleanField，default&#x3D;false</td>
+<td>是否为webpack打包，如果是，则可以使用packerfuzz扫描</td>
+</tr>
+</tbody></table>
+<h3 id="4-插件表"><a href="#4-插件表" class="headerlink" title="4.插件表"></a>4.插件表</h3><p>一个可持续发展的系统，必须要有插件功能，这是该系统十分重要的一部分功能。如果想要增加插件的配置，先到配置表添加，插件中再引用配置表的配置。具体引用方式为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from Config import setting.fofa_key</span><br></pre></td></tr></table></figure>
+
+<p><strong>Plug</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字段类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>plug_name</td>
+<td>primary_key,CharField,50</td>
+<td>主键</td>
+</tr>
+<tr>
+<td>path</td>
+<td>CharField,100</td>
+<td>插件存放的路径，如： ..&#x2F;for.py</td>
+</tr>
+<tr>
+<td>config_name</td>
+<td>CharField,ForeignKey，500,</td>
+<td>外键，关联配置表</td>
+</tr>
+</tbody></table>
+<h3 id="5-用户表"><a href="#5-用户表" class="headerlink" title="5.用户表"></a>5.用户表</h3><p><strong>用户表</strong></p>
+<p>还需要设置免登录功能。可以参考那个项目。</p>
+<p>管理员可以添加用户，使用全部功能。</p>
+<p>用户可以使用全部功能，但不能添加用户。</p>
+<p>游客可以使用部分开放功能，服务不全。</p>
+<p><strong>User</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字段类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>username</td>
+<td>primary_key,CharField,50</td>
+<td>主键，用户名</td>
+</tr>
+<tr>
+<td>password</td>
+<td>CharField,50</td>
+<td>密码</td>
+</tr>
+<tr>
+<td>email</td>
+<td>EmailField,blank</td>
+<td>邮箱，任务扫描完成后发送邮箱提醒，重置密码链接</td>
+</tr>
+<tr>
+<td>role</td>
+<td>CharField,choices</td>
+<td>用户权限等级,管理员，用户，游客，</td>
+</tr>
+<tr>
+<td>profile</td>
+<td>ImageField</td>
+<td>用户头像</td>
+</tr>
+<tr>
+<td>config_name</td>
+<td>CharField,ForeignKey，500,</td>
+<td>外键，用户配置，关联配置表</td>
+</tr>
+</tbody></table>
+<h3 id="6-配置表"><a href="#6-配置表" class="headerlink" title="6.配置表"></a>6.配置表</h3><p>配置表，主要作用是存储每个用户配置的信息，后期可自行添加想要配置的字段。</p>
+<p><strong>Config</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字段类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>config_name</td>
+<td>primary_key</td>
+<td>主键，配置表</td>
+</tr>
+<tr>
+<td>username</td>
+<td>CharField,ForeignKey,50,</td>
+<td>配置所属用户，外键，关联用户表</td>
+</tr>
+<tr>
+<td>fofa_key</td>
+<td>CharField,500</td>
+<td>fofa密钥</td>
+</tr>
+<tr>
+<td>awvs_ip</td>
+<td>CharField,500</td>
+<td>awvs ip</td>
+</tr>
+<tr>
+<td>awvs_key</td>
+<td>CharField,500</td>
+<td>awvs key</td>
+</tr>
+</tbody></table>
+<h3 id="7-每日一句话表"><a href="#7-每日一句话表" class="headerlink" title="7.每日一句话表"></a>7.每日一句话表</h3><p><strong>Everyday</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字段类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>content</td>
+<td>CharField</td>
+<td>内容</td>
+</tr>
+<tr>
+<td>weight</td>
+<td>CharField,choices</td>
+<td>权重</td>
+</tr>
+<tr>
+<td>status</td>
+<td>CharField,choices</td>
+<td>状态，展示和不展示</td>
+</tr>
+</tbody></table>
+<h3 id="8-字典"><a href="#8-字典" class="headerlink" title="8.字典"></a>8.字典</h3><p><strong>Dict</strong></p>
+<p>参考文件上传方案。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>字段类型</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>file</td>
+<td>FileField,</td>
+<td>字典名称</td>
+</tr>
+<tr>
+<td>created_time</td>
+<td>TimeField</td>
+<td>创建时间</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>编程随想</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PenKitWeb逻辑流程 day4</title>
+    <url>/posts/8a10d613.html</url>
+    <content><![CDATA[<h2 id="主流程"><a href="#主流程" class="headerlink" title="主流程"></a>主流程</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/PentestWeb%E5%BC%80%E5%8F%91(%E5%9B%9B)/image-20220703141607967.png" alt="image-20220703141607967"></p>
+]]></content>
+      <categories>
+        <category>编程随想</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
       </tags>
   </entry>
 </search>
