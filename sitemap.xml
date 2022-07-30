@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://fstraw.cn/time/index.html</loc>
+    <loc>https://fstraw.cn/posts/8a10d613.html</loc>
     
     <lastmod>2022-07-30</lastmod>
     
@@ -13,16 +13,7 @@
   <url>
     <loc>https://fstraw.cn/posts/0.html</loc>
     
-    <lastmod>2022-07-05</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://fstraw.cn/posts/8a10d613.html</loc>
-    
-    <lastmod>2022-07-03</lastmod>
+    <lastmod>2022-07-30</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -31,7 +22,16 @@
   <url>
     <loc>https://fstraw.cn/posts/194da69d.html</loc>
     
-    <lastmod>2022-07-03</lastmod>
+    <lastmod>2022-07-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fstraw.cn/time/index.html</loc>
+    
+    <lastmod>2022-07-30</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
