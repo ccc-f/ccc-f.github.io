@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Web信息收集CheckList | Fstraw Blog</title><meta name="keywords" content="信息收集"><meta name="author" content="Fstraw"><meta name="copyright" content="Fstraw"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="0.前言 转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;EojC9fYiBlKGG_Cv5f3xzw  1.获取真实IP😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅 2.判断是否是CDN使用ping域名判断是否有CDN直接使用ping域名查看回显地址来进行判断，如下回显cname.vercel-dns.com，很明显使用了cdn技术。 使用不同主">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web信息收集CheckList">
+<meta property="og:url" content="https://ccc-f.github.io/posts/c81b611f.html">
+<meta property="og:site_name" content="Fstraw Blog">
+<meta property="og:description" content="0.前言 转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;EojC9fYiBlKGG_Cv5f3xzw  1.获取真实IP😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅 2.判断是否是CDN使用ping域名判断是否有CDN直接使用ping域名查看回显地址来进行判断，如下回显cname.vercel-dns.com，很明显使用了cdn技术。 使用不同主">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ccc-f.github.io/img/backup.jpg">
+<meta property="article:published_time" content="2022-11-03T15:03:50.824Z">
+<meta property="article:modified_time" content="2023-04-28T09:21:02.819Z">
+<meta property="article:author" content="Fstraw">
+<meta property="article:tag" content="信息收集">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ccc-f.github.io/img/backup.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ccc-f.github.io/posts/c81b611f"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="google3c676eb36348f5df"/><meta name="baidu-site-verification" content="de191936ea3ee4fffaba389d103fb230"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/js/fancybox.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?32fff2d27aa7e0c7fad7396cabeaa45b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"已经超过","messageNext":"天，自上次更新后，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Fstraw","link":"链接: ","source":"来源: Fstraw Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web信息收集CheckList',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 17:21:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/butterflyChange/css/myfont.css"<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Fstraw Blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/profile.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/backup.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Fstraw Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Web信息收集CheckList<a class="post-edit-link" href="https://github.com/ccc-f/ccc-f.github.io/edit/master/posts/c81b611f.html" rel="external nofollow noreferrer" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-03T15:03:50.824Z" title="发表于 2022-11-03 23:03:50">2022-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-28T09:21:02.819Z" title="更新于 2023-04-28 17:21:02">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Web信息收集CheckList"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/c81b611f.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/posts/c81b611f.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0.前言"></a>0.前言</h2><blockquote>
+<p>转载自：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://mp.weixin.qq.com/s/EojC9fYiBlKGG_Cv5f3xzw">https://mp.weixin.qq.com/s/EojC9fYiBlKGG_Cv5f3xzw</a></p>
+</blockquote>
+<h2 id="1-获取真实IP"><a href="#1-获取真实IP" class="headerlink" title="1.获取真实IP"></a><strong>1.获取真实IP</strong></h2><p>😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅</p>
+<h3 id="2-判断是否是CDN"><a href="#2-判断是否是CDN" class="headerlink" title="2.判断是否是CDN"></a><strong>2.判断是否是CDN</strong></h3><h4 id="使用ping域名判断是否有CDN"><a href="#使用ping域名判断是否有CDN" class="headerlink" title="使用ping域名判断是否有CDN"></a><strong>使用ping域名判断是否有CDN</strong></h4><p>直接使用ping域名查看回显地址来进行判断，如下回显<code>cname.vercel-dns.com</code>，很明显使用了cdn技术。</p>
+<h4 id="使用不同主机ping域名判断是否有CDN"><a href="#使用不同主机ping域名判断是否有CDN" class="headerlink" title="使用不同主机ping域名判断是否有CDN"></a><strong>使用不同主机ping域名判断是否有CDN</strong></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">全球Ping测试：https://www.wepcc.com/</span><br><span class="line">站长工具Ping检测：http://ping.chinaz.com/</span><br><span class="line">爱站网Ping检测：https://ping.aizhan.com/</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442141.png" alt="图片"></p>
+<p>可以发现对<code>www.zjun.info</code>的全球ping测试，有<code>76.223.126</code>、<code>76.76.21.21</code>这两个不同的解析IP，说明<code>www.zjun.info</code>可能使用了CDN。</p>
+<h4 id="使用nslookup域名解析判断是否有CDN"><a href="#使用nslookup域名解析判断是否有CDN" class="headerlink" title="使用nslookup域名解析判断是否有CDN"></a><strong>使用nslookup域名解析判断是否有CDN</strong></h4><p>通过系统自带的<code>nslookup</code>命令对域名解析，发现其中的<code>Name</code>字段直接指向<code>cname.vercel-dns.com</code>，毫无疑问使用了CDN技术。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442142.png" alt="图片"></p>
+<p>又比如<code>www.baidu.com</code>，其中<code>Address</code>字段也是指向两个不同IP，即<code>www.baidu.com</code>可能使用了CDN。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442153.png" alt="图片"></p>
+<h3 id="3-绕过CDN获取真实IP"><a href="#3-绕过CDN获取真实IP" class="headerlink" title="3.绕过CDN获取真实IP"></a><strong>3.绕过CDN获取真实IP</strong></h3><h4 id="查询子域名"><a href="#查询子域名" class="headerlink" title="查询子域名"></a><strong>查询子域名</strong></h4><p>由于CDN加速需要支付一定的费用，很多网站只对主站做了CDN加速，子域名没有做CDN加速，子域名可能跟主站在同一个服务器或者同一个C段网络中，可以通过子域名探测的方式，收集目标的子域名信息，通过查询子域名的IP信息来辅助判断主站的真实IP信息。</p>
+<h4 id="查询历史DNS记录"><a href="#查询历史DNS记录" class="headerlink" title="查询历史DNS记录"></a><strong>查询历史DNS记录</strong></h4><p>通过查询DNS与IP绑定的历史记录就有可能发现之前的真实IP信息，常用的第三方服务网站有：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dnsdb：https://dnsdb.io/zh-cn/view</span><br><span class="line">dns：https://viewdns.info/iphistory/</span><br><span class="line">微步在线：https://x.threatbook.cn/</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用国外主机请求域名"><a href="#使用国外主机请求域名" class="headerlink" title="使用国外主机请求域名"></a><strong>使用国外主机请求域名</strong></h4><p>部分国内的CDN加速服务商只对国内的线路做了CDN加速，但是国外的线路没有做加速，这样就可以通过国外的主机来探测真实的IP信息。</p>
+<h4 id="网站信息泄露漏洞"><a href="#网站信息泄露漏洞" class="headerlink" title="网站信息泄露漏洞"></a><strong>网站信息泄露漏洞</strong></h4><p>利用网站存在的漏洞和信息泄露的敏感信息、文件（如：phpinfo文件、网站源码文件、Github泄露的信息等）获取真实的IP信息。</p>
+<p>phpinfo页面中有一个<code>SERVER_ADDR</code>字段会显示该主机真实IP。</p>
+<h4 id="邮件信息"><a href="#邮件信息" class="headerlink" title="邮件信息"></a><strong>邮件信息</strong></h4><p>一般的邮件系统都在内部，没有经过CDN的解析，通过利用目标网站的邮箱注册、找回密码或者RSS订阅等功能，接收到发来的邮件后，查看邮件源码就可以获得目标的真实IP。<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442154.png" alt="图片"></p>
+<h4 id="目标网站APP应用"><a href="#目标网站APP应用" class="headerlink" title="目标网站APP应用"></a><strong>目标网站APP应用</strong></h4><p>如果目标网站有自己的App，可以尝试利用Burp Suite等流量抓包工具抓取App的请求，从里面可能会找到目标的真实IP。</p>
+<h2 id="4-旁站查询（IP反查）"><a href="#4-旁站查询（IP反查）" class="headerlink" title="4.旁站查询（IP反查）"></a><strong>4.旁站查询（IP反查）</strong></h2><p>旁站信息收集也称为IP反查，主要有以下方式：</p>
+<h3 id="Nmap扫描获取旁站信息"><a href="#Nmap扫描获取旁站信息" class="headerlink" title="Nmap扫描获取旁站信息"></a><strong>Nmap扫描获取旁站信息</strong></h3><p>使用命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -sV -p 1-65535 x.x.x.x </span><br></pre></td></tr></table></figure>
+
+<p>对目标IP进行全端口扫描，确保每个可能开放的端口服务都能识别到。</p>
+<h3 id="第三方服务获取旁站信息"><a href="#第三方服务获取旁站信息" class="headerlink" title="第三方服务获取旁站信息"></a>第三方服务获取旁站信息</h3><p>旁站信息可以通过第三方服务进行收集，比如在线网站与搜索引擎等。以下是几个在线搜集网站：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">站长工具同IP网站查询：http://s.tool.chinaz.com/same</span><br><span class="line">webscan：https://www.webscan.cc/</span><br><span class="line">云悉：https://www.yunsee.cn/</span><br><span class="line">微步在线：https://x.threatbook.cn/</span><br><span class="line">在线旁站查询|C段查询|必应接口C段查询：http://www.bug8.me/bing/bing.php</span><br></pre></td></tr></table></figure>
+
+<p>也可以利用搜索引擎语法来实现查询：</p>
+<p>bing</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://cn.bing.com/search?q=ip:x.x.x.x</span><br></pre></td></tr></table></figure>
+
+<p>fofa</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip=&quot;x.x.x.x&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-C段主机查询"><a href="#5-C段主机查询" class="headerlink" title="5.C段主机查询"></a><strong>5.C段主机查询</strong></h2><h3 id="Nmap扫描C段"><a href="#Nmap扫描C段" class="headerlink" title="Nmap扫描C段"></a><strong>Nmap扫描C段</strong></h3><p>使用命令<code>nmap -sn x.x.x.x/24</code>，对目标IP的C段主机进行存活扫描，根据扫描的结果可以判断目标IP的C段还有哪些主机存活。</p>
+<p><code>nmap -Pn</code>这个命令在实际工作中的使用很多，该命令不通过ICMP协议进行主机存活判断，会直接对端口进行扫描。这样在开启了防火墙禁Ping的情况下，也可以利用这个命令正常扫描目标是否存活及对外开启的相关服务。</p>
+<h3 id="搜索引擎语法收集C段信息"><a href="#搜索引擎语法收集C段信息" class="headerlink" title="搜索引擎语法收集C段信息"></a><strong>搜索引擎语法收集C段信息</strong></h3><p>Google</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">site:x.x.x.*</span><br></pre></td></tr></table></figure>
+
+<p>Fofa</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip=&quot;x.x.x.x/24&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在线C段扫描工具</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">在线旁站查询|C段查询|必应接口C段查询：http://www.bug8.me/bing/bing.php</span><br><span class="line">查旁站：https://chapangzhan.com/</span><br><span class="line">云悉：https://www.yunsee.cn/</span><br></pre></td></tr></table></figure>
+
+<h3 id="本地C段扫描工具（其中某些工具不只是C段扫描）"><a href="#本地C段扫描工具（其中某些工具不只是C段扫描）" class="headerlink" title="本地C段扫描工具（其中某些工具不只是C段扫描）"></a><strong>本地C段扫描工具（其中某些工具不只是C段扫描）</strong></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">httpscan：https://github.com/zer0h/httpscan</span><br><span class="line">小米范web查找器</span><br><span class="line">Goby：https://gobies.org/</span><br><span class="line">bufferfly：https://github.com/dr0op/bufferfly</span><br><span class="line">cscan：https://github.com/z1un/cscan</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-子域名查询"><a href="#6-子域名查询" class="headerlink" title="6.子域名查询"></a><strong>6.子域名查询</strong></h2><h3 id="枚举发现子域名"><a href="#枚举发现子域名" class="headerlink" title="枚举发现子域名"></a><strong>枚举发现子域名</strong></h3><p>子域名收集可以通过枚举的方式对子域名进行收集，枚举需要一个好的字典，制作字典时会将常见子域名的名字放到字段里面，增加枚举的成功率。子域名暴力破解常用的工具以下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在线子域名查询：https://phpinfo.me/domain/</span><br><span class="line">OneForAll：https://github.com/shmilylty/OneForAll</span><br><span class="line">knock：https://github.com/guelfoweb/knock</span><br><span class="line">subDomainsBrute：https://github.com/lijiejie/subDomainsBrute</span><br><span class="line">Layer子域名挖掘机：https://github.com/euphrat1ca/LayerDomainFinder</span><br></pre></td></tr></table></figure>
+
+<h3 id="搜索引擎发现子域名"><a href="#搜索引擎发现子域名" class="headerlink" title="搜索引擎发现子域名"></a><strong>搜索引擎发现子域名</strong></h3><p>使用搜索引擎语法，如</p>
+<p>Google或者百度等</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">site:xxx.com</span><br></pre></td></tr></table></figure>
+
+<p>Fofa</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">domain=&quot;xxx.com&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="第三方聚合服务发现子域名"><a href="#第三方聚合服务发现子域名" class="headerlink" title="第三方聚合服务发现子域名"></a><strong>第三方聚合服务发现子域名</strong></h3><p>第三方聚合平台 Netcraft、Virustotal、ThreatCrowd、DNSdumpster 和 ReverseDNS 等获取子域信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Sublist3r：https://github.com/aboul3la/Sublist3r</span><br><span class="line">OneForAll：https://github.com/shmilylty/OneForAll</span><br></pre></td></tr></table></figure>
+
+<h3 id="证书透明性信息发现子域名"><a href="#证书透明性信息发现子域名" class="headerlink" title="证书透明性信息发现子域名"></a><strong>证书透明性信息发现子域名</strong></h3><p>证书透明性（Certificate Transparency，CT）是Google的公开项目，通过让域所有者、CA和域用户对SSL证书的发行和存在进行审查，来纠正这些基于证书的威胁。具体而言，证书透明性具有三个主要目标：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">使CA无法（或至少非常困难）为域颁发SSL证书，而该域的所有者看不到该证书；</span><br><span class="line">提供一个开放的审核和监视系统，该系统可以让任何域所有者或CA确定证书是错误的还是恶意颁发的；</span><br><span class="line">尽可能防止用户被错误或恶意颁发的证书所欺骗。</span><br></pre></td></tr></table></figure>
+
+<p>证书透明性项目有利有弊。通过证书透明性，可以检测由证书颁发机构错误颁发的SSL证书，可以识别恶意颁发证书的证书颁发机构。因为它是一个开放的公共框架，所以任何人都可以构建或访问驱动证书透明性的基本组件，CA证书中包含了域名、子域名、邮箱等敏感信息，存在一定的安全风险。</p>
+<p>利用证书透明性进行域名信息收集，一般使用CT日志搜索引擎进行域名信息收集，如在线网站：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">https://crt.sh/</span><br><span class="line">https://transparencyreport.google.com/</span><br><span class="line">https/certificates</span><br><span class="line">https://developers.facebook.com/tools/ct/</span><br></pre></td></tr></table></figure>
+
+<p>本地工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ctfr：https://github.com/UnaPibaGeek/ctfr</span><br><span class="line">OneForAll：https://github.com/shmilylty/OneForAll</span><br></pre></td></tr></table></figure>
+
+<h3 id="DNS域传送发现子域名"><a href="#DNS域传送发现子域名" class="headerlink" title="DNS域传送发现子域名"></a><strong>DNS域传送发现子域名</strong></h3><p>DNS服务器分为：主服务器、备份服务器和缓存服务器。在主备服务器之间同步数据库，需要使用“DNS域传送”。域传送是指备份服务器从主服务器拷贝数据，并用得到的数据更新自身数据库。</p>
+<p>若DNS服务器配置不当，可能导致攻击者获取某个域的所有记录。造成整个网络的拓扑结构泄露给潜在的攻击者，包括一些安全性较低的内部主机，如测试服务器。同时，黑客可以快速的判定出某个特定zone的所有主机，收集域信息，选择攻击目标，找出未使用的IP地址，绕过基于网络的访问控制。目前来看”DNS域传送漏洞”已经很少了。</p>
+<p>利用nmap漏洞检测脚本<code>dns-zone-transfer</code>进行检测</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap --script dns-zone-transfer --script-args dns-zone-transfer.domain=xxx.edu.cn -p 53 -Pn dns.xxx.edu.cn</span><br></pre></td></tr></table></figure>
+<p>Linux dig 命令进行测试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dig xxx.com ns</span><br><span class="line">dig axfr @dns xxx.com</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>7.端口扫描</strong></p>
+<p>最常用的就是nmap</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-sS (TCP SYN扫描)</span><br><span class="line">-sT (TCP connect()扫描)</span><br><span class="line">-sU (UDP扫描)</span><br><span class="line">-sN; -sF; -sX (TCP Null，FIN，and Xmas扫描)</span><br><span class="line">-Pn (不通过ICMP探测)	</span><br></pre></td></tr></table></figure>
+
+<p>详细文档：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://nmap.org/man/zh/</span><br></pre></td></tr></table></figure>
+
+<p>其次可能还会用到masscan：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/robertdavidgraham/masscan</span><br></pre></td></tr></table></figure>
+
+<p>常见端口及对应服务表：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442155.png" alt="图片"></p>
+<h2 id="8-目录探测"><a href="#8-目录探测" class="headerlink" title="8.目录探测"></a><strong>8.目录探测</strong></h2><p>在信息搜集中，目录扫描是一个很重要的步骤，可以帮助我们获得如网站的测试页面、后台地址、常见第三方高危组件路径等。但是目前多数网站都有云waf、主机防护等，对于频繁访问的IP会封禁处理。对于云waf，找到网站真实IP是很关键的，其余的情况基本都可以修改开源工具代码利用IP代理池或控制访问频率的方式进行探测。</p>
+<p>常用目录扫描工具如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dirsearch：https://github.com/maurosoria/dirsearch</span><br><span class="line">dirmap：https://github.com/H4ckForJob/dirmap</span><br><span class="line">御剑目录扫描：https://github.com/foryujian/yjdirscan</span><br><span class="line">dirb：https://tools.kali.org/web-applications/dirb</span><br></pre></td></tr></table></figure>
+
+<p>IP代理池推荐：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ProxyPool：https://github.com/Python3WebSpider/ProxyPool</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-指纹识别"><a href="#9-指纹识别" class="headerlink" title="9.指纹识别"></a><strong>9.指纹识别</strong></h2><p>常见的指纹识别内容有CMS识别、框架识别、中间件识别、WAF识别。CMS识别一般利用不同的CMS特征来识别，常见的识别方式包括特定关键字识别、特定文件及路径识别、CMS网站返回的响应头信息识别等。</p>
+<h3 id="服务器信息搜集"><a href="#服务器信息搜集" class="headerlink" title="服务器信息搜集"></a><strong>服务器信息搜集</strong></h3><p>服务版本识别、操作系统信息识别都可以利用nmap实现识别</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nmap -sV -p 1-65535 x.x.x.x</span><br><span class="line">nmap -O x.x.x.x</span><br></pre></td></tr></table></figure>
+
+<h3 id="CMS识别"><a href="#CMS识别" class="headerlink" title="CMS识别"></a><strong>CMS识别</strong></h3><p>识别CMS的目的在于，方便利用已公开漏洞进行渗透测试，甚至可以到对应CMS的官网下载对应版本的CMS进行本地白盒代码审计。</p>
+<h4 id="特定关键字识别"><a href="#特定关键字识别" class="headerlink" title="特定关键字识别"></a><strong>特定关键字识别</strong></h4><p>CMS的首页文件、特定文件可能包含了CMS类型及版本信息，通过访问这些文件，将返回的网页信息（如<code>Powered by XXCMS</code>）与扫描工具数据库存储的指纹信息进行正则匹配，判断CMS的类型。</p>
+<p>也可能前端源码中或meta标签中的content字段存在一些CMS特征信息，下图很明显能得知是WordPress框架。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442166.png" alt="图片"></p>
+<h4 id="特定文件及路径识别"><a href="#特定文件及路径识别" class="headerlink" title="特定文件及路径识别"></a><strong>特定文件及路径识别</strong></h4><p>不同的CMS会有不同的网站结构及文件名称，可以通过特定文件及路径识别CMS。如WordPress会有特定的文件路径<code>/wp-admin</code>、<code>/wp-includes</code>等，有些CMS的<code>robots.txt</code>文件也可能包含了CMS特定的文件路径，与扫描工具数据库存储的指纹信息进行正则匹配，判断CMS的类型。</p>
+<p>CMS会有一些JS、CSS、图片等静态文件，这些文件一般不会变化，可以利用这些特定文件的MD5值作为指纹信息来判断CMS的类型。</p>
+<h4 id="响应头信息识别"><a href="#响应头信息识别" class="headerlink" title="响应头信息识别"></a><strong>响应头信息识别</strong></h4><p>应用程序会在响应头Server、X-Powered-By、Set-Cookie等字段中返回Banner信息或者自定义的数据字段，通过响应头返回的信息，可以对应用进行识别，有些WAF设备也可以通过响应头信息进行识别判断。当然Banner信息并不一定是完全准确的，应用程序可以自定义自己的Banner信息。</p>
+<p>例如Shiro的响应头信息中包含<code>rememberMe</code>字段：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442167.png" alt="图片"></p>
+<h4 id="指纹识别工具"><a href="#指纹识别工具" class="headerlink" title="指纹识别工具"></a><strong>指纹识别工具</strong></h4><p>指纹识别常用的工具如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">whatweb：https://github.com/urbanadventurer/WhatWeb</span><br><span class="line">wappalyzer：https://github.com/AliasIO/wappalyzer</span><br><span class="line">Glass：https://github.com/s7ckTeam/Glass</span><br></pre></td></tr></table></figure>
+
+<p>还有两款只支持如WordPress, Joomla, Drupal的工具</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CMSScan：https://github.com/ajinabraham/CMSScan</span><br><span class="line">CMSmap：https://github.com/Dionach/CMSmap</span><br><span class="line">云悉：https://www.yunsee.cn/</span><br><span class="line">bugscaner在线cms识别：http://whatweb.bugscaner.com/look/</span><br></pre></td></tr></table></figure>
+
+<h2 id="10-Google-hacking"><a href="#10-Google-hacking" class="headerlink" title="10.Google hacking"></a><strong>10.Google hacking</strong></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">目录遍历: site:$site intitle:index.of</span><br><span class="line"></span><br><span class="line">配置文件泄露: site:$site ext:xml | ext:conf | ext:cnf | ext:reg | ext:inf | ext:rdp | ext:cfg | ext:txt | ext:ora | ext:ini</span><br><span class="line"></span><br><span class="line">数据库文件泄露: site:$site ext:sql | ext:dbf | ext:mdb</span><br><span class="line"></span><br><span class="line">日志文件泄露: site:$site ext:log</span><br><span class="line"></span><br><span class="line">备份和历史文件: site:$site ext:bkf | ext:bkp | ext:bak | ext:old | ext:backup</span><br><span class="line"></span><br><span class="line">登录页面: site:$site inurl:login</span><br><span class="line"></span><br><span class="line">SQL错误: site:$site intext:&quot;sql syntax near&quot; | intext:&quot;syntax error has occurred&quot; | intext:&quot;incorrect syntax near&quot; | intext:&quot;unexpected end of SQL command&quot; | intext:&quot;Warning: mysql_connect()&quot; | intext:&quot;Warning: mysql_query()&quot; | intext:&quot;Warning: pg_connect()&quot;</span><br><span class="line"></span><br><span class="line">公开文件信息: site:$site ext:doc | ext:docx | ext:odt | ext:pdf | ext:rtf | ext:sxw | ext:psw | ext:ppt | ext:pptx | ext:pps | ext:csv</span><br><span class="line"></span><br><span class="line">phpinfo(): site:$site ext:php intitle:phpinfo &quot;published by the PHP Group&quot;</span><br><span class="line"></span><br><span class="line">搜索粘贴站点: site:pastebin.com | site:paste2.org | site:pastehtml.com | site:slexy.org | site:snipplr.com | site:snipt.net | site:textsnip.com | site:bitpaste.app | site:justpaste.it | site:heypasteit.com | site:hastebin.com | site:dpaste.org | site:dpaste.com | site:codepad.org | site:jsitor.com | site:codepen.io | site:jsfiddle.net | site:dotnetfiddle.net | site:phpfiddle.org | site:ide.geeksforgeeks.org | site:repl.it | site:ideone.com | site:paste.debian.net | site:paste.org | site:paste.org.ru | site:codebeautify.org | site:codeshare.io | site:trello.com $site</span><br></pre></td></tr></table></figure>
+
+<p>搜索Github、Gitlab: site:github.com | site:gitlab.com $site.</p>
+<h2 id="11-社工信息收集"><a href="#11-社工信息收集" class="headerlink" title="11.社工信息收集"></a><strong>11.社工信息收集</strong></h2><p>主要是对目标企业单位的关键员工、供应商和合作伙伴等相关信息进行收集。通过社工可以了解目标企业的人员组织结构，通过分析人员组织结构，能够判断关键人员并对其实施社会工程学鱼叉钓鱼攻击。收集到的相关信息还可以进行社工库查询或字典的制作，用于相关应用系统的暴力破解。</p>
+<h3 id="whois信息"><a href="#whois信息" class="headerlink" title="whois信息"></a><strong>whois信息</strong></h3><p>whois是用来查询域名的IP及所有人等信息的传输协议。whois的本质就是一个用来查询域名是否已经被注册，以及注册域名的详细信息的数据库（如域名所有人、域名注册商），可以通过whois来实现对域名信息的查询。whois查询可以通过命令行或网页在线查询工具。</p>
+<h4 id="whois命令"><a href="#whois命令" class="headerlink" title="whois命令"></a>whois命令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whois xxx.com</span><br></pre></td></tr></table></figure>
+
+<p>后面的具体信息就没截出来了，可以查询域名的所有人、注册商等相关信息：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442168.png" alt="图片"></p>
+<h4 id="在线工具"><a href="#在线工具" class="headerlink" title="在线工具"></a>在线工具</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">站长工具whois查询：http://tool.chinaz.com/ipwhois</span><br><span class="line">爱站网whois查询：https://whois.aizhan.com/</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-社会工程学"><a href="#12-社会工程学" class="headerlink" title="12.社会工程学"></a><strong>12.社会工程学</strong></h3><p>社会工程学收集的信息有很多，包含网络ID（现用和曾用）、真实姓名、手机号、电子邮箱、出生日期、身份证号、银行卡、支付宝账号、QQ号、微信号、家庭地址、注册网站（贴吧、微博、人人网等）等信息。</p>
+<p>在目标相关网页中可能会存在招聘信息、客服联系等，可以利用招聘或客服聊天的方式进行钓鱼、木马植入等。</p>
+<p>搜集到相关的人员信息后可以制作社工字典，有如下在线或本地工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bugku密码攻击器：https://www.bugku.com/mima/</span><br><span class="line">白鹿社工字典生成器：https://github.com/z3r023/BaiLu-SED-Tool</span><br></pre></td></tr></table></figure>
+
+<p>除了制作社工字典进行暴破外，还可以用已知信息进行社工库查询，涉及敏感信息了，所以不给出链接，在<code>Telegram</code>软件中充斥着大量免费或付费的社工查询。</p>
+<p><strong>最后</strong></p>
+<p>补充一个网址：<strong><a target="_blank" rel="noopener external nofollow noreferrer" href="https://gitbook.se7ensec.cn/">https://gitbook.se7ensec.cn/</a></strong></p>
+<p>信息收集在线工具集合网站</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/Web%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86CheckList/640-16488891442169.png" alt="图片"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" rel="external nofollow noreferrer">Fstraw</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ccc-f.github.io/posts/c81b611f.html">https://ccc-f.github.io/posts/c81b611f.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow noreferrer" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ccc-f.github.io" target="_blank">Fstraw Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">信息收集</a></div><div class="post_share"><div class="social-share" data-image="/img/backup.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="/js/social-share.min.css" media="print" onload="this.media='all'"><script src="/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/2eb29b89.html"><img class="prev-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Weblogic 漏洞复现</div></div></a></div><div class="next-post pull-right"><a href="/posts/759fd41d.html"><img class="next-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">vps 部署和联动 goby 和 awvs</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/1684ca85.html" title="Nginx配置不当导致内网资产暴漏"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">Nginx配置不当导致内网资产暴漏</div></div></a></div><div><a href="/posts/5660515c.html" title="从零开始模拟学习红队（一）"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">从零开始模拟学习红队（一）</div></div></a></div><div><a href="/posts/a8967205.html" title="Google Dork"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">Google Dork</div></div></a></div><div><a href="/posts/3ac82247.html" title="密码字典"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">密码字典</div></div></a></div><div><a href="/posts/1aebb09f.html" title="记一次某集团的互联网资产梳理过程"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-28</div><div class="title">记一次某集团的互联网资产梳理过程</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0.前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9EIP"><span class="toc-number">2.</span> <span class="toc-text">1.获取真实IP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%98%AFCDN"><span class="toc-number">2.1.</span> <span class="toc-text">2.判断是否是CDN</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8ping%E5%9F%9F%E5%90%8D%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%9C%89CDN"><span class="toc-number">2.1.1.</span> <span class="toc-text">使用ping域名判断是否有CDN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%8D%E5%90%8C%E4%B8%BB%E6%9C%BAping%E5%9F%9F%E5%90%8D%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%9C%89CDN"><span class="toc-number">2.1.2.</span> <span class="toc-text">使用不同主机ping域名判断是否有CDN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8nslookup%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%9C%89CDN"><span class="toc-number">2.1.3.</span> <span class="toc-text">使用nslookup域名解析判断是否有CDN</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BB%95%E8%BF%87CDN%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9EIP"><span class="toc-number">2.2.</span> <span class="toc-text">3.绕过CDN获取真实IP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%AD%90%E5%9F%9F%E5%90%8D"><span class="toc-number">2.2.1.</span> <span class="toc-text">查询子域名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%8E%86%E5%8F%B2DNS%E8%AE%B0%E5%BD%95"><span class="toc-number">2.2.2.</span> <span class="toc-text">查询历史DNS记录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9B%BD%E5%A4%96%E4%B8%BB%E6%9C%BA%E8%AF%B7%E6%B1%82%E5%9F%9F%E5%90%8D"><span class="toc-number">2.2.3.</span> <span class="toc-text">使用国外主机请求域名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BD%91%E7%AB%99%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.2.4.</span> <span class="toc-text">网站信息泄露漏洞</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%82%AE%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.5.</span> <span class="toc-text">邮件信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%E7%BD%91%E7%AB%99APP%E5%BA%94%E7%94%A8"><span class="toc-number">2.2.6.</span> <span class="toc-text">目标网站APP应用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%97%81%E7%AB%99%E6%9F%A5%E8%AF%A2%EF%BC%88IP%E5%8F%8D%E6%9F%A5%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">4.旁站查询（IP反查）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Nmap%E6%89%AB%E6%8F%8F%E8%8E%B7%E5%8F%96%E6%97%81%E7%AB%99%E4%BF%A1%E6%81%AF"><span class="toc-number">3.1.</span> <span class="toc-text">Nmap扫描获取旁站信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E6%9C%8D%E5%8A%A1%E8%8E%B7%E5%8F%96%E6%97%81%E7%AB%99%E4%BF%A1%E6%81%AF"><span class="toc-number">3.2.</span> <span class="toc-text">第三方服务获取旁站信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-C%E6%AE%B5%E4%B8%BB%E6%9C%BA%E6%9F%A5%E8%AF%A2"><span class="toc-number">4.</span> <span class="toc-text">5.C段主机查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Nmap%E6%89%AB%E6%8F%8FC%E6%AE%B5"><span class="toc-number">4.1.</span> <span class="toc-text">Nmap扫描C段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E8%AF%AD%E6%B3%95%E6%94%B6%E9%9B%86C%E6%AE%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">4.2.</span> <span class="toc-text">搜索引擎语法收集C段信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0C%E6%AE%B5%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7%EF%BC%88%E5%85%B6%E4%B8%AD%E6%9F%90%E4%BA%9B%E5%B7%A5%E5%85%B7%E4%B8%8D%E5%8F%AA%E6%98%AFC%E6%AE%B5%E6%89%AB%E6%8F%8F%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">本地C段扫描工具（其中某些工具不只是C段扫描）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%AD%90%E5%9F%9F%E5%90%8D%E6%9F%A5%E8%AF%A2"><span class="toc-number">5.</span> <span class="toc-text">6.子域名查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E5%8F%91%E7%8E%B0%E5%AD%90%E5%9F%9F%E5%90%8D"><span class="toc-number">5.1.</span> <span class="toc-text">枚举发现子域名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E5%8F%91%E7%8E%B0%E5%AD%90%E5%9F%9F%E5%90%8D"><span class="toc-number">5.2.</span> <span class="toc-text">搜索引擎发现子域名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E8%81%9A%E5%90%88%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E5%AD%90%E5%9F%9F%E5%90%8D"><span class="toc-number">5.3.</span> <span class="toc-text">第三方聚合服务发现子域名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6%E9%80%8F%E6%98%8E%E6%80%A7%E4%BF%A1%E6%81%AF%E5%8F%91%E7%8E%B0%E5%AD%90%E5%9F%9F%E5%90%8D"><span class="toc-number">5.4.</span> <span class="toc-text">证书透明性信息发现子域名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DNS%E5%9F%9F%E4%BC%A0%E9%80%81%E5%8F%91%E7%8E%B0%E5%AD%90%E5%9F%9F%E5%90%8D"><span class="toc-number">5.5.</span> <span class="toc-text">DNS域传送发现子域名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E7%9B%AE%E5%BD%95%E6%8E%A2%E6%B5%8B"><span class="toc-number">6.</span> <span class="toc-text">8.目录探测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB"><span class="toc-number">7.</span> <span class="toc-text">9.指纹识别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="toc-number">7.1.</span> <span class="toc-text">服务器信息搜集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CMS%E8%AF%86%E5%88%AB"><span class="toc-number">7.2.</span> <span class="toc-text">CMS识别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E5%AE%9A%E5%85%B3%E9%94%AE%E5%AD%97%E8%AF%86%E5%88%AB"><span class="toc-number">7.2.1.</span> <span class="toc-text">特定关键字识别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E5%AE%9A%E6%96%87%E4%BB%B6%E5%8F%8A%E8%B7%AF%E5%BE%84%E8%AF%86%E5%88%AB"><span class="toc-number">7.2.2.</span> <span class="toc-text">特定文件及路径识别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E5%A4%B4%E4%BF%A1%E6%81%AF%E8%AF%86%E5%88%AB"><span class="toc-number">7.2.3.</span> <span class="toc-text">响应头信息识别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB%E5%B7%A5%E5%85%B7"><span class="toc-number">7.2.4.</span> <span class="toc-text">指纹识别工具</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-Google-hacking"><span class="toc-number">8.</span> <span class="toc-text">10.Google hacking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E7%A4%BE%E5%B7%A5%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">9.</span> <span class="toc-text">11.社工信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#whois%E4%BF%A1%E6%81%AF"><span class="toc-number">9.1.</span> <span class="toc-text">whois信息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#whois%E5%91%BD%E4%BB%A4"><span class="toc-number">9.1.1.</span> <span class="toc-text">whois命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E5%B7%A5%E5%85%B7"><span class="toc-number">9.1.2.</span> <span class="toc-text">在线工具</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B%E5%AD%A6"><span class="toc-number">9.2.</span> <span class="toc-text">12.社会工程学</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/backup.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Fstraw</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://ccc-f.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/fancybox.umd.js"></script><script src="/js/instantpage.min.js" type="module"></script><script src="/js/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>var requestSetting = function (from,set) {
+    var from = from
+    var setting = set.split(',').filter(function(item){
+    return from.indexOf(item) > -1
+    });
+    setting = setting.length == 0 ? from :setting;
+    return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      master:'7f26fd285f1e832baef86f5bcaadd06a',
+      pageSize:'10',
+      lang:'zh-CN',
+      placeholder:'建议使用QQ邮箱,评论头像采用QQ头像',
+      recordIP:'true',
+      enableQQ:'true',
+      requiredFields: requiredFields,
+      appId: '9xmgN7UpSgxN7k2zu16HHcl6-gzGzoHsz',
+      appKey: '6t7uQFgue7owtGg4R7ieIYWu',
+      avatar: 'monsterid',
+      serverURLs: 'https://9xmgn7up.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('/js/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="/js/fireworks.min.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>((window.gitter = {}).chat = {}).options = {
+  disableDefaultChat: true,
+};
+document.addEventListener('gitter-sidecar-ready', (e) => {
+  const GitterChat = e.detail.Chat
+  let chat
+
+  function initGitter () {
+    chat = new GitterChat({
+      room: 'blogroom/test',
+      activationElement: '#chat_btn'
+    });
+  }
+
+  initGitter()
+
+  if (false) {
+    document.addEventListener('pjax:complete', () => {
+      chat.destroy()
+      initGitter()
+    })
+  }
+
+})</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="async" defer="defer"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

